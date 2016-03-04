@@ -1,0 +1,12 @@
+{
+  "name" : "webx/route",
+  "autoload": {
+    "psr-4": {
+      "WebX\\Route\\": "src/WebX/Route"
+    }
+  },
+  "require" : {
+    "webx/ioc": "1.2.5",
+    "twig/twig": "v1.24.0"
+  }
+}
