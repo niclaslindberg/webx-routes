@@ -18,17 +18,17 @@ abstract class AbstractResponse implements Response {
 
     public function addHeader($header)
     {
-        $this->responseHost->addHeader($this,$header);
+        $this->responseHost->registerHeader($this,$header);
     }
 
     public function addCookie($cookie)
     {
-        $this->responseHost->addCookie($this,$cookie);
+        $this->responseHost->registerCookie($this,$cookie);
     }
 
     public function setStatus($httpStatus)
     {
-        $this->responseHost->setStatus($this,$httpStatus);
+        $this->responseHost->registerStatus($this,$httpStatus);
     }
 
     protected function setContentAvailable() {

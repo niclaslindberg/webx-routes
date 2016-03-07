@@ -1,8 +1,13 @@
 {
   "name" : "webx/route",
-  "autoload": {
+  "autoload" : {
     "psr-4": {
       "WebX\\Route\\": "src/WebX/Route"
+    }
+  },
+  "autoload-dev" : {
+    "psr-4": {
+      "Test\\WebX\\Route\\": "tests/Route"
     }
   },
   "require" : {

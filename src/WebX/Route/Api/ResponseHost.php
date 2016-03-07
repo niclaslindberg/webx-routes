@@ -8,11 +8,11 @@ interface ResponseHost {
 
     public function setContentAvailable(AbstractResponse $response);
 
-    public function addHeader(AbstractResponse $response, $header);
+    public function registerHeader(AbstractResponse $response, $header);
 
-    public function addCookie(AbstractResponse $response, $cookie);
+    public function registerCookie(AbstractResponse $response, $cookie);
 
-    public function setStatus(AbstractResponse $response, $httpStatus);
+    public function registerStatus(AbstractResponse $response, $httpStatus);
 
 }
 
