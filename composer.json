@@ -2,16 +2,19 @@
   "name" : "webx/route",
   "autoload" : {
     "psr-4": {
-      "WebX\\Route\\": "src/WebX/Route"
+      "WebX\\Routes\\": "src/WebX/Routes"
     }
   },
   "autoload-dev" : {
     "psr-4": {
-      "Test\\WebX\\Route\\": "tests/Route"
+      "Test\\WebX\\Routes\\": "tests/Routes"
     }
   },
   "require" : {
-    "webx/ioc": "1.2.5",
+    "webx/ioc": "1.2.6",
     "twig/twig": "v1.24.0"
+  },
+  "require-dev" : {
+    "larapack/dd" : "1.0.0"
   }
 }
