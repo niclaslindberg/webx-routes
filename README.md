@@ -16,7 +16,7 @@ In `composer.json` add:
     }
  }
 
-## Writing your first routes index.php.
+## Writing your first Routes index.php.
 
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
@@ -26,4 +26,21 @@ In `composer.json` add:
           $response->setContent("Hello, there!");
     });
 ```
+
+## Routing in Routes
+```php
+    use WebX\Routes\Util\RoutesBootstrap;
+
+    $routes = RoutesBootstrap::create();
+    $routes->onSegment("api",function(Routes $routes) {
+        $routes->onMatch("v(?<version>\d+)$",function(Routes $routes,$version) {
+            $routes->load("api_v{$version}");
+        })->onAlways(JsonResponse $response) {
+            $response->setData(["message"=>"Not a valid API call"]);
+        });
+    });
+
+```
+
+
 
