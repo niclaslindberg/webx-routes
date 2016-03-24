@@ -6,17 +6,10 @@ interface Routes extends ExceptionRouter {
 
     /**
      * @param $pattern
-     * @param \Closure|string $action
-     * @param array $parameters
-     * @return Router
-     */
-
-    /**
-     * @param $pattern
      * @param $action
      * @param string|null $subject (Default: Request->path)
      * @param array $parameters
-     * @return mixed
+     * @return Routes
      */
     public function onMatch($pattern, $action, $subject=null, array $parameters = []);
 
@@ -24,14 +17,14 @@ interface Routes extends ExceptionRouter {
      * @param $expression
      * @param \Closure|string $action
      * @param array $parameters
-     * @return Router
+     * @return Routes
      */
     public function onTrue($expression, $action, array $parameters = []);
 
     /**
      * @param \Closure|string $action
      * @param array $parameters
-     * @return Router
+     * @return Routes
      */
     public function onAlways($action, array $parameters = []);
 
@@ -39,7 +32,7 @@ interface Routes extends ExceptionRouter {
      * @param string $segment
      * @param \Closure|string $action
      * @param array $parameters
-     * @return Router
+     * @return Routes
      */
     public function onSegment($segment, $action, array $parameters = []);
 

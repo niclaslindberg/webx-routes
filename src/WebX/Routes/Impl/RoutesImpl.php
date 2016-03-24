@@ -103,7 +103,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                     $this->invoke($action, array_merge($parameters, $matches));
                     return $this->hasResponse() ? $this->nop : $this;
                 } catch (Exception $e) {
-                    dd($pattern, $subject, $e);
                     return new RoutesForException($e, $this);
                 }
             } else if ($result === false) {
@@ -243,7 +242,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $keys[] = get_class($this->currentResponse);
             header("Content-Type: " . $this->currentResponse->getContentType() ?: "text/plain");
         } else {
-            dd($this->currentResponse);
             header("Content-Type: text/plain");
         }
 

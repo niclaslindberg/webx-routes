@@ -25,4 +25,10 @@ $routes->onSegment("1",function(Routes $routes){
     })->onSegment("2",function(ContentResponse $response){
         $response->setContent("2.2");
     });
+
+})->onSegment("3",function(ContentResponse $response){
+    $response->setContent("3");
+
+})->onAlways(function(ContentResponse $response){
+    $response->setContent("void");
 });
