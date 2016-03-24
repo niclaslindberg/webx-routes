@@ -22,9 +22,8 @@ In `composer.json` add:
     use WebX\Routes\Util\RoutesBootstrap;
 
     $routes = RoutesBootstrap::create();
-    $routes->onAlways(function(ContentResponse $response){
-        $response->setContent("Hello, there!");
+    $routes->onAlways(function(ContentResponse $response) {
+          $response->setContent("Hello, there!");
     });
-
 ```
 
