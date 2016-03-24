@@ -33,7 +33,7 @@ In `composer.json` add:
 
     $routes = RoutesBootstrap::create();
     $routes->onSegment("api",function(Routes $routes) {
-        $routes->onMatch("v(?<version>\d+)$",function(Routes $routes,$version) {
+        $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
             $routes->load("api_v{$version}");
         })->onAlways(JsonResponse $response) {
             $response->setData(["message"=>"Not a valid API call"]);
