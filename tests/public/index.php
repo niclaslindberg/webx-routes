@@ -18,8 +18,8 @@ use WebX\Routes\Util\RoutesBootstrap;
         $response->setTemplate("test");
         $response->setData(["user"=>"Niclas"]);
 
-    })->onMatch("api/(?P<method>\w+)$", function(ContentResponse $response) {
-        $response->setContent("Hello there");
+    })->onMatch("api/(?P<method>\w+)$", function(ContentResponse $response, $method) {
+        $response->setContent("Hello there: {$method}");
 
     })->onAlways(function(Response $response) {
         throw new \Exception("This is the error");

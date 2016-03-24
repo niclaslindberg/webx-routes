@@ -5,16 +5,15 @@ namespace WebX\Routes\Impl;
 use Closure;
 use Exception;
 use ReflectionFunction;
+use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Ioc\IocNonResolvableException;
-use WebX\Ioc\Util\Bootstrap;
 use WebX\Routes\Api\AbstractResponse;
 use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseHost;
 use WebX\Routes\Api\ResponseWriter;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
-use WebX\Routes\Impl\Responses\JsonResponseImpl;
 use WebX\Routes\Util\ReaderImpl;
 
 class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
@@ -66,7 +65,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     {
         $configuration = new ConfigurationImpl();
         if($config) {
-            $configuration->pushSettings($config);
+            $configuration->pushArray($config);
         }
         $configuration->pushArray(require(__DIR__ . "/bootstrap_config.php"));
 
@@ -74,7 +73,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $resourceLoader = new ResourceLoaderImpl();
         $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . "/" . $home);
 
-        $ioc = Bootstrap::init(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) use ($configuration) {
+        $ioc = new IocImpl(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) use ($configuration) {
             return $configuration->asAny("settings.{$param->getName()}");
         });
 
@@ -89,29 +88,27 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $ioc->register($this->resourceLoader);
         $this->nop = new RoutesForNop();
 
-
-
         foreach ($configuration->asArray("ioc",[]) as $config) {
             call_user_func_array([$ioc, array_shift($config)], $config);
         }
-
     }
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
     {
-        $subject = is_string($subject) ? $subject : $this->request->path();
-        $escapedPattern = str_replace("/","\/",$pattern);
-        $result = preg_match("/" . $escapedPattern . "/", $subject, $matches);
-        if ($result===1) {
-            try {
-                $this->invoke($action, array_merge($parameters, $matches));
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch(Exception $e) {
-                dd($pattern,$subject,$e);
-                return new RoutesForException($e,$this);
+        if($pattern) {
+            $subject = is_string($subject) ? $subject : $this->request->path();
+            $result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches);
+            if ($result === 1) {
+                try {
+                    $this->invoke($action, array_merge($parameters, $matches));
+                    return $this->hasResponse() ? $this->nop : $this;
+                } catch (Exception $e) {
+                    dd($pattern, $subject, $e);
+                    return new RoutesForException($e, $this);
+                }
+            } else if ($result === false) {
+                throw new RoutesException("Invalid RegExp:{$pattern}");
             }
-        } else if ($result===false) {
-            throw new RoutesException("Invalid RegExp:{$pattern}");
         }
         return $this;
     }

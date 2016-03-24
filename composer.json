@@ -7,7 +7,7 @@
   },
   "autoload-dev" : {
     "psr-4": {
-      "Test\\WebX\\Routes\\": "tests/Routes"
+      "Test\\WebX\\": "tests"
     }
   },
   "require" : {
@@ -15,6 +15,8 @@
     "twig/twig": "v1.24.0"
   },
   "require-dev" : {
-    "larapack/dd" : "1.0.0"
+    "larapack/dd" : "1.0.0",
+    "php": ">=5.5.0",
+    "phpunit/phpunit" : "4.8.16"
   }
 }
