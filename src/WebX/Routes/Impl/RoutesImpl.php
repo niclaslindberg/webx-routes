@@ -100,13 +100,18 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
     {
         $subject = is_string($subject) ? $subject : $this->request->path();
-        if (preg_match("/" . preg_quote($pattern,"/") . "/", $subject, $matches)) {
+        $escapedPattern = str_replace("/","\/",$pattern);
+        $result = preg_match("/" . $escapedPattern . "/", $subject, $matches);
+        if ($result===1) {
             try {
                 $this->invoke($action, array_merge($parameters, $matches));
                 return $this->hasResponse() ? $this->nop : $this;
             } catch(Exception $e) {
+                dd($pattern,$subject,$e);
                 return new RoutesForException($e,$this);
             }
+        } else if ($result===false) {
+            throw new RoutesException("Invalid RegExp:{$pattern}");
         }
         return $this;
     }
@@ -202,15 +207,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $arguments = [];
             foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
                 try {
-                    if ($refClass = $refParam->getClass()) {
+                    if ($parameters && ($paramId = $refParam->getName() ?: $refParam->getPosition()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
+                        $arguments[] = $p;
+                    } else if ($refClass = $refParam->getClass()) {
                         $arguments[] = $this->ioc->get($refClass->getName());
                     } else {
-                        $paramId = $refParam->getName() ?: $refParam->getPosition();
-                        if (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null)) {
-                            $arguments[] = $p;
-                        } else {
-                            $arguments[] = $refParam->getDefaultValue();
-                        }
+                        $arguments[] = $refParam->getDefaultValue();
                     }
                 } catch(IocNonResolvableException $e) {
                     if(is_subclass_of($e->interfaceName(),Response::class,true) || ($e->interfaceName()===Response::class)) {
@@ -242,7 +244,13 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $keys = [ResponseImpl::class];
         if ($this->currentResponse) {
             $keys[] = get_class($this->currentResponse);
+            header("Content-Type: " . $this->currentResponse->getContentType() ?: "text/plain");
+        } else {
+            dd($this->currentResponse);
+            header("Content-Type: text/plain");
         }
+
+
         foreach ($keys as $key) {
             if (isset($this->headersByClass[$key])) {
                 foreach ($this->headersByClass[$key] as $header) {
@@ -259,8 +267,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             }
             if ($key!==ResponseImpl::class) {
                 $this->currentResponse->generateContent($this->configuration->asReader("responseConfigurations.{$this->currentResponse->{self::$CONFIG_KEY}}"), $this);
-            } else {
-                http_response_code(404);
             }
         }
     }
@@ -279,6 +285,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function setContentAvailable(AbstractResponse $response)
     {
         $this->currentResponse = $response;
+        $this->statusByClass[get_class($response)] = 200;
     }
 
     public function registerHeader(AbstractResponse $response, $header)

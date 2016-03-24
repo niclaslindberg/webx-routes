@@ -33,10 +33,4 @@ class StreamResponseImpl extends AbstractResponse implements StreamResponse
     }
 
 
-    public function setContentType($contentType)
-    {
-        $this->addHeader("Content-Type:{$contentType}");
-    }
-
-
 }

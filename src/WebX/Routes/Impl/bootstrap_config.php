@@ -3,7 +3,7 @@
     return [
         "responseImplementations" => [
             "WebX\\Routes\\Api\\Response" => [
-                "class" => "WebX\\Routes\\Impl\\Responses\\ResponseImpl"
+                "class" => "WebX\\Routes\\Impl\\ResponseImpl"
             ],
             "WebX\\Routes\\Api\\Responses\\ContentResponse" => [
                 "class" => "WebX\\Routes\\Impl\\Responses\\ContentResponseImpl"

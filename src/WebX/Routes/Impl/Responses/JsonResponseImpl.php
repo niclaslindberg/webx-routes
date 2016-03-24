@@ -13,6 +13,7 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
 
     public function __construct(ResponseHost $responseHost) {
         parent::__construct($responseHost);
+        $this->setContentType("application/json");
     }
 
     public function setData($data, $path = null)
@@ -39,4 +40,5 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
     {
         $responseWriter->addContent(json_encode($this->data,JSON_PRETTY_PRINT));
     }
+
 }

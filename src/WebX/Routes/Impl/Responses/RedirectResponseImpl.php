@@ -17,7 +17,7 @@ class RedirectResponseImpl extends AbstractResponse implements RedirectResponse
     public function setUrl($url, $type = RedirectResponse::REDIRECT_TEMPORARY)
     {
         if($type===RedirectResponse::REDIRECT_PERMANENT) {
-            $this->addHeader("HTTP/1.1 301 Moved Permanently"); header("HTTP/1.1 301 Moved Permanently");
+            $this->addHeader("HTTP/1.1 301 Moved Permanently");
         }
         $this->addHeader("Location",$url);
     }

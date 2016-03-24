@@ -2,6 +2,8 @@
 
 namespace WebX\Routes\Api\Responses;
 
+use WebX\Routes\Api\Response;
+
 interface ContentResponse extends Response {
 
 

@@ -27,6 +27,7 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
     public function __construct(ResponseHost $responseHost, ResourceLoader $resourceLoader) {
         parent::__construct($responseHost);
         $this->resourceLoader = $resourceLoader;
+        $this->setContentType("text/html");
     }
 
 
@@ -61,11 +62,14 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
         if ($templatePath = $this->resourceLoader->absolutePath($configuration->asString("templatesDir"))) {
             $loader = new \Twig_Loader_Filesystem($templatePath);
             $twig = new \Twig_Environment($loader, $configuration->asArray("options",[]));
-            $templateId = $this->template;
-            if($configurator = $configuration->asAny("configurator")) {
-                call_user_func_array($configurator,[$twig]);
+            if($this->template) {
+                if ($configurator = $configuration->asAny("configurator")) {
+                    call_user_func_array($configurator, [$twig]);
+                }
+                $responseWriter->addContent($twig->render("{$this->template}.twig", $this->data ?: []));
+            } else {
+                throw new \Exception("Missing template");
             }
-            $responseWriter->addContent($twig->render("{$templateId}.twig",$this->data ?: []));
         } else {
             throw new \Exception("Missing templatePath in twig view render config");
         }

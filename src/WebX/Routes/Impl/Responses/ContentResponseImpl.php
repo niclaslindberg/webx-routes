@@ -1,11 +1,11 @@
 <?php
 namespace WebX\Routes\Impl\Responses;
 
-use WebX\Routes\Api\Responses\BinaryResponse;
-use WebX\Routes\Api\Responses\ContentResponse;
-use WebX\Routes\Api\Responses\JsonResponse;
 use WebX\Routes\Api\AbstractResponse;
 use WebX\Routes\Api\Configuration;
+use WebX\Routes\Api\ResponseHost;
+use WebX\Routes\Api\Responses\BinaryResponse;
+use WebX\Routes\Api\Responses\ContentResponse;
 use WebX\Routes\Api\ResponseWriter;
 
 class ContentResponseImpl extends AbstractResponse implements ContentResponse
@@ -14,11 +14,7 @@ class ContentResponseImpl extends AbstractResponse implements ContentResponse
 
     public function __construct(ResponseHost $responseHost) {
         parent::__construct($responseHost);
-    }
-
-    public function setContentType($contentType)
-    {
-        $this->addHeader("Content-Type:{$contentType}");
+        $this->setContentType("text/plain");
     }
 
     public function generateContent(Configuration $configuration, ResponseWriter $responseWriter)

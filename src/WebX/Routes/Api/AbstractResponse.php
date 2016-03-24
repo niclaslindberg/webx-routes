@@ -11,6 +11,7 @@ abstract class AbstractResponse implements Response {
      * @var ResponseHost
      */
     private $responseHost;
+    private $contentType;
 
     public function __construct(ResponseHost $responseHost) {
         $this->responseHost = $responseHost;
@@ -33,6 +34,18 @@ abstract class AbstractResponse implements Response {
 
     protected function setContentAvailable() {
         $this->responseHost->setContentAvailable($this);
+    }
+
+    /**
+     * The content type of the response.
+     * @return string
+     */
+    public function getContentType() {
+        return $this->contentType;
+    }
+
+    public function setContentType($contentType) {
+        $this->contentType = $contentType;
     }
 
     public abstract function generateContent(Configuration $configuration, ResponseWriter $responseWriter);

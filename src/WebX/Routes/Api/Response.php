@@ -13,4 +13,6 @@ interface Response
     public function addHeader($header);
     public function addCookie($cookie);
     public function setStatus($httpStatus);
+
+
 }

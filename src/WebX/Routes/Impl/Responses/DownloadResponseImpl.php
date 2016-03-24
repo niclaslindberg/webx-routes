@@ -19,11 +19,6 @@ class ContentResponseImpl extends AbstractResponse implements DownloadResponse
         parent::__construct($responseHost);
     }
 
-    public function setContentType($contentType)
-    {
-        $this->addHeader("Content-Type:{$contentType}");
-    }
-
     public function setContent($content, $fileName, $disposition = DownloadResponse::DISPOSITION_ATTACHMENT)
     {
         $this->addHeader("Content-Disposition: {$disposition};filename={$fileName}");
@@ -35,6 +30,5 @@ class ContentResponseImpl extends AbstractResponse implements DownloadResponse
     {
         $responseWriter->addContent($this->content);
     }
-
 
 }

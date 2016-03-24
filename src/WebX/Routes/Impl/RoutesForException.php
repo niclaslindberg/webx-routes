@@ -14,13 +14,13 @@ class RoutesForException implements Routes  {
     private $e;
 
     /**
-     * @var AppImpl
+     * @var RoutesImpl
      */
-    private $app;
+    private $routes;
 
-    public function __construct(Exception $e, RoutesImpl $app) {
+    public function __construct(Exception $e, RoutesImpl $routes) {
         $this->e  = $e;
-        $this->app = $app;
+        $this->routes = $routes;
     }
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
@@ -43,21 +43,25 @@ class RoutesForException implements Routes  {
 
     public function onException($action, array $parameters = [])
     {
-        $closure = $this->app->createClosure($action);
+        $closure = $this->routes->createClosure($action);
+        $parameters = [];
         foreach((new ReflectionFunction($closure))->getParameters() as $refParam) {
             if($paramClass = $refParam->getClass()) {
-                if(is_a($this->e,$paramClass)) {
-                    try {
-                        $this->app->invoke($action,$parameters);
-                        return new RouterNop();
-                    } catch(Exception $e) {
-                        $this->e = $e;
-                        return $this;
-                    }
+                if(is_a($this->e,$paramClass->getName())) {
+                    $parameters[$refParam->getName()] = $this->e;
                 }
             }
         }
-        return $this;
+        if($parameters) {
+            try {
+                $this->routes->invoke($closure, $parameters);
+                return new RoutesForNop();
+            } catch (Exception $e) {
+                $this->e = $e;
+            }
+        } else {
+            return $this;
+        }
 
     }
 
