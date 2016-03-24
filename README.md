@@ -45,6 +45,12 @@ In `composer.json` add:
     })->onAlways(function(ContentResponse $response){
         $response->setContent("Sorry, page not found.");
         $response->setStatus(404);
+    })->onException(function(SomeException $e, ContentResponse $response){
+        $response->setContent("Some specific error occurred");
+        $response->setStatus(200);
+    })->onException(function(Exception $e, ContentResponse $response){
+        $response->setContent("Unknown occurred");
+        $response->setStatus(500);
     });
 
 ```
