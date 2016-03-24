@@ -22,9 +22,11 @@ In `composer.json` add:
     use WebX\Routes\Util\RoutesBootstrap;
 
     $routes = RoutesBootstrap::create();
+
     $routes->onAlways(function(ContentResponse $response) {
           $response->setContent("Hello, there!");
     });
+
 ```
 
 ## Routing in Routes
@@ -32,18 +34,27 @@ In `composer.json` add:
     use WebX\Routes\Util\RoutesBootstrap;
 
     $routes = RoutesBootstrap::create();
+
     $routes->onSegment("api",function(Routes $routes) {
         $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
             $routes->load("api_v{$version}");
         })->onAlways(JsonResponse $response) {
             $response->setData(["message"=>"Not a valid API call"]);
         });
+
     })->onAlways(function(ContentResponse $response){
         $response->setContent("Sorry, page not found.");
         $response->setStatus(404);
     });
 
 ```
+
+## Tests
+Execute in root directory
+```bash
+    phpunit -c tests
+```
+
 
 
 

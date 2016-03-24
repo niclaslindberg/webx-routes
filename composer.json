@@ -18,5 +18,13 @@
     "larapack/dd" : "1.0.0",
     "php": ">=5.5.0",
     "phpunit/phpunit" : "4.8.16"
-  }
+  },
+  "authors": [
+    {
+      "name": "Nillsoft AB",
+      "email": "niclas.lindberg@nillsoft.com",
+      "homepage": "http://www.nillsoft.com"
+    }
+  ],
+  "license": "MIT"
 }
