@@ -16,7 +16,7 @@ In `composer.json` add:
     }
  }
 
-## Writing your first routes `index.php`.
+## Writing your first routes index.php.
 
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
