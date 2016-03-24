@@ -38,6 +38,9 @@ In `composer.json` add:
         })->onAlways(JsonResponse $response) {
             $response->setData(["message"=>"Not a valid API call"]);
         });
+    })->onAlways(function(ContentResponse $response){
+        $response->setContent("Sorry, page not found.");
+        $response->setStatus(404);
     });
 
 ```
