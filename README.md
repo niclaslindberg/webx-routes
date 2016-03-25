@@ -60,6 +60,32 @@ In `composer.json` add:
 
 ```
 
+## Using Twig.
+
+`page.twig`
+
+```twig
+    <html>
+        <body>
+            <h1>Welcome {{user.name}}</h1>
+        </body>
+    </html>
+
+```
+
+```php
+    use WebX\Routes\Util\RoutesBootstrap;
+
+    $routes = RoutesBootstrap::create();
+
+    $routes->onAlways(function(TemplateResponse $response) {
+          $response->setTemplate("page");
+          $response->setContent(["name"=>"Mr Andersson","user");
+    });
+
+```
+
+
 ## Tests
 Execute in root directory
 ```bash
