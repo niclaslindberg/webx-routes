@@ -80,7 +80,7 @@ In `composer.json` add:
 
     $routes->onAlways(function(TemplateResponse $response) {
           $response->setTemplate("page");
-          $response->setContent(["name"=>"Mr Andersson","user");
+          $response->setContent(["name"=>"Mr Andersson"],"user");
     });
 
 ```
