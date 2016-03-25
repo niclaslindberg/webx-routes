@@ -6,14 +6,14 @@ interface ResourceLoader {
 
 
     /**
-     * Adds an absolute or relative path to the beginning of the path list.
+     * Adds an absolute path to the beginning of the path list.
      * @param $path
      * @return void
      */
     public function prependPath($path);
 
     /**
-     * Adds an absolute or relative path to the end of the path list.
+     * Adds an absolute path to the end of the path list.
      * @param $path
      * @return void
      */

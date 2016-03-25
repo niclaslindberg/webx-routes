@@ -33,16 +33,19 @@ class RoutesForException implements Routes  {
     }
 
     public function onAlways($action, array $parameters = []) {
+        dd("B");
         return $this;
     }
 
     public function onSegment($segment, $action, array $parameters = [])
     {
+        dd("A");
         return $this;
     }
 
     public function onException($action, array $parameters = [])
     {
+        dd($action);
         $closure = $this->routes->createClosure($action);
         $parameters = [];
         foreach((new ReflectionFunction($closure))->getParameters() as $refParam) {

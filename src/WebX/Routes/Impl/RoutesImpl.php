@@ -56,6 +56,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     private $publicDir;
     private $configDir;
 
+    private $e;
+
     /**
      * @var Routes;
      */
@@ -69,9 +71,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         }
         $configuration->pushArray(require(__DIR__ . "/bootstrap_config.php"));
 
-        $home = $configuration->asString("home",'..');
+        $home = $configuration->asString("home",'/..');
         $resourceLoader = new ResourceLoaderImpl();
-        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . "/" . $home);
+        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . $home);
 
         $ioc = new IocImpl(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) use ($configuration) {
             return $configuration->asAny("settings.{$param->getName()}");
@@ -95,7 +97,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
     {
-        if($pattern) {
+        if($pattern && !$this->e) {
             $subject = is_string($subject) ? $subject : $this->request->path();
             $result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches);
             if ($result === 1) {
@@ -103,7 +105,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                     $this->invoke($action, array_merge($parameters, $matches));
                     return $this->hasResponse() ? $this->nop : $this;
                 } catch (Exception $e) {
-                    return new RoutesForException($e, $this);
+                    $this->e = $e;
                 }
             } else if ($result === false) {
                 throw new RoutesException("Invalid RegExp:{$pattern}");
@@ -115,11 +117,13 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onTrue($expression, $action, array $parameters = [])
     {
         if ($expression) {
-            try {
-                $this->invoke($action, array_merge($parameters, $parameters));
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch(Exception $e) {
-                return new RoutesForException($e,$this);
+            if(!$this->e) {
+                try {
+                    $this->invoke($action, array_merge($parameters, $parameters));
+                    return $this->hasResponse() ? $this->nop : $this;
+                } catch (Exception $e) {
+                    $this->e = $e;
+                }
             }
         }
         return $this;
@@ -128,36 +132,58 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onAlways($action, array $parameters = [])
     {
         try {
-            $this->invoke($action, array_merge($parameters, $parameters));
-            return $this->hasResponse() ? $this->nop : $this;
+            if(!$this->e) {
+                $this->invoke($action, array_merge($parameters, $parameters));
+                return $this->hasResponse() ? $this->nop : $this;
+            }
         } catch(Exception $e) {
-            return new RoutesForException($e,$this);
+            $this->e = $e;
         }
+        return $this;
     }
 
     public function onSegment($segment, $action, array $parameters = [])
     {
         if($this->request->nextSegment()===$segment) {
-            try {
-                $this->request->moveCurrentSegment(1);
-                $this->invoke($action, $parameters);
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch(Exception $e) {
-                return new RoutesForException($e,$this);
+            if(!$this->e) {
+                try {
+                    $this->request->moveCurrentSegment(1);
+                    $this->invoke($action, $parameters);
+                    return $this->hasResponse() ? $this->nop : $this;
+                } catch (Exception $e) {
+                    $this->e = $e;
+                } finally {
+                    $this->request->moveCurrentSegment(-1);
+                }
             }
-            finally {
-                $this->request->moveCurrentSegment(-1);
-            }
-        } else {
-            return $this;
         }
+        return $this;
     }
 
     public function onException($action, array $parameters = [])
     {
+        if($this->e) {
+            $closure = $this->createClosure($action);
+            $parameters = [];
+            foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
+                if ($paramClass = $refParam->getClass()) {
+                    if (is_a($this->e, $paramClass->getName())) {
+                        $parameters[$refParam->getName()] = $this->e;
+                    }
+                }
+            }
+            if ($parameters) {
+                $this->e = null;
+                try {
+                    $this->invoke($closure, $parameters);
+                    return $this->hasResponse() ? $this->nop : $this;
+                } catch (Exception $e) {
+                    $this->e = $e;
+                }
+            }
+        }
         return $this;
     }
-
 
     public function load($configName)
     {
