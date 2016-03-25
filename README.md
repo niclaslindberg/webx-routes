@@ -15,6 +15,7 @@ In `composer.json` add:
         "webx/routes" : "X.Y.Z"
     }
  }
+```
 
 ## Writing your first Routes index.php.
 
