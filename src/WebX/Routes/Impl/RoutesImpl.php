@@ -116,14 +116,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function onTrue($expression, $action, array $parameters = [])
     {
-        if ($expression) {
-            if(!$this->e) {
-                try {
-                    $this->invoke($action, array_merge($parameters, $parameters));
-                    return $this->hasResponse() ? $this->nop : $this;
-                } catch (Exception $e) {
-                    $this->e = $e;
-                }
+        if ($expression && !$this->e) {
+            try {
+                $this->invoke($action, array_merge($parameters, $parameters));
+                return $this->hasResponse() ? $this->nop : $this;
+            } catch (Exception $e) {
+                $this->e = $e;
             }
         }
         return $this;
@@ -131,30 +129,28 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function onAlways($action, array $parameters = [])
     {
-        try {
-            if(!$this->e) {
+        if(!$this->e) {
+            try {
                 $this->invoke($action, array_merge($parameters, $parameters));
                 return $this->hasResponse() ? $this->nop : $this;
+            } catch(Exception $e) {
+                $this->e = $e;
             }
-        } catch(Exception $e) {
-            $this->e = $e;
         }
         return $this;
     }
 
     public function onSegment($segment, $action, array $parameters = [])
     {
-        if($this->request->nextSegment()===$segment) {
-            if(!$this->e) {
-                try {
-                    $this->request->moveCurrentSegment(1);
-                    $this->invoke($action, $parameters);
-                    return $this->hasResponse() ? $this->nop : $this;
-                } catch (Exception $e) {
-                    $this->e = $e;
-                } finally {
-                    $this->request->moveCurrentSegment(-1);
-                }
+        if($this->request->nextSegment()===$segment && !$this->e) {
+            try {
+                $this->request->moveCurrentSegment(1);
+                $this->invoke($action, $parameters);
+                return $this->hasResponse() ? $this->nop : $this;
+            } catch (Exception $e) {
+                $this->e = $e;
+            } finally {
+                $this->request->moveCurrentSegment(-1);
             }
         }
         return $this;
