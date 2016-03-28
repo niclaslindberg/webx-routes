@@ -10,7 +10,7 @@ use WebX\Routes\Api\AbstractResponse;
 use WebX\Routes\Api\Configuration;
 use WebX\Routes\Api\ResponseWriter;
 
-class ContentResponseImpl extends AbstractResponse implements DownloadResponse
+class DownloadResponseImpl extends AbstractResponse implements DownloadResponse
 {
     private $content;
     private $disposition = DownloadResponse::DISPOSITION_ATTACHMENT;
