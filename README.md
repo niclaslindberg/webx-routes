@@ -29,8 +29,6 @@ In `composer.json` add:
     RoutesBootstrap::run(function(ContentResponse $response) {
         $response->setContent("Hello, there!");
     });
-
-
 ```
 
 ## Routing in Routes
@@ -63,7 +61,6 @@ In `composer.json` add:
 
         })
     });
-
 ```
 
 ## Using Twig
@@ -91,7 +88,6 @@ In `composer.json` add:
         })
 
     });
-
 ```
 
 ## Loading configurations and the IOC container
@@ -111,7 +107,6 @@ To support lazy loading of configurations Routes allows actions to be defined as
             ["register",AdminService::class]
         ]
     ]
-
 ```
 
 ```php
