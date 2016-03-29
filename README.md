@@ -3,7 +3,8 @@
 Main features and design goals of webx-routes:
 * Simplicity
 * Testability
-* No framework code in business logic
+* Dependency injection (IOC) everywhere.
+* Contextual (lazy) configuration loading.
 
 ## Get started
 
