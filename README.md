@@ -13,7 +13,7 @@ In `composer.json` add:
 ```json
  {
     "require" : {
-        "webx/routes" : "major.minor.path"
+        "webx/routes" : "major.minor.patch"
     }
  }
 ```
