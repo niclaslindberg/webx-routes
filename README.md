@@ -22,6 +22,7 @@ In `composer.json` add:
 
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\Responses\ContentResponse;
 
     RoutesBootstrap::run(function(ContentResponse $response) {
         $response->setContent("Hello, there!");
@@ -33,6 +34,8 @@ In `composer.json` add:
 ## Routing in Routes
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Responses\ContentResponse;
 
     RoutesBootstrap::run(function(Routes $routes) {
 
@@ -76,6 +79,9 @@ In `composer.json` add:
 
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Responses\TemplateResponse;
+
 
     RoutesBootstrap::create(function(Routes $routes) {
         $routes->onAlways(function(TemplateResponse $response) {
@@ -107,6 +113,9 @@ To support lazy loading of configurations Routes allows actions to be defined as
 ```
 
 ```php
+    use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Responses\ContentResponse;
     use MyBusiness\Api\Services\IAdminService;
 
     RoutesBootstrap::create(function(Routes $routes) {
