@@ -184,13 +184,13 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         if (is_a($action, Closure::class)) {
             return $action;
         } else if (is_string($action)) {
-            $segments = explode("#", $action, 2);
+            $segments = explode("#", $action);
             if (count($segments) !== 2) {
                 throw new RoutesException("Controller action must be defined controller#method");
             }
             list($controllerClass, $method) = $segments;
-            $refMethod = new \ReflectionMethod($controllerClass, $method);
             $controller = $this->ioc->instantiate($controllerClass);
+            $refMethod = new \ReflectionMethod($controllerClass, $method);
             return $refMethod->getClosure($controller);
         } else {
             throw new \Exception("Non invokable $action. Must be closure or a controller method path");
