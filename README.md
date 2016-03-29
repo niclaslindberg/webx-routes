@@ -76,14 +76,12 @@ In `composer.json` add:
             <h1>Welcome {{user.name}}</h1>
         </body>
     </html>
-
 ```
 
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Responses\TemplateResponse;
-
 
     RoutesBootstrap::create(function(Routes $routes) {
 
@@ -129,10 +127,7 @@ To support lazy loading of configurations Routes allows actions to be defined as
         },"admin"]);
 
         // The admin-configuration is only loaded if routes matched the `admin` segment.
-
     });
-
-
 ```
 
 
