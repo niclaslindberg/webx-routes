@@ -106,7 +106,6 @@ To support lazy loading of configurations Routes allows actions to be defined as
 
 ```
 
-`config/admin.php`:
 ```php
     use MyBusiness\Api\Services\IAdminService;
 
