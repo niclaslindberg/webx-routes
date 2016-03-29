@@ -123,7 +123,7 @@ To support lazy loading of configurations Routes allows actions to be defined as
     RoutesBootstrap::create(function(Routes $routes) {
 
         $routes->onSegment("admin",[function(ContentResponse $response, IAdminService $adminService) {
-              $response->setContent(sprintf("System admins: %s",$adminService->countAdmins());
+              $response->setContent(sprintf("System admins: %s",$adminService->countAdmins()));
         },"admin"]);
 
         // The admin-configuration is only loaded if routes matched the `admin` segment.
