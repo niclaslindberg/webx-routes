@@ -85,6 +85,42 @@ In `composer.json` add:
 
 ```
 
+## Loading configurations and the IOC container.
+All logic, in Routes, is executed in ```actions```. An action can be either a:
+  * ```\Closure```
+  * ```string``` (In format "ControllerClass#method")
+
+To support lazy loading of configurations Routes allows actions to be defined as an `array` in the format:
+`[$action,"config1","config2","configN"]`
+
+`config/admin.php`:
+```php
+    use MyBusiness\Impl\Services\AdminService;
+
+    return [
+        "ioc" => [
+            ["register",AdminService::class]
+        ]
+    ]
+
+```
+
+`config/admin.php`:
+```php
+    use MyBusiness\Api\Services\IAdminService;
+
+    RoutesBootstrap::create(function(Routes $routes) {
+        $routes->onSegment("admin",[function(ContentResponse $response, IAdminService $adminService) {
+              $response->setContent(sprintf("There are %s admins in the system",$adminService->countAdmins());
+        },"admin"]);
+
+        // The admin-configuration is only loaded if routes matched the `admin` segment.
+
+    });
+
+
+```
+
 
 ## Tests
 Execute in root directory

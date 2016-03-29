@@ -50,8 +50,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     private $cookiesByClass = [];
     private $statusByClass = [];
 
-    private $invocationDepth = 0;
-
     private $homeDir;
     private $publicDir;
     private $configDir;
@@ -201,7 +199,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function invoke($action, array $parameters = [])
     {
-        $this->invocationDepth++;
         $configCount = 0;
         try {
             if (is_array($action)) {
@@ -250,16 +247,19 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         if($configCount) {
             $this->popConfiguration(count($configCount));
         }
-        $this->invocationDepth--;
-
     }
 
     public function render()
     {
         $keys = [ResponseImpl::class];
         if($this->e) {
+            header("Content-Type: text/html; charset=utf-8");
+            echo("<html><body>");
+            echo(sprintf("<h1>Uncaught exception:%s [%s]</h1>" , $this->e->getMessage() , get_class($this->e)));
             if(function_exists("dd")) {
                 dd($this->e);
+            } else {
+              var_dump($this->e);
             }
             return;
         }
