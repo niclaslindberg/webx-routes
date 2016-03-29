@@ -98,6 +98,20 @@ All logic, in Routes, is executed in ```actions```. An action can be either a:
 To support lazy loading of configurations Routes allows actions to be defined as an `array` in the format:
 `[$action,"config1","config2","configN"]`
 
+`Admin.php`
+```php
+    use MyBusiness\Impl\Services\IAdminService;
+
+    class AdminService implements IAdminService {
+        public function __construct() {}
+
+        public function countAdmins() {
+            return 3;
+        }
+    }
+```
+
+
 `config/admin.php`:
 ```php
     use MyBusiness\Impl\Services\AdminService;
