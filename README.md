@@ -24,7 +24,7 @@ In `composer.json` add:
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Responses\ContentResponse;
 
-    require_once "../vendor/autoload.php";  //If Routes loaded with composer,
+    require_once "../vendor/autoload.php";  //If Routes loaded with composer
 
     RoutesBootstrap::run(function(ContentResponse $response) {
         $response->setContent("Hello, there!");
