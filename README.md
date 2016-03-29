@@ -18,7 +18,7 @@ In `composer.json` add:
  }
 ```
 
-## Writing your first Routes index.php.
+## Writing your first Routes index.php
 
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
@@ -61,7 +61,7 @@ In `composer.json` add:
 
 ```
 
-## Using Twig.
+## Using Twig
 
 `page.twig`
 
@@ -86,7 +86,7 @@ In `composer.json` add:
 
 ```
 
-## Loading configurations and the IOC container.
+## Loading configurations and the IOC container
 All logic, in Routes, is executed in ```actions```. An action can be either a:
   * ```\Closure```
   * ```string``` (In format "ControllerClass#method")
