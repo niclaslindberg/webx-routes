@@ -27,7 +27,7 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
             }
             $root = &$this->data;
             while($part = array_shift($path)) {
-                $root[$part] = empty($path) ? $data : [];
+                $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
                 $root = &$root[$part];
             }
         } else {
