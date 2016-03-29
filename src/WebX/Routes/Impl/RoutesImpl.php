@@ -18,7 +18,7 @@ use WebX\Routes\Util\ReaderImpl;
 
 class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
-    public static $CONFIG_KEY = "__webx__configuration";
+    public static $CONFIG_KEY = "__webx";
 
     /**
      * @var Ioc
@@ -65,33 +65,42 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function __construct(array $config = null)
     {
-        $configuration = new ConfigurationImpl();
-        if($config) {
-            $configuration->pushArray($config);
-        }
-        $configuration->pushArray(require(__DIR__ . "/bootstrap_config.php"));
+        $this->configuration = new ConfigurationImpl(require(__DIR__ . "/bootstrap_config.php"));
 
-        $home = $configuration->asString("home",'/..');
+        if($config) {
+            $this->pushConfiguration($config);
+        }
+
+        $home = $this->configuration->asString("home",'/..');
         $resourceLoader = new ResourceLoaderImpl();
         $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . $home);
-
-        $ioc = new IocImpl(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) use ($configuration) {
-            return $configuration->asAny("settings.{$param->getName()}");
-        });
-
-        $this->ioc = $ioc;
-        $this->configuration = $configuration;
-        $this->request = new RequestImpl();
         $this->resourceLoader = $resourceLoader;
 
-        $ioc->register($this->request);
-        $ioc->register($configuration);
+        $ioc = new IocImpl(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) {
+            return $this->configuration->asAny("settings.{$param->getName()}");
+        });
+        $this->ioc = $ioc;
+        $this->request = new RequestImpl();
+
         $ioc->register($this);
+        $ioc->register($this->request);
+        $ioc->register($this->configuration);
         $ioc->register($this->resourceLoader);
         $this->nop = new RoutesForNop();
 
-        foreach ($configuration->asArray("ioc",[]) as $config) {
-            call_user_func_array([$ioc, array_shift($config)], $config);
+
+    }
+
+    private function pushConfiguration($config) {
+        $reader = $this->configuration->pushArray($config);
+        foreach ($reader->asArray("ioc",[]) as $config) {
+            call_user_func_array([$this->ioc, array_shift($config)], $config);
+        }
+    }
+
+    private function popConfiguration($n=1) {
+        for($i=0;$i<$n;$i++) {
+            $this->configuration->popArray();
         }
     }
 
@@ -101,13 +110,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $subject = is_string($subject) ? $subject : $this->request->path();
             $result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches);
             if ($result === 1) {
-                try {
-                    $this->invoke($action, array_merge($parameters, $matches));
-                    return $this->hasResponse() ? $this->nop : $this;
-                } catch (Exception $e) {
-                    $this->e = $e;
-                }
-            } else if ($result === false) {
+                $this->invoke($action, array_merge($parameters, $matches));
+                return $this->hasResponse() ? $this->nop : $this;
+             } else if ($result === false) {
                 throw new RoutesException("Invalid RegExp:{$pattern}");
             }
         }
@@ -117,12 +122,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onTrue($expression, $action, array $parameters = [])
     {
         if ($expression && !$this->e) {
-            try {
-                $this->invoke($action, array_merge($parameters, $parameters));
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch (Exception $e) {
-                $this->e = $e;
-            }
+            $this->invoke($action, array_merge($parameters, $parameters));
+            return $this->hasResponse() ? $this->nop : $this;
         }
         return $this;
     }
@@ -130,12 +131,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onAlways($action, array $parameters = [])
     {
         if(!$this->e) {
-            try {
-                $this->invoke($action, array_merge($parameters, $parameters));
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch(Exception $e) {
-                $this->e = $e;
-            }
+            $this->invoke($action, $parameters);
+            return $this->hasResponse() ? $this->nop : $this;
         }
         return $this;
     }
@@ -143,17 +140,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onSegment($segment, $action, array $parameters = [])
     {
         if($this->request->nextSegment()===$segment && !$this->e) {
-            try {
-                $this->request->moveCurrentSegment(1);
-                $this->invoke($action, $parameters);
-                return $this->hasResponse() ? $this->nop : $this;
-            } catch (Exception $e) {
-                $this->e = $e;
-            } finally {
-                $this->request->moveCurrentSegment(-1);
-            }
-        }
-        return $this;
+            $this->request->moveCurrentSegment(1);
+            $this->invoke($action, $parameters);
+            $this->request->moveCurrentSegment(-1);
+            return $this->hasResponse() ? $this->nop : $this;
+       }
+       return $this;
     }
 
     public function onException($action, array $parameters = [])
@@ -170,12 +162,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             }
             if ($parameters) {
                 $this->e = null;
-                try {
-                    $this->invoke($closure, $parameters);
-                    return $this->hasResponse() ? $this->nop : $this;
-                } catch (Exception $e) {
-                    $this->e = $e;
-                }
+                $this->invoke($closure, $parameters);
+                return $this->hasResponse() ? $this->nop : $this;
             }
         }
         return $this;
@@ -198,15 +186,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         if (is_a($action, Closure::class)) {
             return $action;
         } else if (is_string($action)) {
-            if ($parameters && (strpos($action, "{") !== false)) {
-                $replacer = function ($matches) use ($parameters) {
-                    return isset($parameters[$matches[1]]) ? $parameters[$matches[1]] : "";
-                };
-                $action = preg_replace_callback("/\{(\w+)\}/i", $replacer, $action);
-            }
             $segments = explode("#", $action, 2);
-            if (count($segments) === 1) {
-                $segments[] = "index";
+            if (count($segments) !== 2) {
+                throw new RoutesException("Controller action must be defined controller#method");
             }
             list($controllerClass, $method) = $segments;
             $refMethod = new \ReflectionMethod($controllerClass, $method);
@@ -219,8 +201,21 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function invoke($action, array $parameters = [])
     {
+        $this->invocationDepth++;
+        $configCount = 0;
         try {
-            $this->invocationDepth++;
+            if (is_array($action)) {
+                $configs = $action;
+                $action = array_shift($configs);
+                foreach ($configs as $configId) {
+                    if (false !== ($configFile = $this->resourceLoader->absolutePath("config/{$configId}.php"))) {
+                        $this->pushConfiguration(require $configFile);
+                        $configCount++;
+                    } else {
+                        throw new RoutesException("Can not load config file $configId");
+                    }
+                }
+            }
             $closure = $this->createClosure($action, $parameters);
             $arguments = [];
             foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
@@ -232,8 +227,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                     } else {
                         $arguments[] = $refParam->getDefaultValue();
                     }
-                } catch(IocNonResolvableException $e) {
-                    if(is_subclass_of($e->interfaceName(),Response::class,true) || ($e->interfaceName()===Response::class)) {
+                } catch (IocNonResolvableException $e) {
+                    if (is_subclass_of($e->interfaceName(), Response::class, true) || ($e->interfaceName() === Response::class)) {
                         $responseConfiguration = $this->configuration->asReader("responseImplementations.{$e->interfaceName()}");
                         if ($responseClass = $responseConfiguration->asString("class")) {
                             $responseImpl = $this->ioc->instantiate($responseClass);
@@ -246,20 +241,28 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                     } else {
                         throw $e;
                     }
-               }
+                }
             }
-            return call_user_func_array($closure, $arguments);
-        } finally {
-            $this->invocationDepth--;
-            if($this->invocationDepth === 0) {
-                $this->render();
-            }
+            call_user_func_array($closure, $arguments);
+        } catch(Exception $e) {
+            $this->e = $e;
         }
+        if($configCount) {
+            $this->popConfiguration(count($configCount));
+        }
+        $this->invocationDepth--;
+
     }
 
-    private function render()
+    public function render()
     {
         $keys = [ResponseImpl::class];
+        if($this->e) {
+            if(function_exists("dd")) {
+                dd($this->e);
+            }
+            return;
+        }
         if ($this->currentResponse) {
             $keys[] = get_class($this->currentResponse);
             header("Content-Type: " . $this->currentResponse->getContentType() ?: "text/plain");

@@ -22,11 +22,10 @@ In `composer.json` add:
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
 
-    $routes = RoutesBootstrap::create();
-
-    $routes->onAlways(function(ContentResponse $response) {
-          $response->setContent("Hello, there!");
+    RoutesBootstrap::run(function(ContentResponse $response) {
+        $response->setContent("Hello, there!");
     });
+
 
 ```
 
@@ -34,28 +33,29 @@ In `composer.json` add:
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
 
-    $routes = RoutesBootstrap::create();
+    RoutesBootstrap::run(function(Routes $routes) {
 
-    $routes->onSegment("api",function(Routes $routes) {
+        $routes->onSegment("api",function(Routes $routes) {
 
-        $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
-            $routes->load("api_v{$version}");
-        })->onAlways(JsonResponse $response) {
-            $response->setData(["message"=>"Not a valid API call"]);
-        });
+            $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
+                $routes->load("api_v{$version}");
+            })->onAlways(JsonResponse $response) {
+                $response->setData(["message"=>"Not a valid API call"]);
+            });
 
-    })->onAlways(function(ContentResponse $response){
-        $response->setContent("Sorry, page not found.");
-        $response->setStatus(404);
+        })->onAlways(function(ContentResponse $response){
+            $response->setContent("Sorry, page not found.");
+            $response->setStatus(404);
 
-    })->onException(function(SomeException $e, ContentResponse $response){
-        $response->setContent("Some specific error occurred");
-        $response->setStatus(200);
+        })->onException(function(SomeException $e, ContentResponse $response){
+            $response->setContent("Some specific error occurred");
+            $response->setStatus(200);
 
-    })->onException(function(Exception $e, ContentResponse $response){
-        $response->setContent("Unknown occurred");
-        $response->setStatus(500);
-
+        })->onException(function(Exception $e, ContentResponse $response){
+            $response->setContent("Unknown occurred");
+            $response->setStatus(500);
+    
+        })
     });
 
 ```

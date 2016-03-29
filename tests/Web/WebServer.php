@@ -17,7 +17,13 @@ class WebServer
 
     public function __construct($indexFile) {
         $this->port = 8000;
-        $this->cmd = "php -S localhost:{$this->port} {$indexFile}";
+
+        $currentDir = getcwd();
+        $rootDir = substr($indexFile,strlen($currentDir)+1);
+        $rootDir = substr($rootDir,0,strrpos($rootDir,"/"));
+
+        $this->cmd = "php -S localhost:{$this->port} -t " . $rootDir;
+        #echo($this->cmd);
         $this->start();
         sleep(1);
 

@@ -5,7 +5,7 @@ namespace Test\WebX\Web;
 use WebX\Ioc\Util\Bootstrap;
 use WebX\Routes\Util\RoutesBootstrap;
 
-class WebServerStartStopTest extends \PHPUnit_Framework_TestCase
+class WebServerConfigTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -14,16 +14,19 @@ class WebServerStartStopTest extends \PHPUnit_Framework_TestCase
     private static $server;
 
     public static function setUpBeforeClass() {
-        self::$server = new WebServer(__DIR__ . "/web_echo.php");
+        self::$server = new WebServer(__DIR__ . "/AppConfig/index.php");
+#        sleep(5000);
     }
 
     public static function tearDownAfterClass() {
         self::$server->stop();
     }
 
+    public function test() {
+        $server = self::$server;
 
-    public function testSartStop() {
-        $content = self::$server->get_contents();
-        $this->assertEquals("hello",$content);
+        $r11 = $server->get_contents();
+        $this->assertEquals("1", $r11);
+
     }
 }

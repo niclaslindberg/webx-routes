@@ -14,7 +14,7 @@ class WebServerSegmentException extends \PHPUnit_Framework_TestCase
     private static $server;
 
     public static function setUpBeforeClass() {
-        self::$server = new WebServer(__DIR__ . "/AppException/web_exception.php");
+        self::$server = new WebServer(__DIR__ . "/AppException/index.php");
     }
 
     public static function tearDownAfterClass() {

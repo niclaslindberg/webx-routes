@@ -14,7 +14,8 @@ class WebServerSegmentTest extends \PHPUnit_Framework_TestCase
     private static $server;
 
     public static function setUpBeforeClass() {
-        self::$server = new WebServer(__DIR__ . "/web_segment.php");
+        self::$server = new WebServer(__DIR__ . "/AppSegment/index.php");
+   #     sleep(5000);
     }
 
     public static function tearDownAfterClass() {

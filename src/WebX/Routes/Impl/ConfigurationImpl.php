@@ -12,9 +12,11 @@ class ConfigurationImpl implements Configuration {
     /**
      * @var array
      */
-    private $settings = array();
+    private $settings;
 
-    public function __construct() {}
+    public function __construct($rootConfig) {
+        $this->settings = [$rootConfig];
+    }
 
     public function asAny($key, $default = null)
     {
@@ -79,9 +81,7 @@ class ConfigurationImpl implements Configuration {
     public function asReader($key, $default = null)
     {
         if(NULL!==($value = $this->asArray($key))) {
-            $reader = new ConfigurationImpl();
-            $reader->pushArray($value);
-            return $reader;
+            return new ConfigurationImpl($value);
         }
         return $default;
     }
@@ -94,6 +94,7 @@ class ConfigurationImpl implements Configuration {
     public function pushArray($settings) {
         if(is_array($settings) || $settings===null) {
             array_unshift($this->settings, $settings);
+            return new ConfigurationImpl($settings);
         } else {
             throw new RoutesException("Can not push a non-array setting");
         }
