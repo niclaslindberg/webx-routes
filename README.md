@@ -54,7 +54,7 @@ In `composer.json` add:
         })->onException(function(Exception $e, ContentResponse $response){
             $response->setContent("Unknown occurred");
             $response->setStatus(500);
-    
+
         })
     });
 
@@ -76,11 +76,11 @@ In `composer.json` add:
 ```php
     use WebX\Routes\Util\RoutesBootstrap;
 
-    $routes = RoutesBootstrap::create();
-
-    $routes->onAlways(function(TemplateResponse $response) {
-          $response->setTemplate("page");
-          $response->setContent(["name"=>"Mr Andersson"],"user");
+    RoutesBootstrap::create(function(Routes $routes) {
+        $routes->onAlways(function(TemplateResponse $response) {
+              $response->setTemplate("page");
+              $response->setContent(["name"=>"Mr Andersson"],"user");
+        })
     });
 
 ```
