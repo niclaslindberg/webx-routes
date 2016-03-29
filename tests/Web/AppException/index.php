@@ -1,9 +1,9 @@
 <?php
 
 use WebX\Routes\Api\Responses\ContentResponse;
-use WebX\Routes\Util\RoutesBootstrap;
 use Test\WebX\Web\AppException\SpecificException;
 use WebX\Routes\Api\Routes;
+use WebX\Routes\Api\RoutesBootstrap;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 

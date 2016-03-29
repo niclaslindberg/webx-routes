@@ -2,7 +2,7 @@
 
 use Test\WebX\Classes\IService;
 use WebX\Routes\Api\Responses\ContentResponse;
-use WebX\Routes\Util\RoutesBootstrap;
+use WebX\Routes\Api\RoutesBootstrap;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 

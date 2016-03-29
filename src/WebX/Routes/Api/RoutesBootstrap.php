@@ -1,9 +1,8 @@
 <?php
 
-namespace WebX\Routes\Util;
+namespace WebX\Routes\Api;
 
 use Closure;
-use WebX\Routes\Api\Routes;
 use WebX\Routes\Impl\AppImpl;
 use WebX\Routes\Impl\RoutesImpl;
 

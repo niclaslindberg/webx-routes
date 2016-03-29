@@ -13,7 +13,7 @@ In `composer.json` add:
 ```json
  {
     "require" : {
-        "webx/routes" : "X.Y.Z"
+        "webx/routes" : "major.minor.path"
     }
  }
 ```
@@ -21,7 +21,7 @@ In `composer.json` add:
 ## Writing your first Routes index.php
 
 ```php
-    use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Responses\ContentResponse;
 
     RoutesBootstrap::run(function(ContentResponse $response) {
@@ -33,7 +33,7 @@ In `composer.json` add:
 
 ## Routing in Routes
 ```php
-    use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Responses\ContentResponse;
 
@@ -78,16 +78,18 @@ In `composer.json` add:
 ```
 
 ```php
-    use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Responses\TemplateResponse;
 
 
     RoutesBootstrap::create(function(Routes $routes) {
+
         $routes->onAlways(function(TemplateResponse $response) {
               $response->setTemplate("page");
               $response->setContent(["name"=>"Mr Andersson"],"user");
         })
+
     });
 
 ```
@@ -113,12 +115,13 @@ To support lazy loading of configurations Routes allows actions to be defined as
 ```
 
 ```php
-    use WebX\Routes\Util\RoutesBootstrap;
+    use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Responses\ContentResponse;
     use MyBusiness\Api\Services\IAdminService;
 
     RoutesBootstrap::create(function(Routes $routes) {
+
         $routes->onSegment("admin",[function(ContentResponse $response, IAdminService $adminService) {
               $response->setContent(sprintf("System admins: %s",$adminService->countAdmins());
         },"admin"]);
