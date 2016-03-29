@@ -80,7 +80,7 @@ In `composer.json` add:
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Responses\TemplateResponse;
 
-    RoutesBootstrap::create(function(Routes $routes) {
+    RoutesBootstrap::run(function(Routes $routes) {
 
         $routes->onAlways(function(TemplateResponse $response) {
               $response->setTemplate("page");
@@ -115,7 +115,7 @@ To support lazy loading of configurations Routes allows actions to be defined as
     use WebX\Routes\Api\Responses\ContentResponse;
     use MyBusiness\Api\Services\IAdminService;
 
-    RoutesBootstrap::create(function(Routes $routes) {
+    RoutesBootstrap::run(function(Routes $routes) {
 
         $routes->onSegment("admin",[function(ContentResponse $response, IAdminService $adminService) {
               $response->setContent(sprintf("System admins: %s",$adminService->countAdmins()));
