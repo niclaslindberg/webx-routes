@@ -145,7 +145,9 @@ Standard configuration in Routes is based on the applications directory relativl
 Configuring RoutesBootstrap
 ```php
     RoutesBootstrap::run($action,[
-        "home" => "../"         //Default
+        "home" => "../"         // Default.
+                                // Use '/' to have application in same directory
+                                // as public files (not reecommended).
     ]);
 ```
 
