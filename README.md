@@ -152,22 +152,22 @@ Configuring RoutesBootstrap
 The default directory structure for a Routes application:
 ```
     /
-        config          (Config files loaded by [$action, "someconfig"]
+        /config          (Config files loaded by [$action, "someconfig"]
             someconfig.php
 
-        routes          (Files loaded by Routes->load("someroute")
+        /routes          (Files loaded by Routes->load("someroute")
             someroute.php
 
-        templates       (Templates loaded by TemplateResponse->setTemplate("sometemplate")
+        /templates       (Templates loaded by TemplateResponse->setTemplate("sometemplate")
             sometemplate.twig
 
-        public          ($_SERVER['DOCUMENT_ROOT'])
+        /public          ($_SERVER['DOCUMENT_ROOT'])
             index.php
 
-        vendor          (Composer)
-            webx
-                routes
-                ioc
+        /vendor          (Composer)
+            /webx
+                /routes
+                /ioc
 ```
 
 
