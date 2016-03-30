@@ -27,7 +27,7 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
     public function __construct(ResponseHost $responseHost, ResourceLoader $resourceLoader) {
         parent::__construct($responseHost);
         $this->resourceLoader = $resourceLoader;
-        $this->setContentType("text/html");
+        $this->setContentType("text/html; charset=utf-8");
     }
 
 
@@ -59,19 +59,20 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
 
     public function generateContent(Configuration $configuration, ResponseWriter $responseWriter)
     {
-        if ($templatePath = $this->resourceLoader->absolutePath($configuration->asString("templatesDir"))) {
-            $loader = new \Twig_Loader_Filesystem($templatePath);
-            $twig = new \Twig_Environment($loader, $configuration->asArray("options",[]));
+        $templatesDir = $configuration->asString("templatesDir");
+        if ($templatePath = $this->resourceLoader->absolutePath($templatesDir)) {
             if($this->template) {
+                $loader = new \Twig_Loader_Filesystem($templatePath);
+                $twig = new \Twig_Environment($loader, $configuration->asArray("options",[]));
                 if ($configurator = $configuration->asAny("configurator")) {
                     call_user_func_array($configurator, [$twig]);
                 }
                 $responseWriter->addContent($twig->render("{$this->template}.twig", $this->data ?: []));
             } else {
-                throw new \Exception("Missing template");
+                throw new \Exception("Template not set in TemplateResponse");
             }
         } else {
-            throw new \Exception("Missing templatePath in twig view render config");
+            throw new \Exception(sprintf("The templates folder %s does not exist",$templatesDir));
         }
     }
 }

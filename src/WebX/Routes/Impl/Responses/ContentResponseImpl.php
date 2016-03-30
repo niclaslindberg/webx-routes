@@ -14,7 +14,7 @@ class ContentResponseImpl extends AbstractResponse implements ContentResponse
 
     public function __construct(ResponseHost $responseHost) {
         parent::__construct($responseHost);
-        $this->setContentType("text/plain");
+        $this->setContentType("text/plain; charset=utf-8");
     }
 
     public function generateContent(Configuration $configuration, ResponseWriter $responseWriter)

@@ -13,7 +13,7 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
 
     public function __construct(ResponseHost $responseHost) {
         parent::__construct($responseHost);
-        $this->setContentType("application/json");
+        $this->setContentType("application/json; charset=utf-8");
     }
 
     public function setData($data, $path = null)

@@ -106,10 +106,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     {
         if($pattern && !$this->e) {
             $subject = is_string($subject) ? $subject : $this->request->path();
-            $result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches);
-            if ($result === 1) {
-                $this->invoke($action, array_merge($parameters, $matches));
-                return $this->hasResponse() ? $this->nop : $this;
+            if($result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches)) {
+                return $this->invoke($action, array_merge($parameters, $matches));
              } else if ($result === false) {
                 throw new RoutesException("Invalid RegExp:{$pattern}");
             }
@@ -120,8 +118,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onTrue($expression, $action, array $parameters = [])
     {
         if ($expression && !$this->e) {
-            $this->invoke($action, array_merge($parameters, $parameters));
-            return $this->hasResponse() ? $this->nop : $this;
+            return $this->invoke($action, array_merge($parameters, $parameters));
         }
         return $this;
     }
@@ -129,8 +126,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function onAlways($action, array $parameters = [])
     {
         if(!$this->e) {
-            $this->invoke($action, $parameters);
-            return $this->hasResponse() ? $this->nop : $this;
+            return $this->invoke($action, $parameters);
         }
         return $this;
     }
@@ -139,9 +135,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     {
         if($this->request->nextSegment()===$segment && !$this->e) {
             $this->request->moveCurrentSegment(1);
-            $this->invoke($action, $parameters);
+            $routes = $this->invoke($action, $parameters);
             $this->request->moveCurrentSegment(-1);
-            return $this->hasResponse() ? $this->nop : $this;
+            return $routes;
        }
        return $this;
     }
@@ -160,8 +156,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             }
             if ($parameters) {
                 $this->e = null;
-                $this->invoke($closure, $parameters);
-                return $this->hasResponse() ? $this->nop : $this;
+                return $this->invoke($closure, $parameters);
             }
         }
         return $this;
@@ -247,6 +242,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         if($configCount) {
             $this->popConfiguration(count($configCount));
         }
+        return $this->hasResponse() ? $this->nop : $this;
     }
 
     public function render()
@@ -269,7 +265,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         } else {
             header("Content-Type: text/plain");
         }
-
 
         foreach ($keys as $key) {
             if (isset($this->headersByClass[$key])) {
