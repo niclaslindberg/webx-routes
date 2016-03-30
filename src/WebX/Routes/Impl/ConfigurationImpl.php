@@ -66,8 +66,17 @@ class ConfigurationImpl implements Configuration {
 
     public function asArray($key, $default = null)
     {
-        $value = $this->getTraverse($key);
-        return is_array($value) ? $value : $default;
+        $result = [];
+        foreach (array_reverse($this->settings) as $settings) {
+            if ($settings !== null) {
+                if (NULL !== ($value = self::get($key, $settings))) {
+                    if(is_array($value)) {
+                        $result = array_merge($result,$value);
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     public function asString($key, $default = null)

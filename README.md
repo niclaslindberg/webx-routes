@@ -139,6 +139,37 @@ To support lazy loading of configurations Routes allows actions to be defined as
     });
 ```
 
+### Configuring Routes
+Standard configuration in Routes is based on the applications directory relativly to the `$_SERVER['DOCUMENT_ROOT']`.
+
+Configuring RoutesBootstrap
+```php
+    RoutesBootstrap::run($action,[
+        "home" => "../"         //Default
+    ]);
+```
+
+The default directory structure for a Routes application:
+```
+    /
+        config          (Config files loaded by [$action, "someconfig"]
+            someconfig.php
+
+        routes          (Files loaded by Routes->load("someroute")
+            someroute.php
+
+        templates       (Templates loaded by TemplateResponse->setTemplate("sometemplate")
+            sometemplate.twig
+
+        public          ($_SERVER['DOCUMENT_ROOT'])
+            index.php
+
+        vendor          (Composer)
+            webx
+                routes
+                ioc
+```
+
 
 ## Tests
 Execute in root directory

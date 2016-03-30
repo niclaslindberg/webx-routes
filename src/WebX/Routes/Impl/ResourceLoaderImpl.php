@@ -15,6 +15,10 @@ class ResourceLoaderImpl implements ResourceLoader
 {
     private $absolutePaths = [];
 
+    public function rootPaths() {
+        return $this->absolutePaths;
+    }
+
     public function prependPath($absolutePath)
     {
         array_unshift($this->absolutePaths,$this->processPath($absolutePath));

@@ -164,13 +164,13 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function load($configName)
     {
-        $configFile = "config/{$configName}.php";
+        $configFile = "routes/{$configName}.php";
         if($completePath = $this->resourceLoader->absolutePath($configFile)) {
             $routes = $this;
             require $completePath;
             return $this->hasResponse() ? $this->nop : $this;
         } else {
-            throw new RoutesException("Could not find {$configFile}");
+            throw new RoutesException(sprintf("Could not load %s in %s",$configFile, json_encode($this->resourceLoader->rootPaths())));
         }
     }
 
@@ -200,11 +200,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                 $configs = $action;
                 $action = array_shift($configs);
                 foreach ($configs as $configId) {
-                    if (false !== ($configFile = $this->resourceLoader->absolutePath("config/{$configId}.php"))) {
-                        $this->pushConfiguration(require $configFile);
+                    $configFile = "config/{$configId}.php";
+                    if (false !== ($completePath = $this->resourceLoader->absolutePath($configFile))) {
+                        $this->pushConfiguration(require $completePath);
                         $configCount++;
                     } else {
-                        throw new RoutesException("Can not load config file $configId");
+                        throw new RoutesException(sprintf("Could not load %s in %s",$configFile, json_encode($this->resourceLoader->rootPaths())));
                     }
                 }
             }
@@ -261,9 +262,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         }
         if ($this->currentResponse) {
             $keys[] = get_class($this->currentResponse);
-            header("Content-Type: " . $this->currentResponse->getContentType() ?: "text/plain");
+            header("Content-Type: " . $this->currentResponse->getContentType() ?: "text/plain; charset=utf-8");
         } else {
-            header("Content-Type: text/plain");
+            header("Content-Type: text/plain; charset=utf-8");
         }
 
         foreach ($keys as $key) {
