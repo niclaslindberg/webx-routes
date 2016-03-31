@@ -90,6 +90,46 @@ In `composer.json` add:
     });
 ```
 
+### Configuring Twig
+
+Load a configuration `specific` at Bootstrap time.
+Example: To change Twigs tag-delimeters to `{{{` and '}}}' (To simplify mixed Angular and Twig in the same page).
+```php
+    use WebX\Routes\Api\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Responses\TemplateResponse;
+
+    RoutesBootstrap::run([function(Routes $routes) {
+
+        $routes->onAlways(function(TemplateResponse $response) {
+              $response->setTemplate("page");
+              $response->setContent(["name"=>"Mr. Andersson"],"user");
+        })
+
+    },"specific"]);
+```
+
+Override the setting for `TemplateResponse` to add a configurator for Twig
+`config/specific.php`:
+```php
+    return [
+        "responses" => [
+            "WebX\\Routes\\Api\\Responses\\TemplateResponse" => [
+                "config" => [
+                    "configurator" => function(Twig_Environment $twig) {
+                        $lexer = new Twig_Lexer($twig, array(
+                            'tag_variable'  => array('{{{', '}}}'),
+                        ));
+                        $twig->setLexer($lexer);
+                    }
+                ]
+            ]
+        ]
+    ]
+```
+
+
+
 ## Loading configurations and the IOC container
 All logic, in Routes, is executed in ```actions```. An action can be either a:
   * ```\Closure```
@@ -171,6 +211,7 @@ The default directory structure for a Routes application:
                 /routes
                 /ioc
 ```
+
 
 
 ## Tests
