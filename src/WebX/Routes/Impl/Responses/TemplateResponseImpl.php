@@ -67,7 +67,8 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
                 if ($configurator = $configuration->asAny("configurator")) {
                     call_user_func_array($configurator, [$twig]);
                 }
-                $responseWriter->addContent($twig->render("{$this->template}.twig", $this->data ?: []));
+                $suffix = $configuration->asString("suffix");
+                $responseWriter->addContent($twig->render("{$this->template}.{$suffix}", $this->data ?: []));
             } else {
                 throw new \Exception("Template not set in TemplateResponse");
             }

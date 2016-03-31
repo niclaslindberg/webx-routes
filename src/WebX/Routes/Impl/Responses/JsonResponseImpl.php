@@ -38,7 +38,7 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
 
     public function generateContent(Configuration $configuration, ResponseWriter $responseWriter)
     {
-        $responseWriter->addContent(json_encode($this->data,JSON_PRETTY_PRINT));
+        $responseWriter->addContent(json_encode($this->data,$configuration->asBool("prettyPrint") ? JSON_PRETTY_PRINT : 0));
     }
 
 }

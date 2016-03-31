@@ -70,9 +70,7 @@ class ConfigurationImpl implements Configuration {
         foreach (array_reverse($this->settings) as $settings) {
             if ($settings !== null) {
                 if (NULL !== ($value = self::get($key, $settings))) {
-                    if(is_array($value)) {
-                        $result = array_merge($result,$value);
-                    }
+                    $result = ArrayUtil::mergeRecursive($result,$value);
                 }
             }
         }

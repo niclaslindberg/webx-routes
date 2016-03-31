@@ -85,8 +85,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $ioc->register($this->configuration);
         $ioc->register($this->resourceLoader);
         $this->nop = new RoutesForNop();
-
-
     }
 
     private function pushConfiguration($config) {
@@ -222,10 +220,10 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                     }
                 } catch (IocNonResolvableException $e) {
                     if (is_subclass_of($e->interfaceName(), Response::class, true) || ($e->interfaceName() === Response::class)) {
-                        $responseConfiguration = $this->configuration->asReader("responseImplementations.{$e->interfaceName()}");
+                        $responseConfiguration = $this->configuration->asReader("responses.{$e->interfaceName()}");
                         if ($responseClass = $responseConfiguration->asString("class")) {
                             $responseImpl = $this->ioc->instantiate($responseClass);
-                            $responseImpl->{self::$CONFIG_KEY} = $responseConfiguration->asString("configId");
+                            $responseImpl->{self::$CONFIG_KEY} = $responseConfiguration->asReader("config");
                             $this->ioc->register($responseImpl);
                             $arguments[] = $responseImpl;
                         } else {
@@ -282,7 +280,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                 http_response_code($this->statusByClass[$key]);
             }
             if ($key!==ResponseImpl::class) {
-                $this->currentResponse->generateContent($this->configuration->asReader("responseConfigurations.{$this->currentResponse->{self::$CONFIG_KEY}}"), $this);
+                $this->currentResponse->generateContent($this->currentResponse->{self::$CONFIG_KEY}, $this);
             }
         }
     }

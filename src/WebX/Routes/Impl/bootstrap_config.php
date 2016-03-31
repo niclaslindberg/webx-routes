@@ -1,7 +1,7 @@
 <?php
 
     return [
-        "responseImplementations" => [
+        "responses" => [
             "WebX\\Routes\\Api\\Response" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseImpl"
             ],
@@ -10,23 +10,19 @@
             ],
             "WebX\\Routes\\Api\\Responses\\JsonResponse" => [
                 "class" => "WebX\\Routes\\Impl\\Responses\\JsonResponseImpl",
-                "configId" => "json"
+                "config" => [
+                    "prettyPrint" => true
+                ]
             ],
             "WebX\\Routes\\Api\\Responses\\RedirectResponse" => [
                 "class" => "WebX\\Routes\\Impl\\Responses\\RedirectResponseImpl"
             ],
             "WebX\\Routes\\Api\\Responses\\TemplateResponse" => [
                 "class" => "WebX\\Routes\\Impl\\Responses\\TemplateResponseImpl",
-                "configId" => "template"
-            ]
-        ],
-        "responseConfigurations" => [
-            "template" => [
-                "templatesDir" => "templates",
-                "prefix" =>  "twig"
-            ],
-            "json" => [
-                "prettyPrint" => true
+                "config" => [
+                    "templatesDir" => "templates",
+                    "suffix" =>  "twig"
+                ]
             ]
         ],
         "controllers" => [],
