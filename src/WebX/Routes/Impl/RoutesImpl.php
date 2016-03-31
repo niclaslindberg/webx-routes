@@ -303,13 +303,11 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function registerHeader(AbstractResponse $response, $header)
     {
-        $this->currentResponse = $response;
         $this->headersByClass[get_class($response)][] = $header;
     }
 
     public function registerCookie(AbstractResponse $response, $name, $value, $ttl=0, $path = "/")
     {
-        $this->currentResponse = $response;
         $this->cookiesByClass[get_class($response)][$name] = [
             "value" => $value,
             "ttl" => $ttl,
@@ -319,7 +317,6 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     public function registerStatus(AbstractResponse $response, $httpStatus)
     {
-        $this->currentResponse = $response;
         $this->statusByClass[get_class($response)] = $httpStatus;
     }
 
