@@ -7,6 +7,7 @@ use Exception;
 use ReflectionFunction;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
+use WebX\Ioc\IocNonResolvable;
 use WebX\Ioc\IocNonResolvableException;
 use WebX\Routes\Api\AbstractResponse;
 use WebX\Routes\Api\Response;
@@ -74,8 +75,22 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . $home);
         $this->resourceLoader = $resourceLoader;
 
-        $ioc = new IocImpl(function(\ReflectionParameter $param,array $config=null, Ioc $ioc) {
-            return $this->configuration->asAny("settings.{$param->getName()}");
+        $ioc = new IocImpl(function(IocNonResolvable $nonResolvable, Ioc $ioc) {
+            if($refClass = $nonResolvable->unresolvedClass()) {
+                $class = $refClass->getName();
+                if(is_subclass_of($class, Response::class, true) || ($class === Response::class)) {
+                    $responseConfiguration = $this->configuration->asReader("responses.{$class}");
+                    if ($responseClass = $responseConfiguration->asString("class")) {
+                        $responseImpl = $this->ioc->instantiate($responseClass);
+                        $responseImpl->{self::$CONFIG_KEY} = $responseConfiguration->asReader("config");
+                        $ioc->register($responseImpl);
+                        return $responseImpl;
+                    } else {
+                        throw new RoutesException("Could not find response implementation for {$class}");
+                    }
+                }
+                return $this->configuration->asAny("settings.{$param->getName()}");
+            }
         });
         $this->ioc = $ioc;
         $this->request = new RequestImpl();
@@ -106,7 +121,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $subject = is_string($subject) ? $subject : $this->request->path();
             if($result = preg_match("/" . str_replace("/", "\/", $pattern) . "/", $subject, $matches)) {
                 return $this->invoke($action, array_merge($parameters, $matches));
-             } else if ($result === false) {
+            } else if ($result === false) {
                 throw new RoutesException("Invalid RegExp:{$pattern}");
             }
         }
@@ -136,8 +151,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $routes = $this->invoke($action, $parameters);
             $this->request->moveCurrentSegment(-1);
             return $routes;
-       }
-       return $this;
+        }
+        return $this;
     }
 
     public function onException($action, array $parameters = [])
@@ -210,28 +225,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             $closure = $this->createClosure($action, $parameters);
             $arguments = [];
             foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
-                try {
-                    if ($parameters && ($paramId = $refParam->getName() ?: $refParam->getPosition()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
-                        $arguments[] = $p;
-                    } else if ($refClass = $refParam->getClass()) {
-                        $arguments[] = $this->ioc->get($refClass->getName());
-                    } else {
-                        $arguments[] = $refParam->getDefaultValue();
-                    }
-                } catch (IocNonResolvableException $e) {
-                    if (is_subclass_of($e->interfaceName(), Response::class, true) || ($e->interfaceName() === Response::class)) {
-                        $responseConfiguration = $this->configuration->asReader("responses.{$e->interfaceName()}");
-                        if ($responseClass = $responseConfiguration->asString("class")) {
-                            $responseImpl = $this->ioc->instantiate($responseClass);
-                            $responseImpl->{self::$CONFIG_KEY} = $responseConfiguration->asReader("config");
-                            $this->ioc->register($responseImpl);
-                            $arguments[] = $responseImpl;
-                        } else {
-                            throw new RoutesException("Could not find response implementation for {$e->interfaceName()}");
-                        }
-                    } else {
-                        throw $e;
-                    }
+                if ($parameters && ($paramId = $refParam->getName() ?: $refParam->getPosition()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
+                    $arguments[] = $p;
+                } else if ($refClass = $refParam->getClass()) {
+                    $arguments[] = $this->ioc->get($refClass->getName());
+                } else {
+                    $arguments[] = $refParam->getDefaultValue();
                 }
             }
             call_user_func_array($closure, $arguments);
@@ -254,7 +253,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
             if(function_exists("dd")) {
                 dd($this->e);
             } else {
-              var_dump($this->e);
+                var_dump($this->e);
             }
             return;
         }
@@ -272,8 +271,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                 }
             }
             if (isset($this->cookiesByClass[$key])) {
-                foreach ($this->cookiesByClasss[$key] as $cookieName => $value) {
-                    setcookie($cookieName, $value["value"]);
+                foreach ($this->cookiesByClass[$key] as $name => $data) {
+                    setcookie($name, $data["value"]);
                 }
             }
             if (isset($this->statusByClass[$key])) {
@@ -308,10 +307,14 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
         $this->headersByClass[get_class($response)][] = $header;
     }
 
-    public function registerCookie(AbstractResponse $response, $cookie)
+    public function registerCookie(AbstractResponse $response, $name, $value, $ttl=0, $path = "/")
     {
         $this->currentResponse = $response;
-        $this->cookiesByClass[get_class($response)][] = $cookie;
+        $this->cookiesByClass[get_class($response)][$name] = [
+            "value" => $value,
+            "ttl" => $ttl,
+            "path" => $path
+        ];
     }
 
     public function registerStatus(AbstractResponse $response, $httpStatus)

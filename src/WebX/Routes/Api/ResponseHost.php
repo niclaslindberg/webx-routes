@@ -10,7 +10,7 @@ interface ResponseHost {
 
     public function registerHeader(AbstractResponse $response, $header);
 
-    public function registerCookie(AbstractResponse $response, $cookie);
+    public function registerCookie(AbstractResponse $response, $name, $value, $ttl=0, $path = "/");
 
     public function registerStatus(AbstractResponse $response, $httpStatus);
 

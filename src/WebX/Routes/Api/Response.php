@@ -11,7 +11,7 @@ namespace WebX\Routes\Api;
 interface Response
 {
     public function addHeader($header);
-    public function addCookie($cookie);
+    public function addCookie($name, $value, $ttl=0, $path = "/");
     public function setStatus($httpStatus);
 
 

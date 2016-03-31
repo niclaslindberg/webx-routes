@@ -22,9 +22,9 @@ abstract class AbstractResponse implements Response {
         $this->responseHost->registerHeader($this,$header);
     }
 
-    public function addCookie($cookie)
+    public function addCookie($name, $value, $ttl=0, $path = "/")
     {
-        $this->responseHost->registerCookie($this,$cookie);
+        $this->responseHost->registerCookie($this,$name, $value, $ttl=0, $path = "/");
     }
 
     public function setStatus($httpStatus)
