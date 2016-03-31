@@ -92,8 +92,9 @@ In `composer.json` add:
 
 ### Configuring Twig
 
-Load a configuration `specific` at Bootstrap time.
-Example: To change Twigs tag-delimeters to `{{{` and '}}}' (To simplify mixed Angular and Twig in the same page).
+Load a configuration `changetwig` (can be any name) at Bootstrap time.
+
+Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed Angular and Twig in the same page).
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
@@ -106,11 +107,11 @@ Example: To change Twigs tag-delimeters to `{{{` and '}}}' (To simplify mixed An
               $response->setContent(["name"=>"Mr. Andersson"],"user");
         })
 
-    },"specific"]);
+    },"changetwig"]);
 ```
 
 Override the setting for `TemplateResponse` to add a configurator for Twig
-`config/specific.php`:
+`config/changetwig.php`:
 ```php
     return [
         "responses" => [
