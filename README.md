@@ -159,7 +159,9 @@ To support lazy loading of configurations Routes allows actions to be defined as
 
     return [
         "ioc" => [
-            ["register",AdminService::class]
+            "register" => [
+                [AdminService::class]
+            ]
         ]
     ]
 ```
