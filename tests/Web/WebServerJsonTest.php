@@ -26,12 +26,34 @@ class WebServerJsonTest extends \PHPUnit_Framework_TestCase
     public function test() {
         $server = self::$server;
 
-        $response = $server->get_contents();
+        $response = $server->get_contents("/normal");
         $json = json_decode($response,true);
 
 
         $this->assertEquals("a",$json["a"]["a"]);
         $this->assertEquals("c",$json["a"]["b"]["c"]);
 
+    }
+
+    public function testMultipleRootArraysPass() {
+        $server = self::$server;
+
+        $response = $server->get_contents("/rootArray");
+        $json = json_decode($response,true);
+
+
+        $this->assertEquals("1",$json["a"]);
+        $this->assertEquals("2",$json["b"]);
+
+    }
+
+    public function testRootScalar() {
+        $server = self::$server;
+
+        $response = $server->get_contents("/rootScalar");
+        $json = json_decode($response,true);
+
+
+        $this->assertEquals("1",$json);
     }
 }

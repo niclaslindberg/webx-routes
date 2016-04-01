@@ -6,6 +6,7 @@ use WebX\Routes\Api\Responses\JsonResponse;
 use WebX\Routes\Api\AbstractResponse;
 use WebX\Routes\Api\Configuration;
 use WebX\Routes\Api\ResponseWriter;
+use WebX\Routes\Impl\ArrayUtil;
 
 class JsonResponseImpl extends AbstractResponse implements JsonResponse
 {
@@ -30,6 +31,8 @@ class JsonResponseImpl extends AbstractResponse implements JsonResponse
                 $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
                 $root = &$root[$part];
             }
+        } else if(is_array($this->data) && is_array($data)) {
+                $this->data = ArrayUtil::mergeRecursive($this->data,$data);
         } else {
             $this->data = $data;
         }

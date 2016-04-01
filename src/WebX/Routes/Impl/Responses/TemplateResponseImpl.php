@@ -45,9 +45,12 @@ class TemplateResponseImpl extends AbstractResponse implements TemplateResponse
                 $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
                 $root = &$root[$part];
             }
+        } else if(is_array($this->data) && is_array($data)) {
+            $this->data = ArrayUtil::mergeRecursive($this->data,$data);
         } else {
             $this->data = $data;
         }
+
         $this->setContentAvailable();
     }
 
