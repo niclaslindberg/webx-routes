@@ -20,6 +20,7 @@ class RedirectResponseImpl extends AbstractResponse implements RedirectResponse
             $this->addHeader("HTTP/1.1 301 Moved Permanently");
         }
         $this->addHeader("Location",$url);
+        $this->setContentAvailable();
     }
 
     public function generateContent(Configuration $configuration, ResponseWriter $responseWriter){}
