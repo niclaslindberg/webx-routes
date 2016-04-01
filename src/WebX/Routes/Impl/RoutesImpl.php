@@ -104,8 +104,8 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
 
     private function pushConfiguration($config) {
         $reader = $this->configuration->pushArray($config);
-        foreach ($reader->asArray("ioc",[]) as $config) {
-            call_user_func_array([$this->ioc, array_shift($config)], $config);
+        foreach ($reader->asArray("ioc",[]) as $method => $parameters) {
+            call_user_func_array([$this->ioc, $method], $parameters);
         }
     }
 
