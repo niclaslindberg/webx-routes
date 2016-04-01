@@ -89,7 +89,9 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                         throw new RoutesException("Could not find response implementation for {$class}");
                     }
                 }
-                return $this->configuration->asAny("settings.{$param->getName()}");
+                if($param = $nonResolvable->unresolvedParameter()) {
+                    return $this->configuration->asAny("settings.{$param->getName()}");
+                }
             }
         });
         $this->ioc = $ioc;
