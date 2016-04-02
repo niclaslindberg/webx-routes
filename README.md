@@ -243,7 +243,7 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
             $response->setContent("Hello there " + $adminService->countAdmins() + " admin(s)");
         }
     }
-    Controllers support both method and constructor IOC,
+    #Controllers support both method- and constructor IOC,
 ```
 
 ## Defining default namespaces for loading controllers
