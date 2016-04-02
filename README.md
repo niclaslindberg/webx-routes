@@ -215,6 +215,46 @@ The default directory structure for a Routes application:
                 /ioc
 ```
 
+#Working with Controllers
+Routes support a more traditional controller structure as well. Controllers a simple classes with their methods invoked with IOC support.
+
+Routes supports `$action` to be defined as a `string` in the format `ControllerClass#method`
+
+```php
+    use WebX\Routes\Api\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+
+    RoutesBootstrap::run(function(Routes $routes) {
+
+        $routes->onSegment("myMethod"",["MyBusinessControllers\\AdminCtrl#myMethod","admin"]
+        // The admin-configuration is only loaded if routes matched the `myMethod` segment.
+    });
+```
+
+`src/MyBusiness/Controllers/AdminControllers.php`
+```php
+
+    class AdminController {
+        public function __construct() {}
+
+        public function countAdmins(ContentResponse $response, IAdminService $adminService) {
+            $response->setContent("Hello there " + $adminService->countAdmins() + " admin(s)");
+        }
+    }
+    Controllers support both method and constructor IOC,
+```
+
+## Defining default namespaces for loading controllers
+Full class names can be skipped by adding namespaces in the `namespaces` section of a dynamic configuration.
+
+`config/admin.php`:
+```php
+    use MyBusiness\Impl\Services\AdminService;
+
+    return [
+        "namespaces" => ["MyBusiness\\Controllers"]
+    ]
+```
 
 
 ## Tests
