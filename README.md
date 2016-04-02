@@ -226,7 +226,7 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
 
     RoutesBootstrap::run(function(Routes $routes) {
 
-        $routes->onSegment("myMethod"",["MyBusinessControllers\\AdminCtrl#myMethod","admin"]
+        $routes->onSegment("myMethod"",["MyBusinessControllers\\AdminCtrl\#myMethod","admin"]
         // The admin-configuration is only loaded if routes matched the `myMethod` segment.
     });
 ```
