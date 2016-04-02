@@ -182,39 +182,6 @@ To support lazy loading of configurations Routes allows actions to be defined as
     });
 ```
 
-### Configuring Routes
-Standard configuration in Routes is based on the applications directory relativly to the `$_SERVER['DOCUMENT_ROOT']`.
-
-Configuring RoutesBootstrap
-```php
-    RoutesBootstrap::run($action,[
-        "home" => "../"         // Default.
-                                // Use '/' to have application in same directory
-                                // as public files (not reecommended).
-    ]);
-```
-
-The default directory structure for a Routes application:
-```
-    /
-        /config          (Config files loaded by [$action, "someconfig"]
-            someconfig.php
-
-        /routes          (Files loaded by Routes->load("someroute")
-            someroute.php
-
-        /templates       (Templates loaded by TemplateResponse->setTemplate("sometemplate")
-            sometemplate.twig
-
-        /public          ($_SERVER['DOCUMENT_ROOT'])
-            index.php
-
-        /vendor          (Composer)
-            /webx
-                /routes
-                /ioc
-```
-
 #Working with Controllers
 Routes support a more traditional controller structure as well. Controllers a simple classes with their methods invoked with IOC support.
 
@@ -263,6 +230,38 @@ Full class names can be skipped by adding namespaces in the `namespaces` section
     ]
 ```
 
+### Configuring Routes
+Standard configuration in Routes is based on the applications directory relativly to the `$_SERVER['DOCUMENT_ROOT']`.
+
+Configuring RoutesBootstrap
+```php
+    RoutesBootstrap::run($action,[
+        "home" => "../"         // Default.
+                                // Use '/' to have application in same directory
+                                // as public files (not reecommended).
+    ]);
+```
+
+The default directory structure for a Routes application:
+```
+    /
+        /config          (Config files loaded by [$action, "someconfig"]
+            someconfig.php
+
+        /routes          (Files loaded by Routes->load("someroute")
+            someroute.php
+
+        /templates       (Templates loaded by TemplateResponse->setTemplate("sometemplate")
+            sometemplate.twig
+
+        /public          ($_SERVER['DOCUMENT_ROOT'])
+            index.php
+
+        /vendor          (Composer)
+            /webx
+                /routes
+                /ioc
+```
 
 ## Tests
 Execute in root directory
