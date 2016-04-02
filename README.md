@@ -237,13 +237,18 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
     namespace MyBusiness\Controllers;
 
     class AdminController {
-        public function __construct() {}
+
+        private $logService;
+
+        public function __construct(ILogService $logService) {
+            $this->logService = $logService;
+        }
 
         public function countAdmins(ContentResponse $response, IAdminService $adminService) {
             $response->setContent("Hello there " + $adminService->countAdmins() + " admin(s)");
         }
     }
-    #Controllers support both method- and constructor IOC,
+    #Controllers support both method- and constructor IOC. Parameters, taking precedence over IOC injected ones, can be defined in the last arguemnt `$parameters` array.
 ```
 
 ## Defining default namespaces for loading controllers
@@ -251,8 +256,6 @@ Full class names can be skipped by adding namespaces in the `namespaces` section
 
 `config/admin.php`:
 ```php
-    use MyBusiness\Impl\Services\AdminService;
-
     return [
         "namespaces" => ["MyBusiness\\Controllers"]
     ]
