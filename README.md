@@ -231,7 +231,7 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
     });
 ```
 
-`src/MyBusiness/Controllers/AdminControllers.php`
+`src/MyBusiness/Controllers/AdminController.php`
 ```php
 
     namespace MyBusiness\Controllers;
