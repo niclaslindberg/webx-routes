@@ -66,7 +66,7 @@ In `composer.json` add:
 Route switches are evaluated top-down. If a route-switch is executed no further switches are evaluated an executed.
 
 The following route switches are supported
-* `onAlways($action)` Runs if route-switch evaluation arrived here.
+* `onAlways($action)` Executes without evaluation.
 * `onTrue($expression,$action)` Executes if `$expression` evaluates to `true`
 * `onSegment("url-segment",$action)` Evaluates the current url segment (complete url exploded by `/`). Within a route-switch match the current url-segment will advance one position.
 * `onMatch("reg-exp",$action)` Evaluates the reg-exp against a string (url is default). Matched parameters in the reg-exp will be used if the same variable name is used in the `$action`;
