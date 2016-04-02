@@ -107,8 +107,8 @@ class ConfigurationImpl implements Configuration {
         }
     }
 
-    public function popArray() {
-        array_shift($this->settings);
+    public function popArray($n=1) {
+        $this->settings = array_slice($this->settings,$n-1);
     }
 
     private function getTraverse($path)

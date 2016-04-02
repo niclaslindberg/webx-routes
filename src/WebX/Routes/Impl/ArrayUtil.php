@@ -16,4 +16,8 @@ class ArrayUtil {
         }
         return $array1;
     }
+
+    public static function get($field, $array) {
+        return isset($array[$field]) ? $array[$field] : null;
+    }
 }

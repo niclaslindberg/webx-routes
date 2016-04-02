@@ -47,6 +47,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     private $resourceLoader;
 
 
+    /**
+     * @var ControllerFactory
+     */
+    private $controllerFactory;
+
+
     private $headersByClass = [];
     private $cookiesByClass = [];
     private $statusByClass = [];
@@ -65,14 +71,10 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
     public function __construct(array $config = null)
     {
         $this->configuration = new ConfigurationImpl(require(__DIR__ . "/bootstrap_config.php"));
+        $this->controllerFactory = new ControllerFactory();
 
-        if($config) {
-            $this->pushConfiguration($config);
-        }
-
-        $home = $this->configuration->asString("home",'/..');
         $resourceLoader = new ResourceLoaderImpl();
-        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . $home);
+        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . ArrayUtil::get("home",$config) ?: "/");
         $this->resourceLoader = $resourceLoader;
 
         $ioc = new IocImpl(function(IocNonResolvable $nonResolvable, Ioc $ioc) {
@@ -111,12 +113,12 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                 call_user_func_array([$this->ioc, $method], $parameters);
             }
         }
+        $this->controllerFactory->pushClassNamespaces($reader->asArray("namespaces"));
     }
 
     private function popConfiguration($n=1) {
-        for($i=0;$i<$n;$i++) {
-            $this->configuration->popArray();
-        }
+       $this->configuration->popArray($n);
+       $this->controllerFactory->popClassNamespaces($n);
     }
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
@@ -201,6 +203,7 @@ class RoutesImpl implements Routes, ResponseHost, ResponseWriter {
                 throw new RoutesException("Controller action must be defined controller#method");
             }
             list($controllerClass, $method) = $segments;
+            $controllerClass = $this->controllerFactory->createClassName($controllerClass);
             $controller = $this->ioc->instantiate($controllerClass);
             $refMethod = new \ReflectionMethod($controllerClass, $method);
             return $refMethod->getClosure($controller);

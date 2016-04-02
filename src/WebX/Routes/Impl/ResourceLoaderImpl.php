@@ -45,6 +45,8 @@ class ResourceLoaderImpl implements ResourceLoader
                 $path = $absolutePath . $relPath;
                 if(file_exists($path)) {
                     return $path;
+                } else {
+                    $path;
                 }
             }
         }

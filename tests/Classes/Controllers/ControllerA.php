@@ -11,5 +11,12 @@ class ControllerA {
         $response->setContent(1);
     }
 
+    public function test2(ContentResponse $response) {
+        $response->setContent(2);
+    }
+
+    public function test3(ContentResponse $response) {
+        $response->setContent(3);
+    }
 }
 
