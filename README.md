@@ -192,7 +192,7 @@ To support lazy loading of configurations Routes allows actions to be defined as
 ```
 
 #Working with Controllers
-Routes support a more traditional controller structure as well. Controllers a simple classes with their methods invoked with IOC support.
+Routes support a more traditional controller structure as well. Controllers are simple classes with their methods and constructors invoked with IOC support.
 
 Routes supports `$action` to be defined as a `string` in the format `ControllerClass#method`
 
@@ -224,9 +224,8 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
             $response->setContent("Hello there " + $adminService->countAdmins() + " admin(s)");
         }
     }
-    #Controllers support both method- and constructor IOC.
-    #Parameters, taking precedence over IOC injected ones,
-    #can be defined in the last arguemnt `$parameters` array.
+    #Controller functions can be invoked with user parameters. Parameters, taking precedence over IOC injected ones,
+    #can be defined in the last arguemnt `$parameters` array or with parametes defiend in the `onMatch` switch.
 ```
 
 ## Defining default namespaces for loading controllers
