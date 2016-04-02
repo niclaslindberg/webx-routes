@@ -71,6 +71,7 @@ The following route switches are supported
 * `onSegment("url-segment",$action)` Evaluates the current url segment (complete url exploded by `/`). Within a route-switch match the current url-segment will advance one position.
 * `onMatch("reg-exp",$action)` Evaluates the reg-exp against a string (url is default). Matched parameters in the reg-exp will be used if the same variable name is used in the `$action`;
 * `onException($action)` Evaluates if any subclass of a caught `Exception` exists in the `$action`. If found the route-switch is executed with the current exception bound to the exception parameter.
+
 ## Using Twig
 
 `page.twig`
