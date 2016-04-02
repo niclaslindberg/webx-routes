@@ -63,7 +63,7 @@ In `composer.json` add:
     });
 ```
 ### Route switches:
-Route switches are evaluated top-down. If a route-switch is executed no further switches are evaluated an executed.
+Route switches are evaluated top-down. If a route-switch is executed no further switches are evaluated and executed.
 
 The following route switches are supported
 * `onAlways($action)` Executes without evaluation.
