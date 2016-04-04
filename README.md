@@ -246,7 +246,7 @@ Configuring RoutesBootstrap
     RoutesBootstrap::run($action,[
         "home" => "../"         // Default.
                                 // Use '/' to have application in same directory
-                                // as public files (not reecommended).
+                                // as public files (not recommended).
     ]);
 ```
 
