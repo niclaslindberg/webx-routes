@@ -3,6 +3,7 @@
 namespace WebX\Routes\Api;
 
 use Closure;
+use Exception;
 use WebX\Routes\Impl\AppImpl;
 use WebX\Routes\Impl\RoutesImpl;
 
@@ -20,9 +21,21 @@ class RoutesBootstrap {
      * @return void
      */
     public final static function run($action, array $config = null) {
-        $routes = new RoutesImpl($config);
-        $routes->onAlways($action);
-        $routes->render();
+        try {
+            $routes = new RoutesImpl($config);
+            $routes->onAlways($action);
+            $routes->render();
+        } catch(Exception $e) {
+            if(function_exists("dd")) {
+                dd($e);
+            } else {
+                header("Content-Type: text/html; charset=utf-8");
+                echo("<html><body>");
+                echo(sprintf("<h1>Uncaught exception:%s [%s]</h1>" , $e->getMessage() , get_class($e)));
+                var_dump($e);
+                echo("</body></html>");
+            }
+        }
     }
 }
 

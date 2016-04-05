@@ -26,10 +26,21 @@ In `composer.json` add:
 
     require_once "../vendor/autoload.php";
 
-    RoutesBootstrap::run(function(ContentResponse $response) {
-        $response->setContent("Hello, there!");
+    RoutesBootstrap::run(function(Response $response) {
+        $response->data(["name" => "Mr. Andersson"],"user");
+        $response->data(1998,"user.popular");
     });
 ```
+Will produce JSON:
+```php
+    {
+        "user" : {
+            "name" => "Mr. Andersson",
+            "popular" => 1998
+        }
+    }
+```
+
 
 ## Routing in Routes
 ```php
@@ -43,21 +54,14 @@ In `composer.json` add:
 
             $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
                 $routes->load("api_v{$version}");
-            })->onAlways(JsonResponse $response) {
-                $response->setData(["message"=>"Not a valid API call"]);
+            })->onAlways(Response $response) {
+                $response->data(["message"=>"Not a valid API call"]);
             });
 
-        })->onAlways(function(ContentResponse $response){
-            $response->setContent("Sorry, page not found.");
+        })->onAlways(function(Response $response, RawResponseType $responseType){
+            $response->type($responseType)
+            $response->data("Sorry, page not found.");
             $response->setStatus(404);
-
-        })->onException(function(SomeException $e, ContentResponse $response){
-            $response->setContent("Some specific error occurred");
-            $response->setStatus(200);
-
-        })->onException(function(Exception $e, ContentResponse $response){
-            $response->setContent("Unknown occurred");
-            $response->setStatus(500);
 
         })
     });
@@ -70,7 +74,6 @@ The following route switches are supported
 * `onTrue($expression,$action)` Executes if `$expression` evaluates to `true`
 * `onSegment("url-segment",$action)` Evaluates the current url segment (complete url exploded by `/`). Within a route-switch match the current url-segment will advance one position.
 * `onMatch("reg-exp",$action)` Evaluates the reg-exp against a string (url is default). Matched parameters in the reg-exp will be used if the same variable name is used in the `$action`;
-* `onException($action)` Evaluates if any subclass of a caught `Exception` exists in the `$action`. If found the route-switch is executed with the current exception bound to the exception parameter.
 
 ## Using Twig
 
@@ -91,8 +94,8 @@ The following route switches are supported
 
     RoutesBootstrap::run(function(Routes $routes) {
 
-        $routes->onAlways(function(TemplateResponse $response) {
-              $response->setTemplate("page");
+        $routes->onAlways(function(Response $response, TemplateResponseType $responseType) {
+              $response->type($responseType->template("page"));
               $response->setContent(["name"=>"Mr. Andersson"],"user");
         })
 
@@ -111,20 +114,20 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 
     RoutesBootstrap::run([function(Routes $routes) {
 
-        $routes->onAlways(function(TemplateResponse $response) {
-              $response->setTemplate("page");
+        $routes->onAlways(function(Response $response, TemplateResponseType $responseType) {
+              $response->type($responseType->template("page"));
               $response->setContent(["name"=>"Mr. Andersson"],"user");
         })
 
     },"changetwig"]);
 ```
 
-Override the setting for `TemplateResponse` to add a configurator for Twig
+Override the setting for `TemplateResponseType` to add a configurator for Twig
 `config/changetwig.php`:
 ```php
     return [
         "responses" => [
-            "WebX\\Routes\\Api\\Responses\\TemplateResponse" => [
+            "WebX\\Routes\\Api\\Responses\\TemplateResponseType" => [
                 "config" => [
                     "configurator" => function(Twig_Environment $twig) {
                         $lexer = new Twig_Lexer($twig, array(
@@ -178,13 +181,13 @@ To support lazy loading of configurations Routes allows actions to be defined as
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
-    use WebX\Routes\Api\Responses\ContentResponse;
+    use WebX\Routes\Api\Response;
     use MyBusiness\Api\Services\IAdminService;
 
     RoutesBootstrap::run(function(Routes $routes) {
 
-        $routes->onSegment("admin",[function(ContentResponse $response, IAdminService $adminService) {
-              $response->setContent(sprintf("System admins: %s",$adminService->countAdmins()));
+        $routes->onSegment("admin",[function(Response $response, IAdminService $adminService) {
+              $response->data($adminService->countAdmins(),"count");
         },"admin"]);
 
         // The admin-configuration is only loaded if routes matched the `admin` segment.
@@ -220,8 +223,9 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
             $this->logService = $logService;
         }
 
-        public function countAdmins(ContentResponse $response, IAdminService $adminService) {
-            $response->setContent("Hello there " + $adminService->countAdmins() + " admin(s)");
+        public function countAdmins(Response $response, RawResponseType $responseType, IAdminService $adminService) {
+            $response->type($responseType);
+            $response->data("Hello there " + $adminService->countAdmins() + " admin(s)");
         }
     }
     #Controller functions can be invoked with user parameters. Parameters, taking precedence over IOC injected ones,

@@ -2,23 +2,26 @@
 
     return [
         "responses" => [
-            "WebX\\Routes\\Api\\Response" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseImpl"
+            "WebX\\Routes\\Api\\ResponseTypes\\RawResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RawResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\Responses\\ContentResponse" => [
-                "class" => "WebX\\Routes\\Impl\\Responses\\ContentResponseImpl"
-            ],
-            "WebX\\Routes\\Api\\Responses\\JsonResponse" => [
-                "class" => "WebX\\Routes\\Impl\\Responses\\JsonResponseImpl",
+            "WebX\\Routes\\Api\\ResponseTypes\\JsonResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\JsonResponseTypeImpl",
                 "config" => [
                     "prettyPrint" => true
                 ]
             ],
-            "WebX\\Routes\\Api\\Responses\\RedirectResponse" => [
-                "class" => "WebX\\Routes\\Impl\\Responses\\RedirectResponseImpl"
+            "WebX\\Routes\\Api\\ResponseTypes\\RedirectResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RedirectResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\Responses\\TemplateResponse" => [
-                "class" => "WebX\\Routes\\Impl\\Responses\\TemplateResponseImpl",
+            "WebX\\Routes\\Api\\ResponseTypes\\DownloadResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\DownloadResponseTypeImpl"
+            ],
+            "WebX\\Routes\\Api\\ResponseTypes\\StreamResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\StreamResponseTypeImpl"
+            ],
+            "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\TemplateResponseTypeImpl",
                 "config" => [
                     "templatesDir" => "templates",
                     "suffix" =>  "twig"

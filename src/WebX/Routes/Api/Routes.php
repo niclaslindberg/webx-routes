@@ -2,7 +2,7 @@
 
 namespace WebX\Routes\Api;
 
-interface Routes extends ExceptionRouter {
+interface Routes {
 
     /**
      * @param $pattern

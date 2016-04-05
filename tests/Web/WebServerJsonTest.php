@@ -15,7 +15,7 @@ class WebServerJsonTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass() {
        self::$server = new WebServer(__DIR__ . "/AppJson/index.php");
-        #sleep(5000);
+     #   sleep(5000);
     }
 
     public static function tearDownAfterClass() {
