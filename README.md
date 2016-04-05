@@ -209,6 +209,42 @@ To support lazy loading of configurations Routes allows actions to be defined as
     });
 ```
 
+#Config file anatomy
+The config files, that may be loaded at any level, are normal php files that are expected to return an `array`.
+
+Minimal config file (that does nothing):
+
+```php
+<?php
+
+return [];
+
+?>
+```
+
+## Ioc container
+The [WebX-Ioc container](/niclaslindberg/webx-ioc) is embedded in the WebX-Routes framework. You dynamically registers / statically initializes services in the config `ioc` section.
+
+Dynamically register a service with the WebX-Ioc container.
+`config/someconfig.php`
+```php
+<?php
+
+return [
+    "ioc" => [
+        "register" => [ // The classes will be scanned for all their implemented interfaces.
+            [MyClass:class],
+            [MyOtherClass:class]
+        ],
+        "initStatic" => [ //
+            [MyValueObject::class,"initMethod"] // The static "initMethod" will be invoked with declared dependencies.
+        ]
+    ]
+
+]
+```
+
+
 #Working with Controllers
 Routes support a more traditional controller structure as well. Controllers are simple classes with their methods and constructors invoked with IOC support.
 
