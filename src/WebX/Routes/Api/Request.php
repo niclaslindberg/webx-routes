@@ -7,7 +7,6 @@ interface Request {
     const BODY_FORMAT_JSON = "json";
     const BODY_FORMAT_FORM = "form";
 
-
     /**
      * Returns $_SERVER['REQUEST_URIs']
      * @return string
@@ -27,6 +26,7 @@ interface Request {
     public function body();
 
     /**
+     * Parses the request body and returns a Reader.
      * @param string $bodyFormat
      * @return Reader
      */

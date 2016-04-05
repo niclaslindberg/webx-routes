@@ -65,8 +65,7 @@ class RequestImpl implements Request {
         $body = $this->body();
         if($bodyFormat === Request::BODY_FORMAT_JSON) {
             $json = json_decode($body,true);
-            $json = is_array($json) ? $json : [];
-            return new ConfigurationImpl(json_decode($json,true) ?: []);
+            return new ConfigurationImpl(json_decode(is_array($json) ? $json : [],true) ?: []);
         } else if ($bodyFormat === Request::BODY_FORMAT_FORM) {
             $array = [];
             parse_str($body,$array);
