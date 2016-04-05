@@ -8,7 +8,16 @@ use WebX\Routes\Api\RoutesBootstrap;
 
 require_once  dirname(dirname(dirname(dirname(__DIR__)))) . "/vendor/autoload.php";
 
-RoutesBootstrap::run([function(RawResponseType $rawResponseType, Response $response, Request $request) {
-    $response->type($rawResponseType);
-    $response->data($request->path());
+RoutesBootstrap::run([function(Routes $routes){
+    $routes->onSegment("url",function(RawResponseType $rawResponseType, Response $response, Request $request) {
+        $response->type($rawResponseType);
+        $response->data($request->path());
+    });
+
+    $routes->onSegment("readerJson",function(RawResponseType $rawResponseType, Response $response, Request $request) {
+        $response->type($rawResponseType);
+        $response->data($request->bodyReader()->asString("a"));
+    });
+
+
 },"test"]);

@@ -25,8 +25,9 @@ class WebServerEchoTest extends \PHPUnit_Framework_TestCase
     public function test() {
         $server = self::$server;
 
-        $r11 = $server->get_contents("/abc");
-        $this->assertEquals("/abc", $r11);
+        $r11 = $server->get_contents("/url/abc");
+        $this->assertEquals("/url/abc", $r11);
 
     }
+
 }

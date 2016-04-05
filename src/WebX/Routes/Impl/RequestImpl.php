@@ -3,7 +3,9 @@
 namespace WebX\Routes\Impl;
 
 
+use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\Request;
+use WebX\Routes\Api\RoutesException;
 
 class RequestImpl implements Request {
 
@@ -57,6 +59,23 @@ class RequestImpl implements Request {
     {
         return file_get_contents("php://input");
     }
+
+    public function bodyReader($bodyFormat)
+    {
+        $body = $this->body();
+        if($bodyFormat === Request::BODY_FORMAT_JSON) {
+            $json = json_decode($body,true);
+            $json = is_array($json) ? $json : [];
+            return new ConfigurationImpl(json_decode($json,true) ?: []);
+        } else if ($bodyFormat === Request::BODY_FORMAT_FORM) {
+            $array = [];
+            parse_str($body,$array);
+            return new ConfigurationImpl($array);
+        } else {
+            throw new RoutesException("Unknown body reader format {$bodyFormat}");
+        }
+    }
+
 
     public function cookie($id)
     {
