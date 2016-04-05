@@ -41,7 +41,7 @@ Will produce JSON:
     }
 ```
 
-## ResponseTypes in Routes
+## Built-in ResponseTypes in Routes
 Routes supports the following ResponseTypes out of the box
 * `JsonResponse` Renders data as Json (Default ResponseType).
 * `TemplateResponseType` Renders data with a template (Twig)
@@ -58,6 +58,7 @@ To implement your own ResponseType simply create an interface that extends `Resp
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Response;
     use WebX\Routes\Api\ResponseTypes\RawResponseType;
 
     RoutesBootstrap::run(function(Routes $routes) {
@@ -102,6 +103,7 @@ The following route switches are supported
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Response;
     use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
     RoutesBootstrap::run(function(Routes $routes) {
@@ -122,6 +124,7 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Response;
     use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
     RoutesBootstrap::run([function(Routes $routes) {
