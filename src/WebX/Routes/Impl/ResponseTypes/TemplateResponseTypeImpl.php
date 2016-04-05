@@ -37,6 +37,7 @@ class TemplateResponseTypeImpl implements TemplateResponseType
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)
     {
+        $data = is_array($data) ? $data : [];
         $templatesDir = $configuration->asString("templatesDir");
         if ($templatePath = $this->resourceLoader->absolutePath($templatesDir)) {
             if ($this->template) {
