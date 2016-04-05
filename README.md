@@ -50,7 +50,7 @@ Routes supports the following ResponseTypes out of the box
 * `RedirectResponseType` 301 or 302 redirect to a different url.
 * `StreamResponseType` Repeatedly renders the output of a `Closure` until `null` is returned.
 
-To implement your own ResponseType simply create a class that implements `ResponseType` and configure it with `ioc/register` in a config file.
+To implement your own ResponseType simply create an interface that extends `ResponseType` with an implementation configure it with `ioc/register` in a config file. See `bootstrap_config.php` of how to configure.
 
 
 
