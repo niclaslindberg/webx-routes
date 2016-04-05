@@ -223,7 +223,7 @@ return [];
 ```
 
 ## Ioc container
-The [WebX-Ioc container](https://github.com/niclaslindberg/webx-ioc) is embedded in the WebX-Routes framework. You dynamically registers / statically initializes services in the config `ioc` section.
+The [WebX-Ioc container](https://github.com/niclaslindberg/webx-ioc) is embedded in the WebX-Routes framework. WebX-Routes supports dynamic registration / static invokation of services in the config `ioc` section.
 
 Dynamically register a service with the WebX-Ioc container.
 `config/someconfig.php`
