@@ -44,7 +44,7 @@ Will produce JSON:
 ## ResponseTypes in Routes
 Routes supports the following ResponseTypes out of the box
 * `JsonResponse` Renders data as Json (Default ResponseType).
-* `TemplateResponseType` Renders data with a tempalte (Twig)
+* `TemplateResponseType` Renders data with a template (Twig)
 * `RawResponseType` Renders data as is.
 * `DownloadResponseType` Renders data as a downloadable file.
 * `RedirectResponseType` 301 or 302 redirect to a different url.
@@ -73,7 +73,7 @@ To implement your own ResponseType simply create a class that implements `Respon
         })->onAlways(function(Response $response, RawResponseType $responseType){
             $response->type($responseType)
             $response->data("Sorry, page not found.");
-            $response->setStatus(404);
+            $response->status(404);
 
         })
     });
