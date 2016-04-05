@@ -58,7 +58,7 @@ To implement your own ResponseType simply create an interface that extends `Resp
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
-    use WebX\Routes\Api\Responses\ContentResponse;
+    use WebX\Routes\Api\ResponseTypes\RawResponseType;
 
     RoutesBootstrap::run(function(Routes $routes) {
 
@@ -102,7 +102,7 @@ The following route switches are supported
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
-    use WebX\Routes\Api\Responses\TemplateResponse;
+    use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
     RoutesBootstrap::run(function(Routes $routes) {
 
@@ -122,7 +122,7 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
-    use WebX\Routes\Api\Responses\TemplateResponse;
+    use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
     RoutesBootstrap::run([function(Routes $routes) {
 
@@ -139,7 +139,7 @@ Override the setting for `TemplateResponseType` to add a configurator for Twig
 ```php
     return [
         "responses" => [
-            "WebX\\Routes\\Api\\Responses\\TemplateResponseType" => [
+            "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
                 "config" => [
                     "configurator" => function(Twig_Environment $twig) {
                         $lexer = new Twig_Lexer($twig, array(
