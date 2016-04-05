@@ -41,6 +41,18 @@ Will produce JSON:
     }
 ```
 
+## ResponseTypes in Routes
+Routes supports the following ResponseTypes out of the box
+* `JsonResponse` Renders data as Json (Default ResponseType).
+* `TemplateResponseType` Renders data with a tempalte (Twig)
+* `RawResponseType` Renders data as is.
+* `DownloadResponseType` Renders data as a downloadable file.
+* `RedirectResponseType` 301 or 302 redirect to a different url.
+* `StreamResponseType` Repeatedly renders the output of a `Closure` until `null` is returned.
+
+To implement your own ResponseType simply create a class that implements `ResponseType` and configure it with `ioc/register` in a config file.
+
+
 
 ## Routing in Routes
 ```php
