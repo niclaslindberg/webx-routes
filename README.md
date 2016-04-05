@@ -22,7 +22,7 @@ In `composer.json` add:
 
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
-    use WebX\Routes\Api\Responses\ContentResponse;
+    use WebX\Routes\Api\Response;
 
     require_once "../vendor/autoload.php";
 
