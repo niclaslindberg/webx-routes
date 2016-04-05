@@ -70,7 +70,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         $this->controllerFactory = new ControllerFactory();
 
         $resourceLoader = new ResourceLoaderImpl();
-        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . ArrayUtil::get("home",$config) ?: "/");
+        $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home",$config) ?: "/.."));
         $this->resourceLoader = $resourceLoader;
 
         $ioc = new IocImpl(function(IocNonResolvable $nonResolvable, Ioc $ioc) {
