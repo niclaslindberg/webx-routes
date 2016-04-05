@@ -1,7 +1,7 @@
 <?php
 
     return [
-        "responses" => [
+        "responseTypes" => [
             "WebX\\Routes\\Api\\ResponseTypes\\RawResponseType" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RawResponseTypeImpl"
             ],
@@ -28,7 +28,6 @@
                 ]
             ]
         ],
-        "controllers" => [],
         "ini" => [
             "dev" => [
                 ["display_errors",1],
@@ -37,13 +36,6 @@
             "prod" => [
                 ["display_errors",0],
                 ["error_reporting",0]
-            ]
-        ],
-        "deploy" => [
-            "directories" => [
-                "system" => "../",
-                "public" => "public/",
-                "config" => "config/"
             ]
         ]
     ];

@@ -77,7 +77,7 @@ class RoutesImpl implements Routes, ResponseWriter {
             if($refClass = $nonResolvable->unresolvedClass()) {
                 $class = $refClass->getName();
                 if(is_subclass_of($class, ResponseType::class, true) || ($class === ResponseType::class)) {
-                    $responseTypeConfiguration = $this->configuration->asReader("responses.{$class}");
+                    $responseTypeConfiguration = $this->configuration->asReader("responseTypes.{$class}");
                     if ($responseTypeClass = $responseTypeConfiguration->asString("class")) {
                         $responseImpl = $this->ioc->instantiate($responseTypeClass);
                         $responseImpl->{self::$CONFIG_KEY} = $responseTypeConfiguration->asReader("config");

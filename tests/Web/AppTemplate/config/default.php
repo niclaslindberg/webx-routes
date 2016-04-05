@@ -2,7 +2,7 @@
 
 return [
 
-    "responses" => [
+    "responseTypes" => [
         "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
             "config" => [
                 "configurator" => function(Twig_Environment $twig) {

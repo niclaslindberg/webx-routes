@@ -52,6 +52,20 @@ Routes supports the following ResponseTypes out of the box
 
 To implement your own ResponseType simply create an interface that extends `ResponseType` with an implementation configure it with `ioc/register` in a config file. See `bootstrap_config.php` of how to configure.
 
+Configuring your own `ResponseType`:
+```
+    return [
+        "responseTypes" => [
+            "YourNamespace\\YourResponseTypeInterface" => [
+                "class" => "YourNamespace\\YourResponseTypeClass",
+                "config" => [
+                    "yourSetting" => false // Will be available by Configuration to ResponseType.
+                ]
+            ]
+        ]
+    ]
+```
+
 
 
 ## Routing in Routes
