@@ -4,7 +4,7 @@ Main features and design goals of webx-routes:
 * Simplicity - Easy to follow request/response routes to business logic in a natural hierarchical model.
 * Scalability - never load unnecessary files
 * Dependency injection (IOC) everywhere.
-* Testability - clear separation of view  business objects
+* Testability - clear separation of view- and business objects by glueing it all together.
 
 ## Getting started
 
@@ -109,7 +109,7 @@ The following route switches are supported
 
         $routes->onAlways(function(Response $response) {
               $response->typeTemplate()->id("page");
-              $response->setContent(["name"=>"Mr. Andersson"],"user");
+              $response->setData(["name"=>"Mr. Andersson"],"user");
         })
 
     });
@@ -130,7 +130,7 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 
         $routes->onAlways(function(Response $response) {
               $response->templateType()->id("page");
-              $response->setContent(["name"=>"Mr. Andersson"],"user");
+              $response->setData(["name"=>"Mr. Andersson"],"user");
         })
 
     },"changetwig"]);
