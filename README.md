@@ -294,7 +294,7 @@ Full class names can be skipped by adding namespaces in the `namespaces` section
 ## Creating your own `ResponseType`
 To implement your own ResponseType simply create an interface that extends `ResponseType` with an implementation configure it with `ioc/register` in a config file. See `bootstrap_config.php` of how to configure.
 
-Configuring your own `ResponseType`:
+Configuring your own `ResponseType` in your config file:
 ```
     return [
         "responseTypes" => [
