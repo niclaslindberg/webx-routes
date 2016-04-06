@@ -63,7 +63,8 @@ Routes supports the following ResponseTypes out of the box
 
         $routes->onSegment("api",function(Routes $routes) {
 
-            $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) { // $version from RegExp
+            $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
+                                                                        // $version from RegExp
                 $routes->load("api_v{$version}");
             })->onAlways(Response $response) {
                 $response->data(["message"=>"Not a valid API call"]);
