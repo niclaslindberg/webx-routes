@@ -94,7 +94,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         });
         $this->ioc = $ioc;
         $this->request = new RequestImpl();
-        $this->response = new ResponseImpl();
+        $this->response = new ResponseImpl($ioc);
 
         $ioc->register($this);
         $ioc->register($this->request);

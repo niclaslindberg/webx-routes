@@ -8,6 +8,11 @@
 namespace WebX\Routes\Api;
 
 
+use WebX\Routes\Api\ResponseTypes\JsonResponseType;
+use WebX\Routes\Api\ResponseTypes\RawResponseType;
+use WebX\Routes\Api\ResponseTypes\StreamResponseType;
+use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
+
 interface Response
 {
     public function header($name, $value);
@@ -24,5 +29,35 @@ interface Response
     public function data($value, $path = null);
 
     public function type(ResponseType $responseType);
+
+    /**
+     * @return TemplateResponseType
+     */
+    public function typeTemplate();
+
+    /**
+     * @return RawResponseType
+     */
+    public function typeRaw();
+
+    /**
+     * @return JsonResponseType
+     */
+    public function typeJson();
+
+    /**
+     * @return StreamResponseType
+     */
+    public function typeStream();
+
+    /**
+     * @return DownloadResponseType
+     */
+    public function typeDownload();
+
+    /**
+     * @return RedirectResponseType
+     */
+    public function typeRedirect();
 
 }

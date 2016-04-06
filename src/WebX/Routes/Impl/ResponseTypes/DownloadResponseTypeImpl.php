@@ -11,15 +11,15 @@ use WebX\Routes\Api\ResponseWriter;
 class DownloadResponseTypeImpl implements DownloadResponseType
 {
     private $fileName;
-    private $contentType = "application/octet-stream";
+    private $contentType;
     private $disposition = DownloadResponseType::DISPOSITION_ATTACHMENT;
 
     public function __construct() {}
 
     public function prepare(Request $request, Response $response)
     {
-        $response->header("Content-Disposition: {$this->disposition};filename={$this->fileName}");
-        $response->header("Content-Type: {$this->contentType}");
+        $response->header("Content-Disposition", "{$this->disposition};filename={$this->fileName}");
+        $response->header("Content-Type", $this->contentType ?: "application/octet-stream");
     }
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)

@@ -9,10 +9,15 @@ require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
 RoutesBootstrap::run([function(Routes $routes){
 
-        $routes->onSegment("1",function(Response $response, TemplateResponseType $responseType) {
+        $routes->onSegment("viaResponseType",function(Response $response, TemplateResponseType $responseType) {
             $response->data(["value1"=>"a"]);
-            $response->type($responseType->template("main"));
+            $response->type($responseType->id("main"));
+        })->onSegment("viaResponse",function(Response $response) {
+            $response->data(["value1"=>"b"]);
+            $response->typeTemplate()->id("main");
         });
+
+
 
 },"default"],["home"=>"/"]);
 

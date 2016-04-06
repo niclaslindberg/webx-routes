@@ -18,8 +18,9 @@ class TemplateResponseTypeImpl implements TemplateResponseType
 {
     private $contentType;
 
-    private $template;
+    private $id;
 
+    private $prefix;
     /**
      * @var ResourceLoader
      */
@@ -40,31 +41,38 @@ class TemplateResponseTypeImpl implements TemplateResponseType
         $data = is_array($data) ? $data : [];
         $templatesDir = $configuration->asString("templatesDir");
         if ($templatePath = $this->resourceLoader->absolutePath($templatesDir)) {
-            if ($this->template) {
+            if ($this->id) {
                 $loader = new \Twig_Loader_Filesystem($templatePath);
                 $twig = new \Twig_Environment($loader, $configuration->asArray("options", []));
                 if ($configurator = $configuration->asAny("configurator")) {
                     call_user_func_array($configurator, [$twig]);
                 }
                 $suffix = $configuration->asString("suffix");
-                $responseWriter->addContent($twig->render("{$this->template}.{$suffix}", $data));
+                $prefix = $this->prefix ?: "";
+                $responseWriter->addContent($twig->render("{$prefix}{$this->id}.{$suffix}", $data));
             } else {
-                throw new ResponseException("Template not set in TemplateResponse");
+                throw new ResponseException("Id missing in TemplateResponse");
             }
         } else {
             throw new ResponseException(sprintf("The templates folder %s does not exist", $templatesDir));
         }
     }
 
-    public function template($template)
+    public function id($template)
     {
-        $this->template = $template;
+        $this->id = $template;
         return $this;
     }
 
     public function contentType($contentType)
     {
         $this->contentType = $contentType;
+        return $this;
+    }
+
+    public function prefix($prefix)
+    {
+        $this->prefix = $prefix;
         return $this;
     }
 

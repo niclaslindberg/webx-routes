@@ -1,12 +1,12 @@
 # WebX-Routes - A PHP controller framework
 
 Main features and design goals of webx-routes:
-* Simplicity
-* Testability
+* Simplicity - Easy to follow request/response routes to business log in a natural hierarchical model.
+* Scalability - never load unnecessary files
 * Dependency injection (IOC) everywhere.
-* Contextual (lazy) configuration loading.
+* Testability - clear separation of view  business objects
 
-## Get started
+## Getting started
 
 In `composer.json` add:
 
@@ -24,14 +24,16 @@ In `composer.json` add:
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Response;
 
-    require_once "../vendor/autoload.php";
+    require_once "../vendor/autoload.php"; // $_SERVER["DOCUMENT_ROOT"] points to 'public' folder.
 
     RoutesBootstrap::run(function(Response $response) {
+        $response->typeJson();                                  // Default
         $response->data(["name" => "Mr. Andersson"],"user");
         $response->data(1998,"user.popular");
     });
 ```
-Will produce JSON:
+
+Will generate JSON response:
 ```php
     {
         "user" : {
@@ -79,14 +81,14 @@ Configuring your own `ResponseType`:
 
         $routes->onSegment("api",function(Routes $routes) {
 
-            $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
+            $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) { // $version from RegExp
                 $routes->load("api_v{$version}");
             })->onAlways(Response $response) {
                 $response->data(["message"=>"Not a valid API call"]);
             });
 
-        })->onAlways(function(Response $response, RawResponseType $responseType){
-            $response->type($responseType)
+        })->onAlways(function(Response $response){
+            $response->typeRaw();
             $response->data("Sorry, page not found.");
             $response->status(404);
 
@@ -122,8 +124,8 @@ The following route switches are supported
 
     RoutesBootstrap::run(function(Routes $routes) {
 
-        $routes->onAlways(function(Response $response, TemplateResponseType $responseType) {
-              $response->type($responseType->template("page"));
+        $routes->onAlways(function(Response $response) {
+              $response->typeTemplate()->id("page");
               $response->setContent(["name"=>"Mr. Andersson"],"user");
         })
 
@@ -143,8 +145,8 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 
     RoutesBootstrap::run([function(Routes $routes) {
 
-        $routes->onAlways(function(Response $response, TemplateResponseType $responseType) {
-              $response->type($responseType->template("page"));
+        $routes->onAlways(function(Response $response) {
+              $response->templateType()->id("page");
               $response->setContent(["name"=>"Mr. Andersson"],"user");
         })
 

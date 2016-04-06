@@ -25,8 +25,16 @@ class WebServerTemplateTest extends \PHPUnit_Framework_TestCase
 
     public function test() {
         $server = self::$server;
-        $response = $server->get_contents("/1");
+        $response = $server->get_contents("/viaResponseType");
         $this->assertEquals("a",$response);
 
     }
+
+    public function testViaResponse() {
+        $server = self::$server;
+        $response = $server->get_contents("/viaResponse");
+        $this->assertEquals("b",$response);
+
+    }
+
 }

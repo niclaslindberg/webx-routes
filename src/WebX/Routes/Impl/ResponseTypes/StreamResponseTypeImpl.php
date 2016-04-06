@@ -22,7 +22,7 @@ class StreamResponseTypeImpl implements StreamResponseType
 
     public function prepare(Request $request, Response $response)
     {
-        $response->header("Content-Type",$this->contentType ?: "application/stream-octet");
+        $response->header("Content-Type",$this->contentType ?: "application/octet-stream");
     }
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)

@@ -9,7 +9,7 @@ interface RawResponseType extends ResponseType
 {
 
     /**
-     * @param $contentType
+     * @param $contentType default is text/html; charset=utf8
      * @return RawResponseType
      */
     public function contentType($contentType);

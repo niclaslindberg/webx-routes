@@ -9,11 +9,11 @@ use WebX\Routes\Api\ResponseWriter;
 
 class JsonResponseTypeImpl implements JsonResponseType
 {
-    private $contentType = "application/json; charset=utf-8";
+    private $contentType;
 
     public function prepare(Request $request, Response $response)
     {
-        $response->header("Content-Type",$this->contentType);
+        $response->header("Content-Type",$this->contentType ?: "application/json; charset=utf-8");
     }
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)

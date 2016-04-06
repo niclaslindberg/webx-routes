@@ -3,10 +3,22 @@
 namespace WebX\Routes\Impl;
 
 
+use WebX\Ioc\Ioc;
+use WebX\Routes\Api\DownloadResponseType;
+use WebX\Routes\Api\RedirectResponseType;
 use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseType;
+use WebX\Routes\Api\ResponseTypes\JsonResponseType;
+use WebX\Routes\Api\ResponseTypes\RawResponseType;
+use WebX\Routes\Api\ResponseTypes\StreamResponseType;
+use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
 class ResponseImpl implements Response {
+
+    /**
+     * @var Ioc
+     */
+    private $ioc;
 
     public $data;
 
@@ -22,6 +34,10 @@ class ResponseImpl implements Response {
     public $responseType;
 
     public $hasResponse = false;
+
+    public function __construct(Ioc $ioc) {
+        $this->ioc = $ioc;
+    }
 
     public function data($data, $path = null)
     {
@@ -69,4 +85,36 @@ class ResponseImpl implements Response {
     {
         $this->responseType = $responseType;
     }
+
+    public function typeTemplate()
+    {
+        return $this->responseType = $this->ioc->get(TemplateResponseType::class);
+    }
+
+    public function typeRaw()
+    {
+        return $this->responseType = $this->ioc->get(RawResponseType::class);
+    }
+
+    public function typeJson()
+    {
+        return $this->responseType = $this->ioc->get(JsonResponseType::class);
+    }
+
+    public function typeStream()
+    {
+        return $this->responseType = $this->ioc->get(StreamResponseType::class);
+    }
+
+    public function typeDownload()
+    {
+        return $this->responseType = $this->ioc->get(DownloadResponseType::class);
+    }
+
+    public function typeRedirect()
+    {
+        return $this->responseType = $this->ioc->get(RedirectResponseType::class);
+    }
+
+
 }
