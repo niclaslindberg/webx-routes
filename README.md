@@ -1,7 +1,7 @@
 # WebX-Routes - A PHP controller framework
 
 Main features and design goals of webx-routes:
-* Simplicity - Easy to follow request/response routes to business log in a natural hierarchical model.
+* Simplicity - Easy to follow request/response routes to business logic in a natural hierarchical model.
 * Scalability - never load unnecessary files
 * Dependency injection (IOC) everywhere.
 * Testability - clear separation of view  business objects
@@ -51,24 +51,6 @@ Routes supports the following ResponseTypes out of the box
 * `DownloadResponseType` Renders data as a downloadable file.
 * `RedirectResponseType` 301 or 302 redirect to a different url.
 * `StreamResponseType` Repeatedly renders the output of a `Closure` until `null` is returned.
-
-To implement your own ResponseType simply create an interface that extends `ResponseType` with an implementation configure it with `ioc/register` in a config file. See `bootstrap_config.php` of how to configure.
-
-Configuring your own `ResponseType`:
-```
-    return [
-        "responseTypes" => [
-            "YourNamespace\\YourResponseTypeInterface" => [
-                "class" => "YourNamespace\\YourResponseTypeClass",
-                "config" => [
-                    "yourSetting" => false // Will be available by Configuration to ResponseType.
-                ]
-            ]
-        ]
-    ]
-```
-
-
 
 ## Routing in Routes
 ```php
@@ -308,6 +290,24 @@ Full class names can be skipped by adding namespaces in the `namespaces` section
         "namespaces" => ["MyBusiness\\Controllers"]
     ]
 ```
+
+## Creating your own `ResponseType`
+To implement your own ResponseType simply create an interface that extends `ResponseType` with an implementation configure it with `ioc/register` in a config file. See `bootstrap_config.php` of how to configure.
+
+Configuring your own `ResponseType`:
+```
+    return [
+        "responseTypes" => [
+            "YourNamespace\\YourResponseTypeInterface" => [
+                "class" => "YourNamespace\\YourResponseTypeClass",
+                "config" => [
+                    "yourSetting" => false // Will be available by Configuration to ResponseType.
+                ]
+            ]
+        ]
+    ]
+```
+
 
 ### Configuring Routes
 Standard configuration in Routes is based on the applications directory relativly to the `$_SERVER['DOCUMENT_ROOT']`.
