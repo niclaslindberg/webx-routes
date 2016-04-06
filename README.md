@@ -101,7 +101,6 @@ The following route switches are supported
 
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
-    use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Response;
     use WebX\Routes\Api\Request;
 
