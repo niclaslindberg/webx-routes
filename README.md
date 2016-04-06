@@ -18,7 +18,7 @@ In `composer.json` add:
  }
 ```
 
-## Writing your first Routes index.php
+## Writing your first Routes index.php `public/index.php`
 
 ```php
     use WebX\Routes\Api\RoutesBootstrap;
@@ -57,15 +57,14 @@ Routes supports the following ResponseTypes out of the box
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Response;
-    use WebX\Routes\Api\ResponseTypes\RawResponseType;
 
     RoutesBootstrap::run(function(Routes $routes) {
 
         $routes->onSegment("api",function(Routes $routes) {
 
             $routes->onMatch("v(?P<version>\d+)$",function(Routes $routes,$version) {
-                                                                        // $version from RegExp
-                $routes->load("api_v{$version}");
+                $routes->load("api_v{$version}");                      // $version from RegExp
+
             })->onAlways(Response $response) {
                 $response->data(["message"=>"Not a valid API call"]);
             });
@@ -79,7 +78,7 @@ Routes supports the following ResponseTypes out of the box
     });
 ```
 ### Route switches:
-Route switches are evaluated top-down. If a route-switch is executed no further switches are evaluated and executed.
+Route switches are evaluated top-down. If a route-switch is executed no further switches, in same the scope, are evaluated and executed.
 
 The following route switches are supported
 * `onAlways($action)` Executes without evaluation.
@@ -95,6 +94,7 @@ The following route switches are supported
     <html>
         <body>
             <h1>Welcome {{user.name}}</h1>
+            Your input was {{input}}
         </body>
     </html>
 ```
@@ -103,15 +103,12 @@ The following route switches are supported
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Response;
-    use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
+    use WebX\Routes\Api\Request;
 
-    RoutesBootstrap::run(function(Routes $routes) {
-
-        $routes->onAlways(function(Response $response) {
-              $response->typeTemplate()->id("page");
-              $response->setData(["name"=>"Mr. Andersson"],"user");
-        })
-
+    RoutesBootstrap::run(function(Response $response, Request $request) {
+          $response->typeTemplate()->id("page");
+          $response->setData(["name"=>"Mr. Andersson"],"user");
+          $response->setData($request->parameter("input"), "input");
     });
 ```
 
@@ -124,7 +121,6 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
     use WebX\Routes\Api\RoutesBootstrap;
     use WebX\Routes\Api\Routes;
     use WebX\Routes\Api\Response;
-    use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
     RoutesBootstrap::run([function(Routes $routes) {
 
