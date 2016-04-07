@@ -111,6 +111,22 @@ The following route switches are supported
     });
 ```
 
+## Reading input
+Routes provides a unified and type-safe way to read request input from query parameters and json- form-encoded requests.
+
+```php
+    use WebX\Routes\Api\RoutesBootstrap;
+    use WebX\Routes\Api\Response;
+    use WebX\Routes\Api\Request;
+
+    RoutesBootstrap::run(function(Response $response, Request $request) {
+          $response->typeTemplate()->id("page");
+          $name = $request->requestReader(Request::READ_BODY_AS_FORM_ENCODED)->asString("name");
+          $response->setData(["name"=>$name,"user");
+    });
+```
+
+
 ### Configuring Twig
 
 Load a configuration `changetwig` (can be any name) at Bootstrap time.
