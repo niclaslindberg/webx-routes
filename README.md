@@ -120,9 +120,9 @@ Routes provides a unified and type-safe way to read request input from query par
     use WebX\Routes\Api\Request;
 
     RoutesBootstrap::run(function(Response $response, Request $request) {
-          $response->typeTemplate()->id("page");
+          $response->typeJson();
           $name = $request->reader(Request::INPUT_AS_JSON)->asString("user.name");
-          $response->setData(["name"=>$name],"user");
+          $response->setData(["greeting"=>"Hello, {$name}"]);
     });
 ```
 
