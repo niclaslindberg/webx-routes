@@ -121,7 +121,7 @@ Routes provides a unified and type-safe way to read request input from query par
 
     RoutesBootstrap::run(function(Response $response, Request $request) {
           $response->typeTemplate()->id("page");
-          $name = $request->reader(Request::INPUT_AS_FORMENCODED)->asString("name");
+          $name = $request->reader(Request::INPUT_AS_JSON)->asString("user.name");
           $response->setData(["name"=>$name],"user");
     });
 ```
