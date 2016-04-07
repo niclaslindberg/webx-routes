@@ -15,7 +15,7 @@ RoutesBootstrap::run([function(Routes $routes){
 
     $routes->onSegment("queryParameter",function(Response $response, Request $request) {
         $response->typeRaw();
-        $response->data($request->requestReader(Request::READ_QUERY_PARAMETERS)->asString("param"));
+        $response->data($request->reader(Request::INPUT_AS_QUERY)->asString("param"));
     });
 
 

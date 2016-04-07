@@ -64,19 +64,19 @@ class RequestImpl implements Request {
         return $this->bodyCache;
     }
 
-    public function requestReader($inputFormat)
+    public function reader($inputFormat)
     {
         if($inputFormat!==null) {
             $inputFormats = is_array($inputFormat) ? $inputFormat : [$inputFormat];
             $reader = new ConfigurationImpl();
             foreach ($inputFormats as $inputFormat) {
-                if ($inputFormat === Request::READ_BODY_AS_JSON) {
+                if ($inputFormat === Request::INPUT_AS_JSON) {
                     $reader->pushArray(json_decode($this->body(), true) ?: []);
-                } else if ($inputFormat === Request::READ_BODY_AS_FORM_ENCODED) {
+                } else if ($inputFormat === Request::INPUT_AS_FORMENCODED) {
                     $array = [];
                     parse_str($this->body(), $array);
                     $reader->push($array);
-                } else if ($inputFormat === Request::READ_QUERY_PARAMETERS) {
+                } else if ($inputFormat === Request::INPUT_AS_QUERY) {
                     $reader->pushArray($_GET);
                 } else {
                     throw new RoutesException("Unknown input format for requestReader:{$inputFormat}");
