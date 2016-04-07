@@ -4,12 +4,12 @@ namespace WebX\Routes\Impl;
 
 
 use WebX\Ioc\Ioc;
-use WebX\Routes\Api\DownloadResponseType;
-use WebX\Routes\Api\RedirectResponseType;
 use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseType;
+use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseTypes\RawResponseType;
+use WebX\Routes\Api\ResponseTypes\RedirectResponseType;
 use WebX\Routes\Api\ResponseTypes\StreamResponseType;
 use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 

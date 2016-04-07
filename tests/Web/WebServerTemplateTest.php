@@ -15,7 +15,7 @@ class WebServerTemplateTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass() {
        self::$server = new WebServer(__DIR__ . "/AppTemplate/index.php");
-        #sleep(5000);
+       # sleep(5000);
     }
 
     public static function tearDownAfterClass() {
@@ -34,7 +34,11 @@ class WebServerTemplateTest extends \PHPUnit_Framework_TestCase
         $server = self::$server;
         $response = $server->get_contents("/viaResponse");
         $this->assertEquals("b",$response);
-
     }
 
+    public function testEmpty() {
+        $server = self::$server;
+        $response = $server->get_contents("/emptyTemplate");
+        $this->assertEquals("emptyresult",$response);
+    }
 }

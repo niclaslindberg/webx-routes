@@ -15,6 +15,8 @@ RoutesBootstrap::run([function(Routes $routes){
         })->onSegment("viaResponse",function(Response $response) {
             $response->data(["value1"=>"b"]);
             $response->typeTemplate()->id("main");
+        })->onSegment("emptyTemplate",function(Response $response) {
+            $response->typeTemplate()->id("empty");
         });
 
 

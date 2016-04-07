@@ -8,8 +8,10 @@
 namespace WebX\Routes\Api;
 
 
+use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseTypes\RawResponseType;
+use WebX\Routes\Api\ResponseTypes\RedirectResponseType;
 use WebX\Routes\Api\ResponseTypes\StreamResponseType;
 use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 

@@ -24,8 +24,8 @@ class DownloadResponseTypeImpl implements DownloadResponseType
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)
     {
-        if(is_scalar($this->data)) {
-            $responseWriter->addContent($this->data);
+        if(is_scalar($data)) {
+            $responseWriter->addContent($data);
         } else {
             throw new ResponseException("No valid data to render");
         }
