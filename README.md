@@ -159,7 +159,10 @@ Override the setting for `TemplateResponseType` to add a configurator for Twig
                             'tag_variable'  => array('{{{', '}}}')
                         ));
                         $twig->setLexer($lexer);
-                    }
+                    },
+                    "options" => [    // Passed as second argument to Twig_Environment
+                        "cache" => "/tmp/twig_cache"
+                    ]
                 ]
             ]
         ]
