@@ -16,7 +16,7 @@ RoutesBootstrap::run(function(Routes $routes) {
                 $response->typeRaw();
                 $response->data("The target");
         })->onSegment("download",function(Response $response) {
-                $response->typeDownload()->fileName("readme.txt")->contentType("text/plain");
+                $response->typeDownload()->fileName("readme.js");
                 $response->data("Read this.");
         });
 ;

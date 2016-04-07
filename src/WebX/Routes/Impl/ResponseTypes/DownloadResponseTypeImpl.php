@@ -19,7 +19,7 @@ class DownloadResponseTypeImpl implements DownloadResponseType
     public function prepare(Request $request, Response $response)
     {
         $response->header("Content-Disposition", "{$this->disposition};filename={$this->fileName}");
-        $response->header("Content-Type", $this->contentType ?: "application/octet-stream");
+        $response->header("Content-Type", $this->contentType ?: (FilenameMimetypeFactory::findMimeType($this->fileName) ?: "application/octet-stream"));
     }
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)
