@@ -33,7 +33,10 @@ class TemplateResponseTypeImpl implements TemplateResponseType
 
     public function prepare(Request $request, Response $response)
     {
-        $response->header("Content-Type", $this->contentType ?: "text/html; charset=utf8");
+        if($this->id) {
+            $response->header("Content-Type", $this->contentType ?: "text/html; charset=utf8");
+            $response->status(200);
+        }
     }
 
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)

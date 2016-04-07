@@ -101,7 +101,6 @@ class RoutesImpl implements Routes, ResponseWriter {
         $ioc->register($this->response);
         $ioc->register($this->configuration);
         $ioc->register($this->resourceLoader);
-        $this->nop = new RoutesForNop();
     }
 
     private function pushConfiguration($config) {
@@ -221,12 +220,21 @@ class RoutesImpl implements Routes, ResponseWriter {
                 $this->popConfiguration(count($configCount));
             }
         }
-        return $this->hasResponse() ? $this->nop : $this;
+        return $this->hasResponse() ? ($this->nop ?: ($this->nop = new RoutesForNop())) : $this;
     }
 
     public function render()
     {
         $response = $this->response;
+        if($responseType = $this->response->responseType) {
+            $responseType->prepare($this->request, $response);
+        } else {
+            if($response->data!==null) {
+                $responseType = $this->ioc->get(JsonResponseType::class);
+                $responseType->prepare($this->request,$response);
+            }
+        }
+
         foreach ($response->headers as $name => $value) {
             header("{$name}:{$value}");
         }
@@ -234,8 +242,6 @@ class RoutesImpl implements Routes, ResponseWriter {
             setcookie($name, $data["value"]);
         }
         if($response->hasResponse) {
-            $responseType = $response->responseType ? $response->responseType : $this->ioc->get(JsonResponseType::class);
-            $responseType->prepare($this->request, $response);
             header("HTTP/1.1 " . implode(" ", $response->status ?: [200]));
             $responseType->render($responseType->{self::$CONFIG_KEY}, $this,$response->data);
         } else {
