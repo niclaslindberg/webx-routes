@@ -87,9 +87,9 @@ class RoutesImpl implements Routes, ResponseWriter {
                         throw new RoutesException("Could not find responseType implementation for {$class}");
                     }
                 }
-                if($param = $nonResolvable->unresolvedParameter()) {
-                    return $this->configuration->asAny("settings.{$param->getName()}");
-                }
+            }
+            if($param = $nonResolvable->unresolvedParameter()) {
+                return $this->configuration->asAny("settings.{$param->getName()}");
             }
         });
         $this->ioc = $ioc;
