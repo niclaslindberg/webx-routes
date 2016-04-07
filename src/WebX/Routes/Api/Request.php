@@ -4,8 +4,9 @@ namespace WebX\Routes\Api;
 
 interface Request {
 
-    const BODY_FORMAT_JSON = "json";
-    const BODY_FORMAT_FORM = "form";
+    const READ_BODY_AS_JSON = "json";
+    const READ_BODY_AS_FORM_ENCODED = "form";
+    const READ_QUERY_PARAMETERS = "query";
 
     /**
      * Returns $_SERVER['REQUEST_URIs']
@@ -20,17 +21,17 @@ interface Request {
     public function method();
 
     /**
-     * Returns the raw body
+     * The body of the request
      * @return string
      */
     public function body();
 
     /**
-     * Parses the request body and returns a Reader.
-     * @param string $bodyFormat
+     * A Reader for one ore more request input.
+     * @param string|string[] $bodyFormat (If array the reader will return the first non-null value in the order of declaration).
      * @return Reader
      */
-    public function bodyReader($bodyFormat);
+    public function requestReader($inputFormat);
 
     /**
      * Returns the value of the query parameter with the same id.

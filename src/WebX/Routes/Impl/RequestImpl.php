@@ -14,6 +14,7 @@ class RequestImpl implements Request {
 
     private $currentSegmentPos = null;
     private $segments;
+    private $bodyCache;
 
     public function nextSegment()
     {
@@ -57,22 +58,33 @@ class RequestImpl implements Request {
 
     public function body()
     {
-        return file_get_contents("php://input");
+        if(!$this->bodyCache) {
+            return $this->bodyCache = file_get_contents("php://input");
+        }
+        return $this->bodyCache;
     }
 
-    public function bodyReader($bodyFormat)
+    public function requestReader($inputFormat)
     {
-        $body = $this->body();
-        if($bodyFormat === Request::BODY_FORMAT_JSON) {
-            $json = json_decode($body,true);
-            return new ConfigurationImpl(json_decode(is_array($json) ? $json : [],true) ?: []);
-        } else if ($bodyFormat === Request::BODY_FORMAT_FORM) {
-            $array = [];
-            parse_str($body,$array);
-            return new ConfigurationImpl($array);
-        } else {
-            throw new RoutesException("Unknown body reader format {$bodyFormat}");
+        if($inputFormat!==null) {
+            $inputFormats = is_array($inputFormat) ? $inputFormat : [$inputFormat];
+            $reader = new ConfigurationImpl();
+            foreach ($inputFormats as $inputFormat) {
+                if ($inputFormat === Request::READ_BODY_AS_JSON) {
+                    $reader->pushArray(json_decode($this->body(), true) ?: []);
+                } else if ($inputFormat === Request::READ_BODY_AS_FORM_ENCODED) {
+                    $array = [];
+                    parse_str($this->body(), $array);
+                    $reader->push($array);
+                } else if ($inputFormat === Request::READ_QUERY_PARAMETERS) {
+                    $reader->pushArray($_GET);
+                } else {
+                    throw new RoutesException("Unknown input format for requestReader:{$inputFormat}");
+                }
+            }
+            return $reader;
         }
+        throw new RoutesException("Missing input format for requestReader");
     }
 
 

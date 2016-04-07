@@ -25,7 +25,7 @@ class WebServer
         $this->cmd = "php -S localhost:{$this->port} -t " . $rootDir;
         #echo($this->cmd);
         $this->start();
-        usleep(20*1000);
+        usleep(200*1000);
 
     }
 

@@ -14,8 +14,8 @@ class ConfigurationImpl implements Configuration {
      */
     private $settings;
 
-    public function __construct($rootConfig) {
-        $this->settings = [$rootConfig];
+    public function __construct($rootConfig = null) {
+        $this->settings = $rootConfig ? [$rootConfig] : [];
     }
 
     public function asAny($key, $default = null)

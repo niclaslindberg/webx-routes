@@ -22,6 +22,15 @@ class WebServerEchoTest extends \PHPUnit_Framework_TestCase
         self::$server->stop();
     }
 
+    public function testRequestReaderQueryParameter() {
+        $server = self::$server;
+
+        $r11 = $server->get_contents("/queryParameter?param=xyz");
+        $this->assertEquals("xyz", $r11);
+
+    }
+
+
     public function test() {
         $server = self::$server;
 
@@ -29,5 +38,6 @@ class WebServerEchoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("/url/abc", $r11);
 
     }
+
 
 }
