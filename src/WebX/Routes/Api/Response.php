@@ -48,11 +48,6 @@ interface Response
     public function typeJson();
 
     /**
-     * @return StreamResponseType
-     */
-    public function typeStream();
-
-    /**
      * @return DownloadResponseType
      */
     public function typeDownload();

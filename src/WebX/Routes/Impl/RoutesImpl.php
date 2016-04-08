@@ -251,6 +251,7 @@ class RoutesImpl implements Routes, ResponseWriter {
 
     public function addContent($content)
     {
+
         echo($content);
     }
 

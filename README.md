@@ -50,7 +50,6 @@ Routes supports the following ResponseTypes out of the box
 * `RawResponseType` Renders data as is.
 * `DownloadResponseType` Renders data as a downloadable file.
 * `RedirectResponseType` 301 or 302 redirect to a different url.
-* `StreamResponseType` Repeatedly renders the output of a `Closure` until `null` is returned.
 
 ## Routing in Routes
 ```php

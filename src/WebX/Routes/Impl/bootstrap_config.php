@@ -17,9 +17,6 @@
             "WebX\\Routes\\Api\\ResponseTypes\\DownloadResponseType" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseTypes\\DownloadResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\StreamResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\StreamResponseTypeImpl"
-            ],
             "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseTypes\\TemplateResponseTypeImpl",
                 "config" => [

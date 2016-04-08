@@ -10,7 +10,6 @@ use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseTypes\RawResponseType;
 use WebX\Routes\Api\ResponseTypes\RedirectResponseType;
-use WebX\Routes\Api\ResponseTypes\StreamResponseType;
 use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 
 class ResponseImpl implements Response {
@@ -99,11 +98,6 @@ class ResponseImpl implements Response {
     public function typeJson()
     {
         return $this->responseType = $this->ioc->get(JsonResponseType::class);
-    }
-
-    public function typeStream()
-    {
-        return $this->responseType = $this->ioc->get(StreamResponseType::class);
     }
 
     public function typeDownload()
