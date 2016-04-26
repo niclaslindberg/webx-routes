@@ -150,7 +150,7 @@ Override the setting for `TemplateResponseType` to add a configurator for Twig
 `config/changetwig.php`:
 ```php
     return [
-        "responses" => [
+        "responseTypes" => [
             "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
                 "config" => [
                     "configurator" => function(Twig_Environment $twig) {
