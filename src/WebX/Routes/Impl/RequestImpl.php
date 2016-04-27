@@ -46,7 +46,7 @@ class RequestImpl implements Request {
 
     public function path() {
         if(!$this->path) {
-            $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $this->path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
         return $this->path;
     }

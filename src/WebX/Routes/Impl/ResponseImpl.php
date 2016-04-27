@@ -7,10 +7,12 @@ use WebX\Ioc\Ioc;
 use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseType;
 use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
+use WebX\Routes\Api\ResponseTypes\FileContentResponseType;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseTypes\RawResponseType;
 use WebX\Routes\Api\ResponseTypes\RedirectResponseType;
 use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
+use WebX\Routes\Api\RoutesException;
 
 class ResponseImpl implements Response {
 
@@ -82,33 +84,52 @@ class ResponseImpl implements Response {
 
     public function type(ResponseType $responseType)
     {
+        $this->hasResponse = true;
         $this->responseType = $responseType;
     }
 
     public function typeTemplate()
     {
+        $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(TemplateResponseType::class);
     }
 
     public function typeRaw()
     {
+        $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(RawResponseType::class);
     }
 
-    public function typeJson()
+    public function typeJson($data=null)
     {
+        if($data) {
+            $this->data($data);
+        }
+        $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(JsonResponseType::class);
     }
 
     public function typeDownload()
     {
+        $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(DownloadResponseType::class);
     }
 
     public function typeRedirect()
     {
+        $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(RedirectResponseType::class);
     }
+
+    public function typeFileContent($file=null)
+    {
+        $this->hasResponse = true;
+        $fileContentResponseType = $this->ioc->get(FileContentResponseType::class);
+        if($file) {
+            $fileContentResponseType->file($file);
+        }
+        return $this->responseType = $fileContentResponseType;
+   }
 
 
 }

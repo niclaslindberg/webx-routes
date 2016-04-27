@@ -27,9 +27,12 @@ In `composer.json` add:
     require_once "../vendor/autoload.php"; // $_SERVER["DOCUMENT_ROOT"] points to 'public' folder.
 
     RoutesBootstrap::run(function(Response $response) {
-        $response->typeJson();                                  // Default
-        $response->data(["name" => "Mr. Andersson"],"user");
-        $response->data(1998,"user.popular");
+        $response->typeJson([
+            "user" =>
+                ["name" => "Mr. Andersson"]
+            ]
+        ]);
+        $response->data(1998,"user.popular"); //Merges the data into 'user.popular'
     });
 ```
 
@@ -50,6 +53,7 @@ Routes supports the following ResponseTypes out of the box
 * `RawResponseType` Renders data as is.
 * `DownloadResponseType` Renders data as a downloadable file.
 * `RedirectResponseType` 301 or 302 redirect to a different url.
+* `FileContent` Sends a file's content to browser with auto detecting content-type.
 
 ## Routing in Routes
 ```php
@@ -65,7 +69,7 @@ Routes supports the following ResponseTypes out of the box
                 $routes->load("api_v{$version}");                      // $version from RegExp
 
             })->onAlways(Response $response) {
-                $response->data(["message"=>"Not a valid API call"]);
+                $response->typeJson(["message"=>"Not a valid API call"]);
             });
 
         })->onAlways(function(Response $response){
@@ -105,8 +109,8 @@ The following route switches are supported
 
     RoutesBootstrap::run(function(Response $response, Request $request) {
           $response->typeTemplate()->id("page");
-          $response->setData(["name"=>"Mr. Andersson"],"user");
-          $response->setData($request->parameter("input"), "input");
+          $response->data(["name"=>"Mr. Andersson"],"user");
+          $response->data($request->parameter("input"), "input");
     });
 ```
 
@@ -119,9 +123,8 @@ Routes provides a unified and type-safe way to read request input from query par
     use WebX\Routes\Api\Request;
 
     RoutesBootstrap::run(function(Response $response, Request $request) {
-          $response->typeJson();
-          $name = $request->reader(Request::INPUT_AS_JSON)->asString("user.name");
-          $response->setData(["greeting"=>"Hello, {$name}"]);
+          $reader = $request->reader(Request::INPUT_AS_JSON);
+          $response->typeJson(["greeting"=>"Hello, {$reader->asString("user.name")}"]);
     });
 ```
 
@@ -140,7 +143,7 @@ Example: To change Twigs tag-delimeters to `{{{` and `}}}` (To simplify mixed An
 
         $routes->onAlways(function(Response $response) {
               $response->templateType()->id("page");
-              $response->setData(["name"=>"Mr. Andersson"],"user");
+              $response->data(["name"=>"Mr. Andersson"],"user");
         })
 
     },"changetwig"]);

@@ -1,14 +1,16 @@
 <?php
 
-namespace Test\WebX\Web;
+namespace Test\WebX\Internal;
 
 
 use WebX\Routes\Impl\ConfigurationImpl;
 
+/**
+ * Class ConfigurationTest
+ * @package Test\WebX\Internal
+ */
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
-
-
 
     public function testConfigurationMergedIntRead() {
 

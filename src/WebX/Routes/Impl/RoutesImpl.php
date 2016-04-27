@@ -243,7 +243,9 @@ class RoutesImpl implements Routes, ResponseWriter {
         }
         if($response->hasResponse) {
             header("HTTP/1.1 " . implode(" ", $response->status ?: [200]));
-            $responseType->render($responseType->{self::$CONFIG_KEY}, $this,$response->data);
+            if($responseType) {
+                $responseType->render($responseType->{self::$CONFIG_KEY}, $this, $response->data);
+            }
         } else {
             header("HTTP/1.1 404");
         }

@@ -43,9 +43,10 @@ interface Response
     public function typeRaw();
 
     /**
+     * @param mixed $data Shortcut to Response::data()
      * @return JsonResponseType
      */
-    public function typeJson();
+    public function typeJson($data=null);
 
     /**
      * @return DownloadResponseType
@@ -56,5 +57,11 @@ interface Response
      * @return RedirectResponseType
      */
     public function typeRedirect();
+
+    /**
+     * @param string $file Shortcut for FileContentResponseType::file (optional)
+     * @return FIleContentResponseType
+     */
+    public function typeFileContent($file=null);
 
 }

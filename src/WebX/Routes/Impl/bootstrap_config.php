@@ -14,6 +14,9 @@
             "WebX\\Routes\\Api\\ResponseTypes\\RedirectResponseType" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RedirectResponseTypeImpl"
             ],
+            "WebX\\Routes\\Api\\ResponseTypes\\FileContentResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\FileContentResponseTypeImpl"
+            ],
             "WebX\\Routes\\Api\\ResponseTypes\\DownloadResponseType" => [
                 "class" => "WebX\\Routes\\Impl\\ResponseTypes\\DownloadResponseTypeImpl"
             ],

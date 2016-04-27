@@ -53,7 +53,7 @@ interface Reader
      * @param array|null $default
      * @return array|null
      */
-    public function asArray($key,$default = null);
+    public function asArray($key=null,$default = null);
 
 
     /**

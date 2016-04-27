@@ -64,7 +64,7 @@ class ConfigurationImpl implements Configuration {
         return $default;
     }
 
-    public function asArray($key, $default = null)
+    public function asArray($key=null, $default = null)
     {
         $result = [];
         foreach (array_reverse($this->settings) as $settings) {
@@ -123,9 +123,11 @@ class ConfigurationImpl implements Configuration {
         return null;
     }
 
-    private static function get($path,array $array){
+    private static function get($path=null,array $array){
         if(is_string($path)) {
-            $path = explode(".",$path);
+            $path = explode(".", $path);
+        } else if ($path===null) {
+            return $array;
         } else if (!is_array($path)) {
             throw new RoutesException("\$path in reader must be either a '.'-notated string or an array of path segments.");
         }
