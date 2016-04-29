@@ -205,12 +205,17 @@ class RoutesImpl implements Routes, ResponseWriter {
                 $configs = $action;
                 $action = array_shift($configs);
                 foreach ($configs as $configId) {
-                    $configFile = "config/{$configId}.php";
-                    if (false !== ($completePath = $this->resourceLoader->absolutePath($configFile))) {
-                        $this->pushConfiguration(require $completePath);
+                    if(is_string($configId)) {
+                        $configFile = "config/{$configId}.php";
+                        if (false !== ($completePath = $this->resourceLoader->absolutePath($configFile))) {
+                            $this->pushConfiguration(require $completePath);
+                            $configCount++;
+                        } else {
+                            throw new RoutesException(sprintf("Could not load %s in %s", $configFile, json_encode($this->resourceLoader->rootPaths())));
+                        }
+                    } else if ($configId && is_array($configId)) {
+                        $this->pushConfiguration($configId);
                         $configCount++;
-                    } else {
-                        throw new RoutesException(sprintf("Could not load %s in %s", $configFile, json_encode($this->resourceLoader->rootPaths())));
                     }
                 }
             }
@@ -220,7 +225,7 @@ class RoutesImpl implements Routes, ResponseWriter {
                 if ($parameters && ($paramId = $refParam->getName() ?: $refParam->getPosition()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
                     $arguments[] = $p;
                 } else if ($refClass = $refParam->getClass()) {
-                    $arguments[] = $this->ioc->get($refClass->getName());
+                    $arguments[] = $this->ioc->get($refClass->getName(),$this->configuration->asString("mappings.{$refParam->getName()}"));
                 } else {
                     $arguments[] = $refParam->getDefaultValue();
                 }
