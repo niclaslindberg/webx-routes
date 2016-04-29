@@ -53,7 +53,7 @@ Routes supports the following ResponseTypes out of the box
 * `RawResponseType` Renders data as is.
 * `DownloadResponseType` Renders data as a downloadable file.
 * `RedirectResponseType` 301 or 302 redirect to a different url.
-* `FileContentResponseType` Sends a file's content to browser with auto detecting content-type.
+* `FileContent` Sends a file's content to browser with auto detecting content-type.
 
 ## Routing in Routes
 ```php

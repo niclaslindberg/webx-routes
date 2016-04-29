@@ -89,7 +89,18 @@ class RoutesImpl implements Routes, ResponseWriter {
                 }
             }
             if($param = $nonResolvable->unresolvedParameter()) {
-                return $this->configuration->asAny("settings.{$param->getName()}");
+                if($config = $nonResolvable->config()) {
+                    if($id = (isset($config["id"]) ? $config["id"] : null)) {
+                        if(NULL!==($value = $this->configuration->asAny(array_merge(["settings",$id,$param->getName()])))) {
+                            return $value;
+                        }
+                    }
+                } else if (NULL!==($value = $this->configuration->asAny(array_merge(["settings",$param->getDeclaringClass()->getName(),$param->getName()])))) {
+                    return $value;
+                } else if (NULL!==($value = $this->configuration->asAny(array_merge(["settings",$param->getName()])))) {
+                    return $value;
+                }
+                return NULL;
             }
         });
         $this->ioc = $ioc;
