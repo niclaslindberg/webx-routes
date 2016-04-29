@@ -254,6 +254,9 @@ return [
         "initStatic" => [ //
             [MyValueObject::class,"initMethod"] // The static "initMethod" will be invoked with declared dependencies.
         ]
+    ],
+    "mappings" => [
+        "closureParameterName" => "iocInstanceId"
     ]
 
 ]
