@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a459f2143e326430a3d8d3e18463bcfe",
-    "content-hash": "09fdebfa26dc2064372528150139851b",
+    "hash": "9d2f5ef68f55c0e93e33651a132b7645",
+    "content-hash": "93b28ae01ad59cb3d7e68622f25ea5c4",
     "packages": [
         {
             "name": "twig/twig",
@@ -70,16 +70,16 @@
         },
         {
             "name": "webx/ioc",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/niclaslindberg/webx-ioc.git",
-                "reference": "f92ac36039dc62915176fefa236d585c0fa6cd32"
+                "reference": "695e60d13c0f747012121a39178c0141bee4fef8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/f92ac36039dc62915176fefa236d585c0fa6cd32",
-                "reference": "f92ac36039dc62915176fefa236d585c0fa6cd32",
+                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/695e60d13c0f747012121a39178c0141bee4fef8",
+                "reference": "695e60d13c0f747012121a39178c0141bee4fef8",
                 "shasum": ""
             },
             "require-dev": {
@@ -107,7 +107,7 @@
                 "di",
                 "ioc"
             ],
-            "time": "2016-03-31 16:25:42"
+            "time": "2016-05-02 12:43:10"
         }
     ],
     "packages-dev": [
