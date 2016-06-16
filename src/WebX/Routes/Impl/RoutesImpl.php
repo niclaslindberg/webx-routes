@@ -255,7 +255,7 @@ class RoutesImpl implements Routes, ResponseWriter {
             header("{$name}:{$value}");
         }
         foreach ($response->cookies as $name => $data) {
-            setcookie($name, $data["value"]);
+            setcookie($name, $data["value"], $data["ttl"] ? $data["ttl"] + time() : 0, $data["path"]);
         }
         if($response->hasResponse) {
             header("HTTP/1.1 " . implode(" ", $response->status ?: [200]));

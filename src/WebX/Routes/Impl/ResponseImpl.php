@@ -72,7 +72,7 @@ class ResponseImpl implements Response {
         $this->cookies[$name] = [
             "value" => $value,
             "ttl" => $ttl,
-            "$path" => $path
+            "path" => $path
         ];
     }
 
