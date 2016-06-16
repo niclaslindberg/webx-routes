@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d127964d973472b65e21f041c04bd168",
-    "content-hash": "c15087ad5d73f23998e8a178c18d4da0",
+    "hash": "b78aed44cc07ee95d814a6c94c57ce61",
+    "content-hash": "6396ed29e849dbe2a8fd46e69cd75b18",
     "packages": [
         {
             "name": "twig/twig",
@@ -70,16 +70,16 @@
         },
         {
             "name": "webx/ioc",
-            "version": "1.3.5",
+            "version": "1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/niclaslindberg/webx-ioc.git",
-                "reference": "b2cdb32aaa868916ca7fb0f81a65e8e3a63df000"
+                "reference": "4064a4698b0d27c42c6367223e68fe9ef16fca7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/b2cdb32aaa868916ca7fb0f81a65e8e3a63df000",
-                "reference": "b2cdb32aaa868916ca7fb0f81a65e8e3a63df000",
+                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/4064a4698b0d27c42c6367223e68fe9ef16fca7a",
+                "reference": "4064a4698b0d27c42c6367223e68fe9ef16fca7a",
                 "shasum": ""
             },
             "require-dev": {
@@ -107,7 +107,7 @@
                 "di",
                 "ioc"
             ],
-            "time": "2016-06-16 07:01:42"
+            "time": "2016-06-16 07:41:30"
         }
     ],
     "packages-dev": [
