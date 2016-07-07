@@ -6,6 +6,7 @@ namespace WebX\Routes\Impl\ResponseTypes;
  * Date: 2/4/16
  * Time: 8:11 AM
  */
+use WebX\Ioc\Ioc;
 use WebX\Routes\Api\Configuration;
 use WebX\Routes\Api\Request;
 use WebX\Routes\Api\ResourceLoader;
@@ -26,9 +27,15 @@ class TemplateResponseTypeImpl implements TemplateResponseType
      */
     private $resourceLoader;
 
-    public function __construct(ResourceLoader $resourceLoader)
+    /**
+     * @var Ioc
+     */
+    private $ioc;
+
+    public function __construct(ResourceLoader $resourceLoader, Ioc $ioc)
     {
         $this->resourceLoader = $resourceLoader;
+        $this->ioc = $ioc;
     }
 
     public function prepare(Request $request, Response $response)
@@ -48,7 +55,11 @@ class TemplateResponseTypeImpl implements TemplateResponseType
                 $loader = new \Twig_Loader_Filesystem($templatePath);
                 $twig = new \Twig_Environment($loader, $configuration->asArray("options", []));
                 if ($configurator = $configuration->asAny("configurator")) {
-                    call_user_func_array($configurator, [$twig]);
+                    $this->ioc->invoke($configurator,[
+                        "parameters" => [
+                            "twig" => $twig
+                        ]
+                    ]);
                 }
                 $suffix = $configuration->asString("suffix");
                 $prefix = $this->prefix ?: "";

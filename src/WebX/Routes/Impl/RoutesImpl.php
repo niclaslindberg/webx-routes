@@ -84,7 +84,7 @@ class RoutesImpl implements Routes, ResponseWriter {
                         $ioc->register($responseImpl);
                         return $responseImpl;
                     } else {
-                        throw new RoutesException("Could not find responseType implementation for {$class}");
+                        throw new RoutesException("Could not find responseType class for ResponseTypeInterface {$class}.");
                     }
                 }
             }
@@ -112,6 +112,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         $ioc->register($this->response);
         $ioc->register($this->configuration);
         $ioc->register($this->resourceLoader);
+        $ioc->register($ioc);
     }
 
     private function pushConfiguration($config) {
@@ -125,8 +126,8 @@ class RoutesImpl implements Routes, ResponseWriter {
     }
 
     private function popConfiguration($n=1) {
-       $this->configuration->popArray($n);
-       $this->controllerFactory->popClassNamespaces($n);
+        $this->configuration->popArray($n);
+        $this->controllerFactory->popClassNamespaces($n);
     }
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
