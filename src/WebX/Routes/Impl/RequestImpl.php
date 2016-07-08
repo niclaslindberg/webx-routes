@@ -6,6 +6,7 @@ namespace WebX\Routes\Impl;
 use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\Request;
 use WebX\Routes\Api\RoutesException;
+use WebX\Routes\Api\the;
 
 class RequestImpl implements Request {
 
@@ -75,7 +76,7 @@ class RequestImpl implements Request {
                 } else if ($inputFormat === Request::INPUT_AS_FORMENCODED) {
                     $array = [];
                     parse_str($this->body(), $array);
-                    $reader->push($array);
+                    $reader->pushArray($array);
                 } else if ($inputFormat === Request::INPUT_AS_QUERY) {
                     $reader->pushArray($_GET);
                 } else {
@@ -92,5 +93,21 @@ class RequestImpl implements Request {
     {
         return isset($_COOKIE[$id]) ? $_COOKIE[$id] : null;
     }
+
+    public function host()
+    {
+        return $_SERVER["HTTP_HOST"];
+    }
+
+    public function protocol()
+    {
+        return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? "https" : "http";
+    }
+
+    public function fullPath($path = "")
+    {
+        return $this->protocol() . "://" . $this->host() . ($path ? "/" . ltrim($path,'/') : "");
+    }
+
 
 }

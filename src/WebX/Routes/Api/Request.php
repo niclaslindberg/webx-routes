@@ -57,6 +57,25 @@ interface Request {
 
     public function nextSegment();
 
+
+    /**
+     * @return string returns the protocol of the request (http|https).
+     */
+    public function protocol();
+    /**
+     * @return string the external host name.
+     */
+    public function host();
+
+
+    /**
+     * The full path, including protocol and host
+     * @param string $path
+     * @return string
+     */
+    public function fullPath($path = "");
+
+
 }
 
 ?>
