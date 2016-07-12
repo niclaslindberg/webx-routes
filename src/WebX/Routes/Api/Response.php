@@ -9,6 +9,7 @@ namespace WebX\Routes\Api;
 
 
 use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
+use WebX\Routes\Api\ResponseTypes\FileContentResponseType;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseTypes\RawResponseType;
 use WebX\Routes\Api\ResponseTypes\RedirectResponseType;
@@ -35,7 +36,7 @@ interface Response
     /**
      * @return TemplateResponseType
      */
-    public function typeTemplate();
+    public function typeTemplate($id=null);
 
     /**
      * @return RawResponseType
@@ -56,12 +57,19 @@ interface Response
     /**
      * @return RedirectResponseType
      */
-    public function typeRedirect();
+    public function typeRedirect($url=null);
 
     /**
      * @param string $file Shortcut for FileContentResponseType::file (optional)
-     * @return FIleContentResponseType
+     * @return FileContentResponseType
      */
     public function typeFileContent($file=null);
 
+    /**
+     * The current type set for this reponse
+     * @return ResponseType|null
+     */
+    public function currentResponseType();
+
+    public function currentStatus();
 }

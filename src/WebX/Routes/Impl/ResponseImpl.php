@@ -88,10 +88,14 @@ class ResponseImpl implements Response {
         $this->responseType = $responseType;
     }
 
-    public function typeTemplate()
+    public function typeTemplate($id=null)
     {
         $this->hasResponse = true;
-        return $this->responseType = $this->ioc->get(TemplateResponseType::class);
+        $templateResponseType = $this->ioc->get(TemplateResponseType::class);
+        if($id) {
+            $templateResponseType->id($id);
+        }
+        return $this->responseType = $templateResponseType;
     }
 
     public function typeRaw()
@@ -115,10 +119,14 @@ class ResponseImpl implements Response {
         return $this->responseType = $this->ioc->get(DownloadResponseType::class);
     }
 
-    public function typeRedirect()
+    public function typeRedirect($url=null)
     {
         $this->hasResponse = true;
-        return $this->responseType = $this->ioc->get(RedirectResponseType::class);
+        $redirectResponse = $this->ioc->get(RedirectResponseType::class);
+        if($url) {
+            $redirectResponse->url($url);
+        }
+        return $this->responseType = $redirectResponse;
     }
 
     public function typeFileContent($file=null)
@@ -130,6 +138,16 @@ class ResponseImpl implements Response {
         }
         return $this->responseType = $fileContentResponseType;
    }
+
+    public function currentResponseType()
+    {
+        return $this->responseType;
+    }
+
+    public function currentStatus()
+    {
+        return $this->status ?: 200;
+    }
 
 
 }
