@@ -18,6 +18,7 @@ use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseWriter;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
+use WebX\Routes\Api\RoutesListener;
 use WebX\Routes\Util\ReaderImpl;
 
 class RoutesImpl implements Routes, ResponseWriter {
@@ -130,6 +131,10 @@ class RoutesImpl implements Routes, ResponseWriter {
         $this->controllerFactory->popClassNamespaces($n);
     }
 
+    public function initialize($action) {
+        $this->invoke($action,[],true);
+    }
+
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
     {
         if($pattern) {
@@ -198,7 +203,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         };
     }
 
-    public function invoke($action, array $parameters = [])
+    public function invoke($action, array $parameters = [], $initialize = false)
     {
         $configCount = 0;
         try {
@@ -223,7 +228,7 @@ class RoutesImpl implements Routes, ResponseWriter {
             $closure = $this->createClosure($action, $parameters);
             $arguments = [];
             foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
-                if ($parameters && ($paramId = $refParam->getName() ?: $refParam->getPosition()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
+                if ($parameters && ($paramId = $refParam->getName()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
                     $arguments[] = $p;
                 } else if ($refClass = $refParam->getClass()) {
                     $arguments[] = $this->ioc->get($refClass->getName(),$this->configuration->asString("mappings.{$refParam->getName()}"));
@@ -233,12 +238,14 @@ class RoutesImpl implements Routes, ResponseWriter {
             }
             call_user_func_array($closure, $arguments);
         } finally {
-            if ($configCount) {
+            if ($configCount && !$initialize) { // Skip the first configuration
                 $this->popConfiguration(count($configCount));
             }
         }
         return $this->hasResponse() ? ($this->nop ?: ($this->nop = new RoutesForNop())) : $this;
     }
+
+
 
     public function render()
     {
@@ -251,6 +258,11 @@ class RoutesImpl implements Routes, ResponseWriter {
                 $responseType->prepare($this->request,$response);
             }
         }
+        /** @var RoutesListener[] $listeners */
+        $listeners = $this->ioc->getAll(RoutesListener::class);
+        foreach($listeners as $listener) {
+            $listener->onPreRender();
+        }
 
         foreach ($response->headers as $name => $value) {
             header("{$name}:{$value}");
@@ -258,6 +270,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         foreach ($response->cookies as $name => $data) {
             setcookie($name, $data["value"], $data["ttl"] ? $data["ttl"] + time() : 0, $data["path"]);
         }
+
         if($response->hasResponse) {
             header("HTTP/1.1 " . implode(" ", $response->status ?: [200]));
             if($responseType) {
