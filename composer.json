@@ -11,7 +11,7 @@
     }
   },
   "require" : {
-    "webx/ioc": "1.3.6",
+    "webx/ioc": "1.4.0",
     "twig/twig": "v1.24.0"
   },
   "require-dev" : {
