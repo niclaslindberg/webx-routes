@@ -17,6 +17,7 @@
         "xml" => "application/xml; charset=utf-8",
         "xsl" => "application/xml; charset=utf-8",
         "xslt" => "application/xml; charset=utf-8",
-        "xsd" => "application/xml; charset=utf-8"
+        "xsd" => "application/xml; charset=utf-8",
+        "css" => "text/css"
     ]
 ?>
