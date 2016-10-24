@@ -18,6 +18,17 @@
         "xsl" => "application/xml; charset=utf-8",
         "xslt" => "application/xml; charset=utf-8",
         "xsd" => "application/xml; charset=utf-8",
-        "css" => "text/css"
+        "css" => "text/css; charset=utf-8",
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "jpg" => "image/jpeg",
+        "jpeg" => "image/jpeg",
+        "mp3" => "audio/mpeg",
+        "mpeg" => "video/mpeg",
+        "svg" => "image/svg+xml",
+        "wav" => "audio/wav,audio/x-wav",
+        "zip" => "application/zip,application/x-compressed-zip",
+        "rdf" => "application/rdf,application/rdf+xml",
+        "qt" => "video/quicktime"
     ]
 ?>
