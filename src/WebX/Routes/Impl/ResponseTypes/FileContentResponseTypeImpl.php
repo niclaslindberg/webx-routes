@@ -23,7 +23,15 @@ class FileContentResponseTypeImpl implements FileContentResponseType
     public function render(Configuration $configuration, ResponseWriter $responseWriter, $data)
     {
         if(file_exists($this->file)) {
-            $responseWriter->addContent(file_get_contents($this->file));
+            if(filesize($this->file)>2 * 1024 * 1024) {
+                $fp = fopen($this->file, 'r');
+                while(!feof($fp)) {
+                    $responseWriter->addContent(fread($fp, 4096));
+                }
+                fclose($fp);
+            } else {
+                $responseWriter->addContent(file_get_contents($this->file));
+            }
         } else {
             throw new ResponseException("File {$this->file} does not exist");
         }

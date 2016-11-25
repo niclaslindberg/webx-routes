@@ -43,4 +43,16 @@ class WebServerControllersTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testControllerNameWithoutMethod() {
+        $server = self::$server;
+        $r11 = $server->get_contents("/path4/test4");
+        $this->assertEquals("4", $r11);
+
+    }
+    public function testControllerNameWithNonExistingMethod() {
+        $server = self::$server;
+        $r11 = $server->get_contents("/path4/test5");
+        $this->assertEquals(404,$server->statusCode());
+    }
+
 }

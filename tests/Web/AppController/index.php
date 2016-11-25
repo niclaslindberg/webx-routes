@@ -10,6 +10,7 @@ RoutesBootstrap::run([function(Routes $routes){
         $routes->onSegment("fullClassName","Test\WebX\Classes\Controllers\ControllerA#test1");
         $routes->onSegment("controller","ControllerA#test2");
         $routes->onSegment("lastNamespaceAndcontroller","Controllers\\ControllerA#test3");
+        $routes->onSegment("path4","Controllers\\ControllerA");
 },"default"],["home"=>"/"]);
 
 

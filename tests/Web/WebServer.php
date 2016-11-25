@@ -14,6 +14,7 @@ class WebServer
     private $process;
     private $cmd;
     private $port;
+    private $statusCode;
 
     public function __construct($indexFile) {
         $this->port = 8000;
@@ -31,7 +32,24 @@ class WebServer
 
     public function get_contents($path="/") {
         $url = "http://localhost:{$this->port}{$path}";
-        return file_get_contents($url);
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $data = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        $this->statusCode = $info["http_code"];
+        curl_close($ch);
+        return $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function statusCode()
+    {
+        return $this->statusCode;
     }
 
     public function start() {

@@ -4,6 +4,7 @@ namespace WebX\Routes\Impl;
 
 use Closure;
 use Exception;
+use ReflectionException;
 use ReflectionFunction;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
@@ -190,14 +191,20 @@ class RoutesImpl implements Routes, ResponseWriter {
             return $action;
         } else if (is_string($action)) {
             $segments = explode("#", $action);
-            if (count($segments) !== 2) {
+            if(count($segments)===1) {
+                $segments[] = $this->request->nextSegment();
+            } else if (count($segments) !== 2) {
                 throw new RoutesException("Controller action must be defined controller#method");
             }
             list($controllerClass, $method) = $segments;
             $controllerClass = $this->controllerFactory->createClassName($controllerClass);
             $controller = $this->ioc->instantiate($controllerClass);
-            $refMethod = new \ReflectionMethod($controllerClass, $method);
-            return $refMethod->getClosure($controller);
+            try {
+                $refMethod = new \ReflectionMethod($controllerClass, $method);
+                return $refMethod->getClosure($controller);
+            } catch(ReflectionException $e) {
+                return null;
+            }
         } else {
             throw new RoutesException("Non invokable $action. Must be closure or a controller method path");
         };
@@ -225,18 +232,19 @@ class RoutesImpl implements Routes, ResponseWriter {
                     }
                 }
             }
-            $closure = $this->createClosure($action, $parameters);
-            $arguments = [];
-            foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
-                if ($parameters && ($paramId = $refParam->getName()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
-                    $arguments[] = $p;
-                } else if ($refClass = $refParam->getClass()) {
-                    $arguments[] = $this->ioc->get($refClass->getName(),$this->configuration->asString("mappings.{$refParam->getName()}"));
-                } else {
-                    $arguments[] = $refParam->getDefaultValue();
+            if($closure = $this->createClosure($action, $parameters)) {
+                $arguments = [];
+                foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
+                    if ($parameters && ($paramId = $refParam->getName()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
+                        $arguments[] = $p;
+                    } else if ($refClass = $refParam->getClass()) {
+                        $arguments[] = $this->ioc->get($refClass->getName(), $this->configuration->asString("mappings.{$refParam->getName()}"));
+                    } else {
+                        $arguments[] = $refParam->getDefaultValue();
+                    }
                 }
+                call_user_func_array($closure, $arguments);
             }
-            call_user_func_array($closure, $arguments);
         } finally {
             if ($configCount && !$initialize) { // Skip the first configuration
                 $this->popConfiguration(count($configCount));

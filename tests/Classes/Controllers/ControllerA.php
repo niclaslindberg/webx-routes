@@ -22,5 +22,10 @@ class ControllerA {
         $response->data(3);
         $response->type($responseType);
     }
+
+    public function test4(Response $response, RawResponseType $responseType) {
+        $response->data(4);
+        $response->type($responseType);
+    }
 }
 
