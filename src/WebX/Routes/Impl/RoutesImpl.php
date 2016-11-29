@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Ioc\IocNonResolvable;
@@ -185,25 +186,25 @@ class RoutesImpl implements Routes, ResponseWriter {
         }
     }
 
-    public function createClosure($action)
+    private function createClosure($action)
     {
         if (is_a($action, Closure::class)) {
-            return $action;
+            return [$action, new ReflectionFunction($action)];
         } else if (is_string($action)) {
             $segments = explode("#", $action);
             if(count($segments)===1) {
                 $segments[] = $this->request->nextSegment() ?: "index";
             } else if (count($segments) !== 2) {
-                throw new RoutesException("Controller action must be defined controller#method");
+                throw new RoutesException("Controller action must be defined as controller[#method]");
             }
             list($controllerClass, $method) = $segments;
             $controllerClass = $this->controllerFactory->createClassName($controllerClass);
             $controller = $this->ioc->instantiate($controllerClass);
             try {
                 $refMethod = new \ReflectionMethod($controllerClass, $method);
-                return $refMethod->getClosure($controller);
+                return [$refMethod->getClosure($controller),$refMethod];
             } catch(ReflectionException $e) {
-                return null;
+                return [null,null];
             }
         } else {
             throw new RoutesException("Non invokable $action. Must be closure or a controller method path");
@@ -232,13 +233,15 @@ class RoutesImpl implements Routes, ResponseWriter {
                     }
                 }
             }
-            if($closure = $this->createClosure($action)) {
+            /** @var ReflectionFunctionAbstract $reflectionFunction */
+            list($closure, $reflectionFunction) = $this->createClosure($action);
+            if($closure) {
                 if($requestParameters = $this->request->remainingSegments()) {
                     $parameters = $parameters + $requestParameters;
                 }
                 $arguments = [];
                 $paramCount = 0;
-                foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
+                foreach ($reflectionFunction->getParameters() as $refParam) {
                     if ($parameters && ($paramId = $refParam->getName()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
                         $arguments[] = $p;
                     } else if ($refClass = $refParam->getClass()) {
