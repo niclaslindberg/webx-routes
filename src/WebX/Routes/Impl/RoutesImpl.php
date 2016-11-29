@@ -185,14 +185,14 @@ class RoutesImpl implements Routes, ResponseWriter {
         }
     }
 
-    public function createClosure($action, array $parameters = [])
+    public function createClosure($action)
     {
         if (is_a($action, Closure::class)) {
             return $action;
         } else if (is_string($action)) {
             $segments = explode("#", $action);
             if(count($segments)===1) {
-                $segments[] = $this->request->nextSegment();
+                $segments[] = $this->request->nextSegment() ?: "index";
             } else if (count($segments) !== 2) {
                 throw new RoutesException("Controller action must be defined controller#method");
             }
@@ -232,15 +232,28 @@ class RoutesImpl implements Routes, ResponseWriter {
                     }
                 }
             }
-            if($closure = $this->createClosure($action, $parameters)) {
+            if($closure = $this->createClosure($action)) {
+                if($requestParameters = $this->request->remainingSegments()) {
+                    $parameters = $parameters + $requestParameters;
+                }
                 $arguments = [];
+                $paramCount = 0;
                 foreach ((new ReflectionFunction($closure))->getParameters() as $refParam) {
                     if ($parameters && ($paramId = $refParam->getName()) && (NULL !== ($p = isset($parameters[$paramId]) ? $parameters[$paramId] : null))) {
                         $arguments[] = $p;
                     } else if ($refClass = $refParam->getClass()) {
                         $arguments[] = $this->ioc->get($refClass->getName(), $this->configuration->asString("mappings.{$refParam->getName()}"));
                     } else {
-                        $arguments[] = $refParam->getDefaultValue();
+                        if(NULL !== ($param = isset($parameters[$paramCount]) ? $parameters[$paramCount] : null)) {
+                            $arguments[] = $param;
+                        } else if ($refParam->isDefaultValueAvailable()){
+                            $arguments[] = $refParam->getDefaultValue();
+                        } else if ($refParam->allowsNull()) {
+                            $arguments[] = null;
+                        } else {
+                            throw new RoutesException("Can not apply non-existent default value to action. Parameter name: " . $refParam->getName());
+                        }
+                        $paramCount++;
                     }
                 }
                 call_user_func_array($closure, $arguments);

@@ -41,7 +41,7 @@ interface Response
     /**
      * @return RawResponseType
      */
-    public function typeRaw();
+    public function typeRaw($data=null);
 
     /**
      * @param mixed $data Shortcut to Response::data()

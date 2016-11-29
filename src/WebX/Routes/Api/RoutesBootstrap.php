@@ -27,7 +27,7 @@ class RoutesBootstrap {
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {
-                dd($e);
+                echo($e);
             } else {
                 header("Content-Type: text/html; charset=utf-8");
                 echo("<html><body>");

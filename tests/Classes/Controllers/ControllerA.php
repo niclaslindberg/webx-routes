@@ -8,6 +8,11 @@ use WebX\Routes\Api\ResponseTypes\RawResponseType;
 
 class ControllerA {
 
+    public function index(Response $response, RawResponseType $responseType) {
+        $response->data("index");
+        $response->type($responseType);
+    }
+
     public function test1(Response $response, RawResponseType $responseType) {
         $response->data(1);
         $response->type($responseType);

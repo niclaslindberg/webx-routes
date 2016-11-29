@@ -98,8 +98,11 @@ class ResponseImpl implements Response {
         return $this->responseType = $templateResponseType;
     }
 
-    public function typeRaw()
+    public function typeRaw($data = null)
     {
+        if($data) {
+            $this->data($data);
+        }
         $this->hasResponse = true;
         return $this->responseType = $this->ioc->get(RawResponseType::class);
     }

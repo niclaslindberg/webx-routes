@@ -55,4 +55,10 @@ class WebServerControllersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(404,$server->statusCode());
     }
 
+    public function testControllerNameWithIndexMethod() {
+        $server = self::$server;
+        $r11 = $server->get_contents("/path4");
+        $this->assertEquals("index",$r11);
+    }
+
 }

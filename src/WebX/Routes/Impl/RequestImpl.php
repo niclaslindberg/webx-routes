@@ -17,16 +17,24 @@ class RequestImpl implements Request {
     private $segments;
     private $bodyCache;
 
-    public function nextSegment()
-    {
+    private function initSegments() {
         if($this->currentSegmentPos===null) {
             $this->currentSegmentPos = 0;
             $this->segments = explode("/",trim($this->path()," /"));
         }
+    }
+
+    public function nextSegment() {
+        $this->initSegments();
         if(count($this->segments)>$this->currentSegmentPos) {
             return $this->segments[$this->currentSegmentPos];
         }
         return null;
+    }
+
+    public function remainingSegments() {
+        $this->initSegments();
+        return array_slice($this->segments,$this->currentSegmentPos);
     }
 
     public function moveCurrentSegment($dpos) {

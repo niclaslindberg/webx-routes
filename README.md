@@ -80,6 +80,24 @@ Routes supports the following ResponseTypes out of the box
         })
     });
 ```
+
+## Routing in Routes - with url parameters example
+```php
+    use WebX\Routes\Api\RoutesBootstrap;
+    use WebX\Routes\Api\Routes;
+    use WebX\Routes\Api\Response;
+
+    RoutesBootstrap::run(function(Routes $routes) {
+        $routes->onAlways(function(Response $response, $myParam="default") {
+            $response->typeRaw($myParam);
+        }
+    });
+```
+Will render:
+* `hello` for request on `/hello`
+* `default` for request on `/`
+
+
 ### Route switches:
 Route switches are evaluated top-down. If a route-switch is executed no further switches, in same the scope, are evaluated and executed.
 
@@ -274,8 +292,11 @@ Routes supports `$action` to be defined as a `string` in the format `ControllerC
 
     RoutesBootstrap::run(function(Routes $routes) {
 
-        $routes->onSegment("myMethod"",['MyBusiness\\Controllers\\AdminCtrl#myMethod',"admin"]
-        // The admin-configuration is only loaded if routes matched the `myMethod` segment.
+        $routes->onSegment("admin",['MyBusiness\\Controllers\\AdminCtrl','adminConfig']
+        // The admin-configuration is only loaded if routes matched the `admin` segment. Methods on the
+        // controller will automatically be mapped by the next available segment
+
+        // If no next segment exist Routes will map the request to `index()` of the controller instance
     });
 ```
 
