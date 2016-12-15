@@ -32,7 +32,9 @@ RoutesBootstrap::run(function(Routes $routes, Response $response)  {
     })->onSegment("3",function(Response $response){
         $response->typeRaw();
         $response->data("3");
-
+    })->onSegment("4",function($myVal=null,Response $response){
+        $response->typeRaw();
+        $response->data($myVal);
     })->onAlways(function(Response $response){
         $response->typeRaw();
         $response->data("void");

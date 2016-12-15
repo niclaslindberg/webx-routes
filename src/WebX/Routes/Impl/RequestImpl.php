@@ -32,9 +32,9 @@ class RequestImpl implements Request {
         return null;
     }
 
-    public function remainingSegments() {
+    public function remainingSegments($skip=0) {
         $this->initSegments();
-        return array_slice($this->segments,$this->currentSegmentPos);
+        return array_slice($this->segments,$this->currentSegmentPos + $skip);
     }
 
     public function moveCurrentSegment($dpos) {
@@ -44,6 +44,10 @@ class RequestImpl implements Request {
     public function parameter($id)
     {
        return isset($_GET[$id]) ? $_GET[$id] : null;
+    }
+
+    public function parameters() {
+        return $_GET;
     }
 
     public function header($id) {

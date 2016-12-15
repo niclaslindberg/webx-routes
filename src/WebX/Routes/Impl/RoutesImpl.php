@@ -189,11 +189,13 @@ class RoutesImpl implements Routes, ResponseWriter {
     private function createClosure($action)
     {
         if (is_a($action, Closure::class)) {
-            return [$action, new ReflectionFunction($action)];
+            return [$action, new ReflectionFunction($action),false];
         } else if (is_string($action)) {
+            $usedSegment = false;
             $segments = explode("#", $action);
             if(count($segments)===1) {
                 $segments[] = $this->request->nextSegment() ?: "index";
+                $usedSegment = true;
             } else if (count($segments) !== 2) {
                 throw new RoutesException("Controller action must be defined as controller[#method]");
             }
@@ -202,9 +204,9 @@ class RoutesImpl implements Routes, ResponseWriter {
             $controller = $this->ioc->instantiate($controllerClass);
             try {
                 $refMethod = new \ReflectionMethod($controllerClass, $method);
-                return [$refMethod->getClosure($controller),$refMethod];
+                return [$refMethod->getClosure($controller),$refMethod,$usedSegment];
             } catch(ReflectionException $e) {
-                return [null,null];
+                return [null,null,false];
             }
         } else {
             throw new RoutesException("Non invokable $action. Must be closure or a controller method path");
@@ -234,9 +236,9 @@ class RoutesImpl implements Routes, ResponseWriter {
                 }
             }
             /** @var ReflectionFunctionAbstract $reflectionFunction */
-            list($closure, $reflectionFunction) = $this->createClosure($action);
+            list($closure, $reflectionFunction,$usedSegment) = $this->createClosure($action);
             if($closure) {
-                if($requestParameters = $this->request->remainingSegments()) {
+                if($requestParameters = $this->request->remainingSegments($usedSegment ? 1 : 0)) {
                     $parameters = $parameters + $requestParameters;
                 }
                 $arguments = [];

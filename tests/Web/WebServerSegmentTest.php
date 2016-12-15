@@ -40,8 +40,12 @@ class WebServerSegmentTest extends \PHPUnit_Framework_TestCase
         $r3 = $server->get_contents("/3");
         $this->assertEquals("3", $r3);
 
+
         $r4 = $server->get_contents("/something_not_existing");
         $this->assertEquals("void", $r4);
+
+        $r5 = $server->get_contents("/4/abc");
+        $this->assertEquals("abc", $r5);
 
         $r1 = $server->get_contents("/1");
         $this->assertEquals("void", $r1); //Should continue to onAlways (no response generated in route for "1")

@@ -51,6 +51,12 @@ interface Request {
      */
     public function parameter($id);
 
+    /**
+     * Returns all get query parameters key=>value
+     * @return array
+     */
+    public function parameters();
+
     public function cookie($id);
 
     public function header($id);
