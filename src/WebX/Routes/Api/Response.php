@@ -20,7 +20,7 @@ interface Response
 {
     public function header($name, $value);
 
-    public function cookie($name, $value, $ttl=0, $path = "/");
+    public function cookie($name, $value, $ttl=0, $path = "/", $httpOnly = true);
 
     public function status($httpStatus, $message = null);
 

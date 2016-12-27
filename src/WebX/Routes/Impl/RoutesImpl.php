@@ -3,25 +3,18 @@
 namespace WebX\Routes\Impl;
 
 use Closure;
-use Exception;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Ioc\IocNonResolvable;
-use WebX\Ioc\IocNonResolvableException;
-use WebX\Routes\Api\AbstractResponse;
-use WebX\Routes\Api\Response;
-use WebX\Routes\Api\ResponseHost;
 use WebX\Routes\Api\ResponseType;
 use WebX\Routes\Api\ResponseTypes;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseWriter;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
-use WebX\Routes\Api\RoutesListener;
-use WebX\Routes\Util\ReaderImpl;
 
 class RoutesImpl implements Routes, ResponseWriter {
 
@@ -57,6 +50,12 @@ class RoutesImpl implements Routes, ResponseWriter {
      * @var ControllerFactory
      */
     private $controllerFactory;
+
+
+    /**
+     * @var SessionImpl
+     */
+    private $session;
 
     private $homeDir;
     private $publicDir;
@@ -109,12 +108,14 @@ class RoutesImpl implements Routes, ResponseWriter {
         $this->ioc = $ioc;
         $this->request = new RequestImpl();
         $this->response = new ResponseImpl($ioc);
+        $this->session = new SessionImpl($this->request);
 
         $ioc->register($this);
         $ioc->register($this->request);
         $ioc->register($this->response);
         $ioc->register($this->configuration);
         $ioc->register($this->resourceLoader);
+        $ioc->register($this->session);
         $ioc->register($ioc);
     }
 
@@ -125,6 +126,10 @@ class RoutesImpl implements Routes, ResponseWriter {
                 call_user_func_array([$this->ioc, $method], $parameters);
             }
         }
+        foreach ($reader->asArray("execute",[]) as $closure) {
+            $this->ioc->invoke($closure);
+        }
+
         $this->controllerFactory->pushClassNamespaces($reader->asArray("namespaces"));
     }
 
@@ -284,17 +289,14 @@ class RoutesImpl implements Routes, ResponseWriter {
                 $responseType->prepare($this->request,$response);
             }
         }
-        /** @var RoutesListener[] $listeners */
-        $listeners = $this->ioc->getAll(RoutesListener::class);
-        foreach($listeners as $listener) {
-            $listener->onPreRender();
-        }
 
-        foreach ($response->headers as $name => $value) {
-            header("{$name}:{$value}");
-        }
+        $this->session->writeCookies($this->response);
+
         foreach ($response->cookies as $name => $data) {
             setcookie($name, $data["value"], $data["ttl"] ? $data["ttl"] + time() : 0, $data["path"]);
+        }
+        foreach ($response->headers as $name => $value) {
+            header("{$name}:{$value}");
         }
 
         if($response->hasResponse) {

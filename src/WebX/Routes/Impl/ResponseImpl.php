@@ -67,12 +67,13 @@ class ResponseImpl implements Response {
         $this->headers[$name] = $value;
     }
 
-    public function cookie($name, $value, $ttl = 0, $path = "/")
+    public function cookie($name, $value, $ttl = 0, $path = "/", $httpOnly = true)
     {
         $this->cookies[$name] = [
             "value" => $value,
             "ttl" => $ttl,
-            "path" => $path
+            "path" => $path,
+            "httpOnly" => $httpOnly
         ];
     }
 
