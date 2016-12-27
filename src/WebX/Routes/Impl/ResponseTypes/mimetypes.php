@@ -29,6 +29,7 @@
         "wav" => "audio/wav,audio/x-wav",
         "zip" => "application/zip,application/x-compressed-zip",
         "rdf" => "application/rdf,application/rdf+xml",
-        "qt" => "video/quicktime"
+        "qt" => "video/quicktime",
+        "mov" => "video/quicktime"
     ]
 ?>
