@@ -13,7 +13,6 @@ use WebX\Routes\Api\Response;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\Session;
 use WebX\Routes\Api\SessionConfig;
-use WebX\Routes\Api\SessionStore;
 
 class SessionImpl implements Session, SessionConfig {
 
@@ -96,16 +95,10 @@ class SessionImpl implements Session, SessionConfig {
         return $this->createSessionStore(null)->setValue($key,$value);
     }
 
-    public function setFlashValue($key, $value)
+    public function unsetValue($key)
     {
-        return $this->createSessionStore(null)->setFlashValue($key,$value);
+        return $this->createSessionStore(null)->unsetValue($key);
     }
-
-    public function flashValue($key)
-    {
-        return $this->createSessionStore(null)->flashValue($key);
-    }
-
 
     /**
      * @return void
@@ -120,12 +113,13 @@ class SessionImpl implements Session, SessionConfig {
             $raw = null;
             if(isset($this->sessionStores[$id])) {
                 $sessionStore = $this->sessionStores[$id];
-                $data = $sessionStore->data();
-                $json = json_encode($data);
-                if($encryption = isset($config["encryption"]) ? $config["encryption"] : null) {
-                    $raw = $this->encrypt($json,$encryption);
-                } else {
-                    $raw = base64_encode($json);
+                if($data = $sessionStore->data()) {
+                    $json = json_encode($data);
+                    if ($encryption = isset($config["encryption"]) ? $config["encryption"] : null) {
+                        $raw = $this->encrypt($json, $encryption);
+                    } else {
+                        $raw = base64_encode($json);
+                    }
                 }
             } else {
                 $raw = $this->request->cookie($id);
@@ -134,7 +128,7 @@ class SessionImpl implements Session, SessionConfig {
                 $ttl = isset($config["ttl"]) ? $config["ttl"] : 60*10;
                 $httpOnly = isset($config["httpOnly"]) ? $config["httpOnly"] : true;
                 $id = $id ?: "default";
-                $response->cookie("_{$id}",$raw,$ttl,"/",$httpOnly);
+                $response->cookie("_{$id}",$raw,$raw ? $ttl : -3600,"/",$httpOnly);
             }
         }
     }

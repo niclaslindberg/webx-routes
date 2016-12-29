@@ -42,17 +42,14 @@ class SessionStoreImpl implements SessionStore {
         return $val;
     }
 
-    public function setFlashValue($key, $value)
+    public function unsetValue($key)
     {
         $this->assertNotKilled();
-        throw new Exception("Not implemented");
+        $val = $this->value($key);
+        unset($this->data[$key]);
+        return $val;
     }
 
-    public function flashValue($key)
-    {
-        $this->assertNotKilled();
-        throw new Exception("Not implemented");
-    }
 
     public function kill()
     {

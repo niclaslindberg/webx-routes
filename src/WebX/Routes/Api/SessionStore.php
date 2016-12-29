@@ -12,31 +12,25 @@ interface SessionStore
 {
 
     /**
-     * @param $key
+     * Reads the session value.
+     * @param string $key
      * @return mixed
      */
     public function value($key);
 
     /**
      * @param $key
-     * @param $value
+     * @param string $value
      * @return mixed Old value
      */
     public function setValue($key, $value);
 
     /**
-     * @param $key
-     * @param $value
+     * Deletes a value (it's key)
+     * @param string $key
      * @return mixed Old value
      */
-    public function setFlashValue($key, $value);
-
-
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function flashValue($key);
+    public function unsetValue($key);
 
 
     /**

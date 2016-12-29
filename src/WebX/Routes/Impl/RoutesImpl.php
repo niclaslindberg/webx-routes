@@ -293,7 +293,7 @@ class RoutesImpl implements Routes, ResponseWriter {
         $this->session->writeCookies($this->response);
 
         foreach ($response->cookies as $name => $data) {
-            setcookie($name, $data["value"], $data["ttl"] ? $data["ttl"] + time() : 0, $data["path"]);
+            setcookie($name, $data["value"], $data["ttl"] ? ($data["ttl"] + time()) : 0, $data["path"]);
         }
         foreach ($response->headers as $name => $value) {
             header("{$name}:{$value}");
