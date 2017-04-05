@@ -2,47 +2,36 @@
 
 namespace WebX\Routes\Api;
 
-interface Routes {
+use Closure;
+
+interface Routes extends ResponseHeader, ResponseBody{
+
 
     /**
-     * @param $pattern
-     * @param $action
-     * @param string|null $subject (Default: Request->path)
+     * @param Closure $closure
      * @param array $parameters
+     * @return mixed
+     */
+    public function invoke(Closure $closure, $configuration = null, array $parameters = []);
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function load($name);
+
+    /**
+     * @param mixed $data
+     * @param string|null $path
      * @return Routes
      */
-    public function onMatch($pattern, $action, $subject=null, array $parameters = []);
+    public function setData($data, $path=null);
 
     /**
-     * @param $expression
-     * @param \Closure|string $action
-     * @param array $parameters
+     * @param ResponseRenderer $responseType
      * @return Routes
      */
-    public function onTrue($expression, $action, array $parameters = []);
-
-    /**
-     * @param \Closure|string $action
-     * @param array $parameters
-     * @return Routes
-     */
-    public function onAlways($action, array $parameters = []);
-
-    /**
-     * @param string $segment
-     * @param \Closure|string $action
-     * @param array $parameters
-     * @return Routes
-     */
-    public function onSegment($segment, $action, array $parameters = []);
-
-
-    /**
-     * @param $fileName
-     * @return void
-     */
-    public function load($fileName);
-
+    public function setRenderer(ResponseRenderer $responseRenderer);
 
 }
 

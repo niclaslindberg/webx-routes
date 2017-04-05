@@ -14,42 +14,42 @@ interface Reader
 {
 
     /**
-     * @param $key
+     * @param string|array $key
      * @param mixed $default
      * @return mixed
      */
     public function asAny($key, $default=null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param int|null $default
      * @return int|null
      */
     public function asInt($key,$default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param float|null $default
      * @return float|null
      */
     public function asFloat($key,$default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param bool|null $default
      * @return bool|null
      */
     public function asBool($key,$default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param DateTime|null $default
      * @return DateTime|null
      */
     public function asDate($key,$default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param array|null $default
      * @return array|null
      */
@@ -57,7 +57,7 @@ interface Reader
 
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param string|null $default
      * @return string|null
      */
@@ -70,5 +70,10 @@ interface Reader
      * @return Reader|null
      */
     public function asReader($key,$default = null);
+
+    /**
+     * @return string[]
+     */
+    public function keys();
 
 }
