@@ -2,10 +2,10 @@
 
 
 namespace WebX\Routes\Api\ResponseTypes;
-use WebX\Routes\Api\ResponseRenderer;
+use WebX\Routes\Api\View;
 
 
-interface RedirectRenderer extends ResponseRenderer
+interface RedirectView extends View
 {
 
     const TYPE_PERMANENT = 302;
@@ -13,13 +13,13 @@ interface RedirectRenderer extends ResponseRenderer
 
     /**
      * @param string $template
-     * @return RedirectRenderer
+     * @return RedirectView
      */
     public function setType($type);
 
     /**
      * @param string $url
-     * @return RedirectRenderer
+     * @return RedirectView
      */
     public function setUrl($url);
 }

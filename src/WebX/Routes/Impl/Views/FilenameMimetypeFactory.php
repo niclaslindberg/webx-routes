@@ -1,6 +1,6 @@
 <?php
 
-namespace WebX\Routes\Impl\ResponseTypes;
+namespace WebX\Routes\Impl\Views;
 
 
 class FilenameMimetypeFactory

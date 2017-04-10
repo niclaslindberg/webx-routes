@@ -1,20 +1,36 @@
 <?php
-/**
- * User: niclas
- * Date: 12/27/16
- * Time: 2:56 PM
- */
 
 namespace WebX\Routes\Api;
 
 
-interface Session extends SessionStore
+interface Session
 {
 
     /**
-     * @param $id
-     * @return SessionStore
+     * Reads the session value.
+     * @param string $key
+     * @return mixed
      */
-    public function getStore($id);
+    public function value($key);
+
+    /**
+     * @param $key
+     * @param string $value
+     * @return mixed Old value
+     */
+    public function setValue($key, $value);
+
+    /**
+     * Deletes a value (it's key)
+     * @param string $key
+     * @return mixed Old value
+     */
+    public function unsetValue($key);
+
+
+    /**
+     * @return void
+     */
+    public function kill();
     
 }

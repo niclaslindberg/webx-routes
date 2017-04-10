@@ -11,7 +11,7 @@ namespace WebX\Routes\Impl;
 use WebX\Routes\Api\ResourceLoader;
 use WebX\Routes\Api\the;
 
-class ResourceLoaderImpl implements ResourceLoader
+class ResourceLoaderImpl 
 {
     private $absolutePaths = [];
 

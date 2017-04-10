@@ -14,66 +14,71 @@ interface Reader
 {
 
     /**
-     * @param string|array $key
+     * Checks if a key for the given path exits.
+     * @param $path
+     * @return bool
+     */
+    public function hasKey($path);
+
+    /**
+     * @return array
+     */
+    public function keys();
+
+    /**
+     * @param $path
      * @param mixed $default
      * @return mixed
      */
-    public function asAny($key, $default=null);
+    public function asAny($path, $default=null);
 
     /**
-     * @param string|array $key
+     * @param string $path
      * @param int|null $default
      * @return int|null
      */
-    public function asInt($key,$default = null);
+    public function asInt($path,$default = null);
 
     /**
-     * @param string|array $key
+     * @param string $path
      * @param float|null $default
      * @return float|null
      */
-    public function asFloat($key,$default = null);
+    public function asFloat($path,$default = null);
 
     /**
-     * @param string|array $key
+     * @param string $path
      * @param bool|null $default
      * @return bool|null
      */
-    public function asBool($key,$default = null);
+    public function asBool($path,$default = null);
 
     /**
-     * @param string|array $key
+     * @param string $path
      * @param DateTime|null $default
      * @return DateTime|null
      */
-    public function asDate($key,$default = null);
+    public function asDate($path,$default = null);
 
     /**
-     * @param string|array $key
+     * @param string $path
      * @param array|null $default
      * @return array|null
      */
-    public function asArray($key=null,$default = null);
-
+    public function asArray($path=null, $default = null);
 
     /**
-     * @param string|array $key
-     * @param string|null $default
+     * @param string $path
+     * @param string $default
      * @return string|null
      */
-    public function asString($key,$default = null);
-
-
-    /**
-     * @param string $key
-     * @param Reader|null $default
-     * @return Reader|null
-     */
-    public function asReader($key,$default = null);
+    public function asString($path,$default = null);
 
     /**
-     * @return string[]
+     * @param string $path
+     * @return Reader|null A Reader if the path contains an array otherwise null
      */
-    public function keys();
+    public function asReader($path);
+
 
 }

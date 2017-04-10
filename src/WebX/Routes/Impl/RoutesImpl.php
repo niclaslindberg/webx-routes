@@ -6,19 +6,24 @@ use Closure;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
+use WebX\Impl\ReaderImpl;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Ioc\IocNonResolvable;
+use WebX\Routes\Api\Reader;
+use WebX\Routes\Api\ResponseBody;
+use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\ResponseType;
 use WebX\Routes\Api\ResponseTypes;
 use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\ResponseWriter;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
+use WebX\Routes\Api\Session;
+use WebX\Routes\Api\View;
 
-class RoutesImpl implements Routes, ResponseWriter {
+class RoutesImpl implements Routes, ResponseHeader,ResponseBody {
 
-    public static $CONFIG_KEY = "__webx";
 
     /**
      * @var Ioc
@@ -26,30 +31,9 @@ class RoutesImpl implements Routes, ResponseWriter {
     private $ioc;
 
     /**
-     * @var RequestImpl
-     */
-    private $request;
-
-
-    /**
-     * @var ResponseImpl
-     */
-    private $response;
-
-    /**
-     * @var ConfigurationImpl
-     */
-    private $configuration;
-
-    /**
      * @var ResourceLoaderImpl
      */
     private $resourceLoader;
-
-    /**
-     * @var ControllerFactory
-     */
-    private $controllerFactory;
 
 
     /**
@@ -57,65 +41,234 @@ class RoutesImpl implements Routes, ResponseWriter {
      */
     private $session;
 
-    private $homeDir;
-    private $publicDir;
-    private $configDir;
+    private $httpStatusCode;
+
+    private $headers = [];
+
+    private $cookies = [];
+
+    private $data = null;
 
     /**
-     * @var Routes;
+     * @var View
      */
-    private $nop;
+    private $view;
+
+    private $segments;
+
+    private $body;
+
+    private $serverReader = null;
+
+    private $parameterReader = null;
+
+    private $cookieReader = null;
+
+    private $headerReader = null;
+
+    /**
+     * @var SessionManagerImpl
+     */
+    private $sessionManager = null;
+
 
     public function __construct(array $config = null)
     {
-        $this->configuration = new ConfigurationImpl(require(__DIR__ . "/bootstrap_config.php"));
-        $this->controllerFactory = new ControllerFactory();
 
         $resourceLoader = new ResourceLoaderImpl();
         $resourceLoader->appendPath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home",$config) ?: "/.."));
         $this->resourceLoader = $resourceLoader;
-
-        $ioc = new IocImpl(function(IocNonResolvable $nonResolvable, Ioc $ioc) {
-            if($refClass = $nonResolvable->unresolvedClass()) {
-                $class = $refClass->getName();
-                if(is_subclass_of($class, ResponseType::class, true) || ($class === ResponseType::class)) {
-                    $responseTypeConfiguration = $this->configuration->asReader("responseTypes.{$class}");
-                    if ($responseTypeClass = $responseTypeConfiguration->asString("class")) {
-                        $responseImpl = $this->ioc->instantiate($responseTypeClass);
-                        $responseImpl->{self::$CONFIG_KEY} = $responseTypeConfiguration->asReader("config");
-                        $ioc->register($responseImpl);
-                        return $responseImpl;
-                    } else {
-                        throw new RoutesException("Could not find responseType class for ResponseTypeInterface {$class}.");
-                    }
-                }
-            }
-            if($param = $nonResolvable->unresolvedParameter()) {
-                if($config = $nonResolvable->config()) {
-                    if($id = (isset($config["id"]) ? $config["id"] : null)) {
-                        if(NULL!==($value = $this->configuration->asAny(array_merge(["settings",$id,$param->getName()])))) {
-                            return $value;
-                        }
-                    }
-                } else if (NULL!==($value = $this->configuration->asAny(array_merge(["settings",$param->getDeclaringClass()->getName(),$param->getName()])))) {
-                    return $value;
-                } else if (NULL!==($value = $this->configuration->asAny(array_merge(["settings",$param->getName()])))) {
-                    return $value;
-                }
-                return NULL;
-            }
-        });
-        $this->ioc = $ioc;
-        $this->request = new RequestImpl();
-        $this->session = new SessionImpl($this->request);
-
-        $ioc->register($this);
-        $ioc->register($this->request);
-        $ioc->register($this->configuration);
-        $ioc->register($this->resourceLoader);
-        $ioc->register($this->session);
-        $ioc->register($ioc);
+        $this->ioc = new IocImpl();
+        $this->ioc->register($this);
     }
+
+    public function setStatus($httpStatusCode) {
+        $this->httpStatusCode = $httpStatusCode;
+    }
+
+    public function addHeader($name, $value) {
+        if($value!==null) {
+            $this->headers[$name] = $value;
+        } else {
+            unset($this->headers[$name]);
+        }
+    }
+
+    public function clearHeader($name) {
+           unset($this->headers[$name]);
+    }
+
+    public function addCookie($name, $value, $ttl = 0, $path = "/", $httpOnly = true) {
+        if($value!==null) {
+            $this->cookies[$name] = [
+                "value" => $value,
+                "ttl" => $ttl,
+                "path" => $path,
+                "httpOnly" => $httpOnly
+            ];
+        } else {
+            unset($this->cookies[$name]);
+        }
+    }
+
+    public function clearCookie($name)
+    {
+        unset($this->cookies[$name]);
+    }
+
+    public function map(Closure $closure, $configuration = null, array $parameters = [])
+    {
+        // TODO: Implement map() method.
+    }
+
+    public function mapMethod($class, $configuration = null, array $parameters = [])
+    {
+        // TODO: Implement mapMethod() method.
+    }
+
+    public function mapCtrl($configuration = null, array $parameters = [])
+    {
+        // TODO: Implement mapCtrl() method.
+    }
+
+    public function forward($routesName) {
+        $configFile = "routes/{$routesName}.php";
+        if($completePath = $this->resourceLoader->absolutePath($configFile)) {
+            $routes = $this;
+            require $completePath;
+            return $this->view ? true : false;
+        } else {
+            throw new RoutesException(sprintf("Could not forward to %s in %s",$configFile, json_encode($this->resourceLoader->rootPaths())));
+        }
+    }
+
+    public function setData($data, $path = null) {
+        if(null !== $path) {
+            if(is_string($path)) {
+                $path = explode(".",$path);
+            }
+            if(!is_array($this->data)) {
+                $this->data = [];
+            }
+            $root = &$this->data;
+            while($part = array_shift($path)) {
+                $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
+                $root = &$root[$part];
+            }
+        } else {
+            $this->data = $data;
+        }
+    }
+
+    public function data($path = null) {
+        if(null!==$path) {
+            if(is_array($this->data)) {
+                $reader = new ReaderImpl($this->data);
+                return $reader->asAny($path);
+            } else {
+                return null;
+            }
+        } else {
+            return $this->data;
+        }
+    }
+
+    public function setView(View $view) {
+        $this->httpStatusCode = 200;
+        $this->view = $view;
+    }
+
+    public function view() {
+        return $this->view;
+    }
+
+    public function server() {
+        if(!$this->serverReader) {
+            $this->serverReader = new ReaderImpl($_SERVER);
+        }
+        return $this->serverReader;
+    }
+
+    public function body() {
+        if(!$this->body) {
+            return $this->body = file_get_contents("php://input");
+        }
+        return $this->body;
+    }
+
+    public function input($inputFormat = "request")
+    {
+        if($inputFormat===Routes::INPUT_AS_REQUEST) {
+            if (!$this->parameterReader) {
+                $this->parameterReader = new ReaderImpl($_REQUEST);
+            }
+            return $this->parameterReader;
+        } else if ($inputFormat === Routes::INPUT_AS_JSON) {
+            return new ReaderImpl(json_decode($this->body(),true));
+        }
+    }
+
+    public function cookies() {
+        if(!$this->cookieReader) {
+            $this->cookieReader = new ReaderImpl($_COOKIE);
+        }
+        return $this->cookieReader;
+    }
+
+    public function headers() {
+        if(!$this->headerReader) {
+            $this->headerReader = new ReaderImpl(apache_request_headers());
+        }
+        return $this->headerReader;
+    }
+
+    public function segments() {
+        if(!$this->segments) {
+            $this->segments = new SegmentsImpl();
+        }
+        return $this->segments;
+    }
+
+    public function session($id = null) {
+        if(!$this->sessionManager) {
+            $this->sessionManager = new SessionManagerImpl($this);
+        }
+        return $this->sessionManager->createSession($id);
+    }
+
+    public function resourcePath($relativePath = null) {
+        return $this->resourceLoader->absolutePath($relativePath);
+    }
+
+    public function initialize($action) {
+        $this->invoke($action,[],true);
+    }
+
+    public function render() {
+        if($this->view) {
+            $this->view->renderHead($this, $this->data);
+            if($this->sessionManager) {
+                $this->sessionManager->writeCookies($this);
+            }
+            header("HTTP/1.1 " . $this->httpStatusCode);
+            foreach ($this->cookies as $name => $data) {
+                setcookie($name, $data["value"], $data["ttl"] ? ($data["ttl"] + time()) : 0, $data["path"]);
+            }
+            foreach ($this->headers as $name => $value) {
+                header("{$name}:{$value}");
+            }
+            $this->view->renderBody($this,$this->data);
+        } else {
+            header("HTTP/1.1 404");
+        }
+    }
+
+    public function writeContent($content) {
+        echo($content);
+    }
+
+
+    //*******************************
 
     private function pushConfiguration($config) {
         $reader = $this->configuration->pushArray($config);
@@ -127,18 +280,20 @@ class RoutesImpl implements Routes, ResponseWriter {
         foreach ($reader->asArray("execute",[]) as $closure) {
             $this->ioc->invoke($closure);
         }
-
-        $this->controllerFactory->pushClassNamespaces($reader->asArray("namespaces"));
     }
+
 
     private function popConfiguration($n=1) {
         $this->configuration->popArray($n);
-        $this->controllerFactory->popClassNamespaces($n);
     }
 
-    public function initialize($action) {
-        $this->invoke($action,[],true);
-    }
+
+
+
+
+
+
+
 
     public function onMatch($pattern, $action, $subject=null, array $parameters = [])
     {
@@ -179,14 +334,7 @@ class RoutesImpl implements Routes, ResponseWriter {
 
     public function load($configName)
     {
-        $configFile = "routes/{$configName}.php";
-        if($completePath = $this->resourceLoader->absolutePath($configFile)) {
-            $routes = $this;
-            require $completePath;
-            return $this->hasResponse() ? $this->nop : $this;
-        } else {
-            throw new RoutesException(sprintf("Could not load %s in %s",$configFile, json_encode($this->resourceLoader->rootPaths())));
-        }
+
     }
 
     private function createClosure($action)
@@ -203,7 +351,6 @@ class RoutesImpl implements Routes, ResponseWriter {
                 throw new RoutesException("Controller action must be defined as controller[#method]");
             }
             list($controllerClass, $method) = $segments;
-            $controllerClass = $this->controllerFactory->createClassName($controllerClass);
             $controller = $this->ioc->instantiate($controllerClass);
             try {
                 $refMethod = new \ReflectionMethod($controllerClass, $method);
@@ -276,36 +423,7 @@ class RoutesImpl implements Routes, ResponseWriter {
 
 
 
-    public function render()
-    {
-        $response = $this->response;
-        if($responseType = $this->response->responseType) {
-            $responseType->prepare($this->request, $response);
-        } else {
-            if($response->data!==null) {
-                $responseType = $this->ioc->get(JsonResponseType::class);
-                $responseType->prepare($this->request,$response);
-            }
-        }
 
-        $this->session->writeCookies($this->response);
-
-        foreach ($response->cookies as $name => $data) {
-            setcookie($name, $data["value"], $data["ttl"] ? ($data["ttl"] + time()) : 0, $data["path"]);
-        }
-        foreach ($response->headers as $name => $value) {
-            header("{$name}:{$value}");
-        }
-
-        if($response->hasResponse) {
-            header("HTTP/1.1 " . implode(" ", $response->status ?: [200]));
-            if($responseType) {
-                $responseType->render($responseType->{self::$CONFIG_KEY}, $this, $response->data);
-            }
-        } else {
-            header("HTTP/1.1 404");
-        }
-    }
 
     public function addContent($content)
     {

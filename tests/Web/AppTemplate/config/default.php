@@ -3,7 +3,7 @@
 return [
 
     "responseTypes" => [
-        "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
+        "WebX\\Routes\\Api\\Views\\TemplateResponseType" => [
             "config" => [
                 "configurator" => function(Twig_Environment $twig) {
                     $lexer = new Twig_Lexer($twig, array(

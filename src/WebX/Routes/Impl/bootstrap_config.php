@@ -2,26 +2,26 @@
 
     return [
         "responseTypes" => [
-            "WebX\\Routes\\Api\\ResponseTypes\\RawResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RawResponseTypeImpl"
+            "WebX\\Routes\\Api\\Views\\RawResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\RawResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\JsonResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\JsonResponseTypeImpl",
+            "WebX\\Routes\\Api\\Views\\JsonResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\JsonResponseTypeImpl",
                 "config" => [
                     "prettyPrint" => true
                 ]
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\RedirectResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\RedirectResponseTypeImpl"
+            "WebX\\Routes\\Api\\Views\\RedirectResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\RedirectResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\FileContentResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\FileContentResponseTypeImpl"
+            "WebX\\Routes\\Api\\Views\\FileContentResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\FileContentResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\DownloadResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\DownloadResponseTypeImpl"
+            "WebX\\Routes\\Api\\Views\\DownloadResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\DownloadResponseTypeImpl"
             ],
-            "WebX\\Routes\\Api\\ResponseTypes\\TemplateResponseType" => [
-                "class" => "WebX\\Routes\\Impl\\ResponseTypes\\TemplateResponseTypeImpl",
+            "WebX\\Routes\\Api\\Views\\TemplateResponseType" => [
+                "class" => "WebX\\Routes\\Impl\\Views\\TemplateResponseTypeImpl",
                 "config" => [
                     "templatesDir" => "templates",
                     "suffix" =>  "twig"

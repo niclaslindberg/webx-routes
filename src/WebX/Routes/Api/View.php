@@ -3,19 +3,19 @@
 namespace WebX\Routes\Api;
 
 
-interface ResponseRenderer
+interface View
 {
 
     /**
      * @param ResponseHeader $responseHeader
      * @return void
      */
-    public function onHead(ResponseHeader $responseHeader);
+    public function renderHead(ResponseHeader $responseHeader, $data);
 
     /**
      * @param ResponseBody $responseBody
      * @return void
      */
-    public function onBody(ResponseBody $responseBody);
+    public function renderBody(ResponseBody $responseBody, $data);
 
 }
