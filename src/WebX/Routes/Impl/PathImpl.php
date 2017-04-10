@@ -2,7 +2,7 @@
 
 namespace WebX\Routes\Impl;
 
-class SegmentsImpl {
+class PathImpl {
 
     private $currentSegmentPos;
     private $segments;
@@ -11,7 +11,7 @@ class SegmentsImpl {
     private function initSegments() {
         if($this->currentSegmentPos===null) {
             $this->currentSegmentPos = 0;
-            $this->segments = explode("/",trim($this->path()," /"));
+            $this->segments = explode("/",trim($this->full()," /"));
         }
     }
 
@@ -38,7 +38,7 @@ class SegmentsImpl {
         }
     }
 
-    public function path() {
+    public function full() {
         if(!$this->path) {
             $this->path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }

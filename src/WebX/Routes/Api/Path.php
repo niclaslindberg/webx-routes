@@ -2,7 +2,7 @@
 
 namespace WebX\Routes\Impl;
 
-interface Segments {
+interface Path {
 
     /**
      * @return string|null
@@ -14,4 +14,8 @@ interface Segments {
      */
     public function currentSegment();
 
+    /**
+     * @return string
+     */
+    public function full();
 }

@@ -27,7 +27,11 @@ class SessionImpl implements Session {
     {
         $this->assertNotKilled();
         $val = $this->value($key);
-        $this->data[$key] = $value;
+        if(null!==$value) {
+            $this->data[$key] = $value;
+        } else {
+            unset($this->data[$key]);
+        }
         return $val;
     }
 

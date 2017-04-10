@@ -3,6 +3,7 @@
 namespace WebX\Routes\Api;
 
 use Closure;
+use WebX\Routes\Impl\Path;
 use WebX\Routes\Impl\Segments;
 
 interface Routes extends ResponseHeader {
@@ -103,9 +104,9 @@ interface Routes extends ResponseHeader {
     public function headers();
 
     /**
-     * @return Segments
+     * @return Path
      */
-    public function segments();
+    public function path();
 
     /**
      * @param $id|null
