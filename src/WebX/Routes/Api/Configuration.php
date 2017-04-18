@@ -21,5 +21,12 @@ interface Configuration  {
      */
     public function addResourcePath($path,$append = true);
 
+    /**
+     * Ioc registration
+     * @param string|object $classOrInstance
+     * @param array $config
+     * @return void
+     */
+    public function register($classOrInstance, $config);
 }
 

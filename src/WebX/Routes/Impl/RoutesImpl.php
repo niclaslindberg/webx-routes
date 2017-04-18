@@ -3,6 +3,7 @@
 namespace WebX\Routes\Impl;
 
 use Closure;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -111,24 +112,53 @@ class RoutesImpl implements Routes, ResponseHeader,ResponseBody {
         }
     }
 
-    public function clearCookie($name)
-    {
+    public function clearCookie($name) {
         unset($this->cookies[$name]);
     }
 
-    public function map(Closure $closure, $configuration = null, array $parameters = [])
-    {
-        // TODO: Implement map() method.
+    private function pushConfiguration($configuration) {
+        if(is_string($configuration)) {
+            $configuration = [$configuration];
+        }
+        foreach($configuration as $config) {
+            if($configPath = $this->resourceLoader->absolutePath("config/{$config}.php")) {
+                $content = require($configPath);
+                $this->ioc->invoke($content);
+            } else {
+                throw new RoutesException("Config-path {$configPath} could not be found");
+            }
+        }
     }
 
-    public function mapMethod($class, $configuration = null, array $parameters = [])
-    {
-        // TODO: Implement mapMethod() method.
+    public function map(Closure $closure, $configuration = null, array $parameters = []) {
+        if($configuration) {
+            $this->pushConfiguration($configuration);
+        }
+        return $this->ioc->invoke($closure,["paramters"=>$parameters]);
     }
 
-    public function mapCtrl($configuration = null, array $parameters = [])
-    {
-        // TODO: Implement mapCtrl() method.
+    public function mapMethod($class, $configuration = null, array $parameters = []) {
+        if($configuration) {
+            $this->pushConfiguration($configuration);
+        }
+        try {
+            $refClass = new ReflectionClass($class);
+            $methodName = $this->path()->nextSegment() ?: "index";
+            try {
+                $method = $refClass->getMethod($methodName);
+                $controller = $this->ioc->instantiate($class);
+                $closure = $method->getClosure($controller);
+                return $this->ioc->invoke($closure,["parameters"=>$parameters]);
+            } catch(ReflectionException $e) {
+                return;
+            }
+        } catch(ReflectionException $e) {
+            throw new RoutesException(null,$e);
+        }
+    }
+
+    public function mapCtrl($configuration = null, array $parameters = []) {
+        
     }
 
     public function forward($routesName) {
@@ -222,11 +252,11 @@ class RoutesImpl implements Routes, ResponseHeader,ResponseBody {
         return $this->headerReader;
     }
 
-    public function segments() {
-        if(!$this->segments) {
-            $this->segments = new SegmentsImpl();
+    public function path() {
+        if(!$this->path) {
+            $this->path = new PathImpl();
         }
-        return $this->segments;
+        return $this->path;
     }
 
     public function session($id = null) {
@@ -270,17 +300,7 @@ class RoutesImpl implements Routes, ResponseHeader,ResponseBody {
 
     //*******************************
 
-    private function pushConfiguration($config) {
-        $reader = $this->configuration->pushArray($config);
-        foreach ($reader->asArray("ioc",[]) as $method => $parameterList) {
-            foreach($parameterList as $parameters) {
-                call_user_func_array([$this->ioc, $method], $parameters);
-            }
-        }
-        foreach ($reader->asArray("execute",[]) as $closure) {
-            $this->ioc->invoke($closure);
-        }
-    }
+
 
 
     private function popConfiguration($n=1) {
