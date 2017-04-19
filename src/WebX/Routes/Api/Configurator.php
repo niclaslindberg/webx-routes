@@ -2,13 +2,7 @@
 
 namespace WebX\Routes\Api;
 
-interface Configuration  {
-
-    /**
-     * @param string $directory resolved by Routes"
-     * @return mixed
-     */
-    public function addClassLoader($directory);
+interface Configurator  {
 
     public function addCtrlNamespace($namespace);
 
@@ -24,9 +18,9 @@ interface Configuration  {
     /**
      * Ioc registration
      * @param string|object $classOrInstance
-     * @param array $config
+     * @param array|null $config
      * @return void
      */
-    public function register($classOrInstance, $config);
+    public function register($classOrInstance, array $config = null);
 }
 

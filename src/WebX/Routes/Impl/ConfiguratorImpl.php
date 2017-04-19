@@ -1,0 +1,72 @@
+<?php
+
+namespace WebX\Routes\Impl;
+
+use WebX\Ioc\Ioc;
+use WebX\Routes\Api\Configurator;
+use WebX\Routes\Api\RoutesException;
+
+class ConfiguratorImpl implements Configurator {
+
+    private $ctrlNamespaces = [];
+
+    private $absolutePaths = [];
+
+    /**
+     * @var Ioc
+     */
+    private $ioc;
+
+    /**
+     * ConfigurationImpl constructor.
+     * @param Ioc $ioc
+     */
+    public function __construct(Ioc $ioc) {
+        $this->ioc = $ioc;
+    }
+
+
+    public function addCtrlNamespace($namespace) {
+        array_unshift($this->ctrlNamespaces,$namespace);
+    }
+
+    public function configureSession($id = null, $ttl = 3600, $encryptionKey = null) {
+        throw new RoutesException("Not implemented");
+    }
+
+    public function addResourcePath($absolutePath, $append = true) {
+        if($append) {
+            array_push($this->absolutePaths,$this->processPath($absolutePath));
+        } else {
+            array_unshift($this->absolutePaths,$this->processPath($absolutePath));
+        }
+    }
+
+    public function ctrlNamespaces() {
+        return $this->ctrlNamespaces;
+    }
+
+    public function absolutePath($relPath) {
+        if($relPath) {
+            $relPath = ltrim($relPath,"/");
+            foreach($this->absolutePaths as $absolutePath) {
+                $path = $absolutePath . $relPath;
+                if(file_exists($path)) {
+                    return $path;
+                }
+            }
+        }
+        return null;
+    }
+
+    private function processPath($path) {
+        if($path) {
+            return rtrim($path,"/") . "/";
+        }
+    }
+
+    public function register($classOrInstance, array $config = null) {
+        $this->ioc->register($classOrInstance,$config);
+    }
+
+}

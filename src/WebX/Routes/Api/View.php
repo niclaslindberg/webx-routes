@@ -2,6 +2,8 @@
 
 namespace WebX\Routes\Api;
 
+use WebX\Routes\Api\ResponseBody;
+use WebX\Routes\Api\ResponseHeader;
 
 interface View
 {

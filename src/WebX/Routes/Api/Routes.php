@@ -79,7 +79,6 @@ interface Routes extends ResponseHeader {
      */
     public function server();
 
-
     /**
      * The body of the request
      * @return string|null
