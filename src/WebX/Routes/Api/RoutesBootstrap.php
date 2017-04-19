@@ -20,10 +20,10 @@ class RoutesBootstrap {
      * </code>
      * @return void
      */
-    public final static function run($action, array $config = null) {
+    public final static function run(Closure $closure, array $config = null) {
         try {
             $routes = new RoutesImpl($config);
-            $routes->initialize($action);
+            $routes->map($closure);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {
