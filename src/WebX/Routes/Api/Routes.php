@@ -20,6 +20,7 @@ interface Routes extends ResponseHeader {
 
     /**
      * @param Closure $closure
+     * @param array|string|null $configuration
      * @param array $parameters
      * @return mixed
      */
@@ -27,14 +28,14 @@ interface Routes extends ResponseHeader {
 
     /**
      * @param $class
-     * @param null $configuration
+     * @param array|string|null $configuration
      * @param array $parameters
      * @return bool if the request was successfully mapped to a method on the controller.
      */
     public function mapMethod($class,$configuration = null, array $parameters = []);
 
     /**
-     * @param null $configuration
+     * @param array|string|null $configuration
      * @param array $parameters
      * @return bool  if the request was successfully mapped to a method on a controller.
      */

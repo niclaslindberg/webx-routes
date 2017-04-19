@@ -62,10 +62,10 @@ class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
     private $sessionManager = null;
 
 
-    public function __construct(array $config = null) {
+    public function __construct(array $options = null) {
         $this->ioc = new IocImpl();
         $this->configurator = new ConfiguratorImpl($this->ioc);
-        $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home", $config) ?: "/.."));
+        $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home", $options) ?: "/.."));
         $this->ioc->register($this);
         $this->ioc->register($this->configurator);
         $this->ioc->register(JsonViewImpl::class);

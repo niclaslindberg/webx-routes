@@ -12,18 +12,17 @@ class RoutesBootstrap {
     private function __construct(){}
 
     /**
-     * @param Closure|array $action
-     * @param array $config
-     * <code>
+     * @param Closure $closure the initial action
+     * @param array|string|null $configuration
+     * @param array $options
      * Required values:
      * 'home' (string) relative path from $_SERVER['DOCUMENT_ROOT'] defaults to ".."
      * </code>
-     * @return void
      */
-    public final static function run(Closure $closure, array $config = null) {
+    public final static function run(Closure $closure, $configuration = null, array $options = null) {
         try {
-            $routes = new RoutesImpl($config);
-            $routes->map($closure);
+            $routes = new RoutesImpl($options);
+            $routes->map($closure,$configuration);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {
