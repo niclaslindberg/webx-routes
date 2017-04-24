@@ -5,19 +5,16 @@ namespace WebX\Routes\Impl;
 use Closure;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
 use WebX\Impl\ReaderImpl;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Routes\Api\ResponseBody;
-use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\View;
-use WebX\Routes\Impl\ResponseTypes\JsonViewImpl;
+use WebX\Routes\Impl\Views\JsonViewImpl;
 
-class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
+class RoutesImpl implements Routes, ResponseBody {
 
     /**
      * @var Ioc
@@ -118,14 +115,14 @@ class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
         }
     }
 
-    public function map(Closure $closure, $configuration = null, array $parameters = []) {
+    public function run(Closure $closure, $configuration = null, array $parameters = []) {
         if($configuration) {
             $this->pushConfiguration($configuration);
         }
-        return $this->ioc->invoke($closure, ["paramters" => $parameters]);
+        $this->setView($this->ioc->invoke($closure, ["paramters" => $parameters]));
     }
 
-    public function mapMethod($class, $configuration = null, array $parameters = []) {
+    public function runMethod($class, $configuration = null, array $parameters = []) {
         if ($configuration) {
             $this->pushConfiguration($configuration);
         }
@@ -136,7 +133,7 @@ class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
                 $method = $refClass->getMethod($methodName);
                 $controller = $this->ioc->instantiate($class);
                 $closure = $method->getClosure($controller);
-                return $this->ioc->invoke($closure, ["parameters" => $parameters]);
+                $this->setView($this->ioc->invoke($closure, ["parameters" => $parameters]));
             } catch (ReflectionException $e) {
                 //Missing method
             }
@@ -146,13 +143,13 @@ class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
         }
     }
 
-    public function mapCtrl($configuration = null, array $parameters = []) {
+    public function runCtrl($configuration = null, array $parameters = []) {
         if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
             $ctrlName = $this->path()->nextSegment();
             foreach ($ctrlNamespaces as $ctrlNamespace) {
                 $ctrlClassName = "$ctrlNamespace\\$ctrlName";
                 if (class_exists($ctrlClassName)) {
-                    return $this->mapMethod($ctrlClassName, $configuration, $parameters);
+                    $this->setView($this->runMethod($ctrlClassName, $configuration, $parameters));
                 }
             }
             return null;
@@ -203,8 +200,14 @@ class RoutesImpl implements Routes, ResponseHeader, ResponseBody {
         }
     }
 
-    public function setView(View $view) {
-        $this->view = $view;
+    public function setView($view) {
+        if($view) {
+            if($view instanceof View) {
+                $this->view = $view;
+            } else {
+                throw new RoutesException("Result of map* must return an instance of View");
+            }
+        }
     }
 
     public function view() {

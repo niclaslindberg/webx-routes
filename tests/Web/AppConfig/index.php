@@ -8,9 +8,8 @@ use WebX\Routes\Api\RoutesBootstrap;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
-RoutesBootstrap::run(function(Routes $routes, JsonView $jsonView){
-        $routes->setData("hello","message");
-        $routes->setView($jsonView);
+RoutesBootstrap::run(function(JsonView $jsonView){
+        return $jsonView->setData("Hello","message");
 },"default",["home"=>"/"]);
 
 

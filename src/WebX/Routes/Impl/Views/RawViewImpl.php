@@ -1,15 +1,9 @@
 <?php
-namespace WebX\Routes\Impl\ResponseTypes;
+namespace WebX\Routes\Impl\Views;
 
-use WebX\Routes\Api\Configuration;
-use WebX\Routes\Api\Request;
-use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseBody;
-use WebX\Routes\Api\ResponseException;
 use WebX\Routes\Api\ResponseHeader;
-use WebX\Routes\Api\ResponseTypes\RawResponseType;
-use WebX\Routes\Api\ResponseTypes\RawView;
-use WebX\Routes\Api\ResponseWriter;
+use WebX\Routes\Api\Views\RawView;
 
 class RawViewImpl implements RawView {
 

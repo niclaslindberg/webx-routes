@@ -1,17 +1,10 @@
 <?php
-namespace WebX\Routes\Impl\ResponseTypes;
+namespace WebX\Routes\Impl\Views;
 
-use WebX\Routes\Api\Configuration;
-use WebX\Routes\Api\Request;
-use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseBody;
-use WebX\Routes\Api\ResponseException;
 use WebX\Routes\Api\ResponseHeader;
-use WebX\Routes\Api\ResponseTypes\ContentView;
-use WebX\Routes\Api\ResponseTypes\DownloadResponseType;
-use WebX\Routes\Api\ResponseWriter;
 use WebX\Routes\Api\RoutesException;
-use WebX\Routes\Impl\Views\FilenameMimetypeFactory;
+use WebX\Routes\Api\Views\ContentView;
 
 class ContentViewImpl implements ContentView
 {
@@ -101,6 +94,4 @@ class ContentViewImpl implements ContentView
         $this->contentType = $contentType;
         return $this;
     }
-
-
 }

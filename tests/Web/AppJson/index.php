@@ -1,25 +1,27 @@
 <?php
 
-use WebX\Routes\Api\Response;
-use WebX\Routes\Api\ResponseTypes\JsonResponseType;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesBootstrap;
+use WebX\Routes\Api\Views\JsonView;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
-RoutesBootstrap::run(function(Routes $routes){
+RoutesBootstrap::run(function(Routes $routes, JsonView $jsonView){
 
-        $routes->onSegment("normal",function(Response $response){
-          $response->data("a","a.a");
-          $response->data("b","a.b");
-          $response->data("c","a.b.c");
-        })->onSegment("rootArray",function(Response $response, JsonResponseType $responseType){
-          $response->type($responseType); //Setting specificially - default is JsonResponseType
-          $response->data(["a"=>"1"]);
-          $response->data(["b"=>"2"]);
-        })->onSegment("rootScalar",function(Response $response){
-          $response->data(1);
-        });
+    $next = $routes->path()->nextSegment();
+        if($next==='normal') {
+            $routes->setData("a","a.a");
+            $routes->setData("b","a.b");
+            $jsonView->setData("c","a.b.c");
 
+        } else if ($next==='rootArray') {
+            $routes->setData(["a"=>"1"]);
+            $jsonView->setData(["b"=>"2"]);
+
+        } else if ($next==='scalar') {
+            $jsonView->setData(1);
+
+        }
+        return $jsonView;
 },["home"=>"/"]);
 

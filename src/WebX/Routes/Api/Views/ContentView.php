@@ -1,7 +1,7 @@
 <?php
 
 
-namespace WebX\Routes\Api\ResponseTypes;
+namespace WebX\Routes\Api\Views;
 use WebX\Routes\Api\View;
 
 interface ContentView extends View {

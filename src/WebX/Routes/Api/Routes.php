@@ -4,7 +4,6 @@ namespace WebX\Routes\Api;
 
 use Closure;
 use WebX\Routes\Impl\Path;
-use WebX\Routes\Impl\Segments;
 
 interface Routes extends ResponseHeader {
 
@@ -24,7 +23,7 @@ interface Routes extends ResponseHeader {
      * @param array $parameters
      * @return mixed
      */
-    public function map(Closure $closure, $configuration = null, array $parameters = []);
+    public function run(Closure $closure, $configuration = null, array $parameters = []);
 
     /**
      * @param $class
@@ -32,14 +31,14 @@ interface Routes extends ResponseHeader {
      * @param array $parameters
      * @return bool if the request was successfully mapped to a method on the controller.
      */
-    public function mapMethod($class,$configuration = null, array $parameters = []);
+    public function runMethod($class,$configuration = null, array $parameters = []);
 
     /**
      * @param array|string|null $configuration
      * @param array $parameters
      * @return bool  if the request was successfully mapped to a method on a controller.
      */
-    public function mapCtrl($configuration = null, array $parameters = []);
+    public function runCtrl($configuration = null, array $parameters = []);
 
     /**
      * Forwards execution to another routes segment
@@ -62,12 +61,6 @@ interface Routes extends ResponseHeader {
      * @return mixed
      */
     public function data($path=null);
-
-    /**
-     * @param View $responseType
-     * @return Routes
-     */
-    public function setView(View $view);
 
     /**
      * @return View|null

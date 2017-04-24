@@ -6,6 +6,7 @@ use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Extras\Twig\Api\TwigView;
+use WebX\Routes\Impl\ArrayUtil;
 
 
 class TwigViewImpl implements TwigView {
@@ -42,7 +43,7 @@ class TwigViewImpl implements TwigView {
             if($templatesPath = $this->routes->resourcePath("templates")) {
                 $loader = new \Twig_Loader_Filesystem($templatesPath);
                 $twig = new \Twig_Environment($loader, $loader);
-                $responseBody->writeContent($twig->render("{$this->id}{$this->suffix}",($this->data && $data) ? array_merge($data,$this->data) : ($data ? $data : $this->data)));
+                $responseBody->writeContent($twig->render("{$this->id}{$this->suffix}",ArrayUtil::mergeRecursive($data,$this->data)));
             } else {
                 throw new RoutesException("Template {$this->id} not found");
             }
