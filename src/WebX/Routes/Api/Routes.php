@@ -26,7 +26,7 @@ interface Routes extends ResponseHeader {
     public function run(Closure $closure, $configuration = null, array $parameters = []);
 
     /**
-     * @param $class
+     * @param string $class
      * @param array|string|null $configuration
      * @param array $parameters
      * @return bool if the request was successfully mapped to a method on the controller.

@@ -17,14 +17,9 @@ class ConfiguratorImpl implements Configurator {
      */
     private $routes;
 
-    /**
-     * ConfigurationImpl constructor.
-     * @param Ioc $ioc
-     */
     public function __construct(RoutesImpl $routes) {
         $this->routes = $routes;
     }
-
 
     public function addCtrlNamespace($namespace) {
         array_unshift($this->ctrlNamespaces,$namespace);
@@ -37,7 +32,6 @@ class ConfiguratorImpl implements Configurator {
     public function absolutePaths() {
         return $this->absolutePaths;
     }
-
 
     public function addResourcePath($absolutePath, $append = true) {
         if($append) {
