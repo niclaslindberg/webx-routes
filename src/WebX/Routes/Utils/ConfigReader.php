@@ -2,7 +2,8 @@
 
 namespace WebX\Routes\Utils;
 
-use WebX\Impl\ReaderImpl;
+use WebX\Routes\Impl\ReaderImpl;
+use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\RoutesException;
 
 final class ConfigReader {
@@ -14,7 +15,7 @@ final class ConfigReader {
     /**
      * @param $file
      * @param bool $optional
-     * @return mixed|ReaderImpl
+     * @return Reader
      * @throws RoutesException
      */
     public static function create($file,$optional = false) {
