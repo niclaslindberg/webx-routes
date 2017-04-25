@@ -13,5 +13,5 @@ RoutesBootstrap::run(function(Routes $routes, TemplateView $templateView){
     } else {
         return $templateView->id("empty");
     }
-},"Twig",["home"=>"/"]);
+},["Twig"],["home"=>"/"]);
 
