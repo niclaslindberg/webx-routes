@@ -22,7 +22,7 @@ class WebServerSessionTest extends \PHPUnit_Framework_TestCase
         self::$server->stop();
     }
 
-    public function test1() {
+    public function testCounter() {
         $server = self::$server;
 
         $r11 = $server->get_contents("/default/increment");

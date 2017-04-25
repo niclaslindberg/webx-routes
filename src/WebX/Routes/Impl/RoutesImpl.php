@@ -5,7 +5,6 @@ namespace WebX\Routes\Impl;
 use Closure;
 use ReflectionClass;
 use ReflectionException;
-use WebX\Impl\ReaderImpl;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
 use WebX\Routes\Api\ResponseBody;
@@ -13,6 +12,7 @@ use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\View;
 use WebX\Routes\Impl\Views\JsonViewImpl;
+use WebX\Routes\Impl\Views\RawViewImpl;
 
 class RoutesImpl implements Routes, ResponseBody {
 
@@ -61,11 +61,11 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function __construct(array $options = null) {
         $this->ioc = new IocImpl();
-        $this->configurator = new ConfiguratorImpl($this->ioc);
+        $this->ioc->register($this->configurator = new ConfiguratorImpl($this));
         $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home", $options) ?: "/.."));
         $this->ioc->register($this);
-        $this->ioc->register($this->configurator);
         $this->ioc->register(JsonViewImpl::class);
+        $this->ioc->register(RawViewImpl::class);
     }
 
     public function setStatus($httpStatusCode) {
@@ -116,6 +116,7 @@ class RoutesImpl implements Routes, ResponseBody {
     }
 
     public function run(Closure $closure, $configuration = null, array $parameters = []) {
+
         if($configuration) {
             $this->pushConfiguration($configuration);
         }
@@ -267,10 +268,7 @@ class RoutesImpl implements Routes, ResponseBody {
     }
 
     public function session($id = null) {
-        if (!$this->sessionManager) {
-            $this->sessionManager = new SessionManagerImpl($this);
-        }
-        return $this->sessionManager->createSession($id);
+        return $this->getSessionManager()->createSession($id);
     }
 
     public function resourcePath($relativePath = null) {
@@ -294,6 +292,20 @@ class RoutesImpl implements Routes, ResponseBody {
         } else {
             header("HTTP/1.1 404");
         }
+    }
+
+    public function register($classOrInstance, array $config = null) {
+        $this->ioc->register($classOrInstance, $config);
+    }
+
+    /**
+     * @return SessionManagerImpl
+     */
+    public function getSessionManager() {
+        if($this->sessionManager) {
+            return $this->sessionManager;
+        }
+        return $this->sessionManager = new SessionManagerImpl($this);
     }
 
     public function writeContent($content) {

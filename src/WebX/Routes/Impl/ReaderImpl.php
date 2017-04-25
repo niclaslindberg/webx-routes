@@ -1,15 +1,7 @@
 <?php
-/**
- * User: niclas
- * Date: 4/28/16
- * Time: 10:47 AM
- */
 
-namespace WebX\Impl;
-
-
+namespace WebX\Routes\Impl;
 use DateTime;
-use Tictac\Util\Arrays\Api\ArrayView;
 use WebX\Routes\Api\Reader;
 
 class ReaderImpl implements Reader
@@ -166,17 +158,4 @@ class ReaderImpl implements Reader
             return $value;
         }
     }
-
-    private static function mergeRecursive(array &$array1, array $array2) {
-        foreach($array2 as $key => $val2) {
-            if (is_array($val2) && isset($array1[$key]) && is_array($array1[$key])) {
-                $val1 = &$array1[$key];
-                self::mergeRecursive($val1,$val2);
-            } else {
-                $array1[$key] = $val2;
-            }
-        }
-    }
-
-
 }

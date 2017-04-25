@@ -18,7 +18,7 @@ class PathImpl {
     public function nextSegment() {
         $this->initSegments();
         if(count($this->segments)>$this->currentSegmentPos) {
-            return $this->segments[$this->currentSegmentPos];
+            return $this->segments[$this->currentSegmentPos++];
         }
         return null;
     }

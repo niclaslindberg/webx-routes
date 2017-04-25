@@ -1,20 +1,10 @@
 <?php
-/**
- * User: niclas
- * Date: 12/27/16
- * Time: 3:25 PM
- */
 
 namespace WebX\Routes\Impl;
 
-
-use WebX\Routes\Api\Request;
-use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
-use WebX\Routes\Api\Session;
-use WebX\Routes\Api\SessionConfig;
 
 class SessionManagerImpl   {
 

@@ -19,7 +19,8 @@ class RoutesBootstrap {
      * 'home' (string) relative path from $_SERVER['DOCUMENT_ROOT'] defaults to ".."
      * </code>
      */
-    public final static function run(Closure $closure, array $options = null,$configuration = null) {
+    public final static function run(Closure $closure, $configuration = null, array $options = null) {
+
         try {
             $routes = new RoutesImpl($options);
             $routes->setView($routes->run($closure,$configuration));

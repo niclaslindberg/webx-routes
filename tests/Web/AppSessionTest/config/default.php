@@ -1,14 +1,7 @@
 <?php
 
-use Test\WebX\Classes\IService;
-use Test\WebX\Classes\Service;
-use WebX\Routes\Api\SessionConfig;
+use WebX\Routes\Api\Configurator;
 
-return [
-
-    "execute" => [
-        function(SessionConfig $sessionConfig) {
-            $sessionConfig->configure(10*60,"AA",true);
-        }
-    ]
-];
+return function(Configurator $configurator) {
+    $configurator->configureSession(null,10*60,"encryptionKeyDummy");
+};

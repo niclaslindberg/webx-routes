@@ -13,16 +13,16 @@ class ConfiguratorImpl implements Configurator {
     private $absolutePaths = [];
 
     /**
-     * @var Ioc
+     * @var RoutesImpl
      */
-    private $ioc;
+    private $routes;
 
     /**
      * ConfigurationImpl constructor.
      * @param Ioc $ioc
      */
-    public function __construct(Ioc $ioc) {
-        $this->ioc = $ioc;
+    public function __construct(RoutesImpl $routes) {
+        $this->routes = $routes;
     }
 
 
@@ -30,9 +30,10 @@ class ConfiguratorImpl implements Configurator {
         array_unshift($this->ctrlNamespaces,$namespace);
     }
 
-    public function configureSession($id = null, $ttl = 3600, $encryptionKey = null) {
-        throw new RoutesException("Not implemented");
+    public function configureSession($id=null, $ttl=3600, $httpOnly = false,  $encryptionKey = null) {
+        $this->routes->getSessionManager()->configure($ttl,$encryptionKey,$httpOnly,$id);
     }
+
 
     public function addResourcePath($absolutePath, $append = true) {
         if($append) {
@@ -66,7 +67,7 @@ class ConfiguratorImpl implements Configurator {
     }
 
     public function register($classOrInstance, array $config = null) {
-        $this->ioc->register($classOrInstance,$config);
+        $this->routes->register($classOrInstance,$config);
     }
 
 }

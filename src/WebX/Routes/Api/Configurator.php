@@ -6,7 +6,7 @@ interface Configurator  {
 
     public function addCtrlNamespace($namespace);
 
-    public function configureSession($id=null, $ttl=3600, $encryptionKey = null);
+    public function configureSession($id=null, $ttl=3600, $httpOnly = false,  $encryptionKey = null);
 
     /**
      * Adds an absolute path to the beginning of the path list.
