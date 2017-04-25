@@ -23,28 +23,11 @@ class WebServerParameterTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testNoNull() {
+    public function testParameterToClosure() {
         $server = self::$server;
-        $response = $server->get_contents("/test1/param1/param2/param3");
-        $this->assertEquals("param1-param2-param3",$response);
+        $response = $server->get_contents("/test1/hello");
+        $this->assertEquals("hello",$response);
     }
 
-    public function testDefaultWithMissing() {
-        $server = self::$server;
-        $response = $server->get_contents("/test2/param1/param2");
-        $this->assertEquals("param1-param2-default",$response);
-    }
-
-    public function testDefaultWithOverride() {
-        $server = self::$server;
-        $response = $server->get_contents("/test2/param1/param2/override");
-        $this->assertEquals("param1-param2-override",$response);
-    }
-
-    public function testDefaulNulltWithoutOverride() {
-        $server = self::$server;
-        $response = $server->get_contents("/test3/param1/param2");
-        $this->assertEquals("param1-param2-",$response);
-    }
 
 }

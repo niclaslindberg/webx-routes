@@ -1,8 +1,7 @@
 <?php
 
-return [
+use WebX\Routes\Api\Configurator;
 
-
-    "namespaces" => ["Test\\WebX\\Classes\\Controllers","Test\\WebX\\Classes"]
-
-];
+return function(Configurator $configurator) {
+    $configurator->addCtrlNamespace("Test\\WebX\\Classes\\Controllers");
+};

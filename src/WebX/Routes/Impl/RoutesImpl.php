@@ -63,9 +63,13 @@ class RoutesImpl implements Routes, ResponseBody {
 
 
     public function __construct(array $options = null) {
+        $optionsView = new ReaderImpl($options);
         $this->ioc = new IocImpl();
         $this->ioc->register($this->configurator = new ConfiguratorImpl($this));
-        $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . (ArrayUtil::get("home", $options) ?: "/.."));
+        $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsView->asString("home", "/.."));
+        if($optionsView->asBool("includeExtras",true)) {
+            $this->configurator->addResourcePath(dirname(__DIR__) . "/Extras");
+        }
         $this->ioc->register($this);
         $this->ioc->register(JsonViewImpl::class);
         $this->ioc->register(RawViewImpl::class);
@@ -123,7 +127,8 @@ class RoutesImpl implements Routes, ResponseBody {
         if($configuration) {
             $this->pushConfiguration($configuration);
         }
-        $this->setView($this->ioc->invoke($closure, ["paramters" => $parameters]));
+        $remainingSegments = $this->path()->remainingSegments();
+        $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
     }
 
     public function runMethod($class, $configuration = null, array $parameters = []) {
@@ -141,7 +146,8 @@ class RoutesImpl implements Routes, ResponseBody {
                 $method = $refClass->getMethod($methodName);
                 $controller = $this->ioc->instantiate($class);
                 $closure = $method->getClosure($controller);
-                $this->setView($this->ioc->invoke($closure, ["parameters" => $parameters]));
+                $remainingSegments = $this->path()->remainingSegments();
+                $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
             } catch (ReflectionException $e) {
                 //Missing method
             }
@@ -155,6 +161,7 @@ class RoutesImpl implements Routes, ResponseBody {
     public function runCtrl($configuration = null, array $parameters = []) {
         if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
             if($ctrlName = $this->path()->nextSegment()) {
+                $ctrlName = ucfirst($ctrlName);
                 foreach ($ctrlNamespaces as $ctrlNamespace) {
                     $ctrlClassName = "$ctrlNamespace\\$ctrlName";
                     if (class_exists($ctrlClassName)) {

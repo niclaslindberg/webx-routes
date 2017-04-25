@@ -1,12 +1,8 @@
 <?php
 
 use Test\WebX\Classes\Service;
+use WebX\Routes\Api\Configurator;
 
-return [
-
-    "ioc" => [
-         "register" => [
-             [Service::class]
-        ]
-    ]
-];
+return function(Configurator $configurator) {
+    $configurator->register(Service::class);
+};

@@ -22,43 +22,25 @@ class WebServerControllersTest extends \PHPUnit_Framework_TestCase
         self::$server->stop();
     }
 
-    public function testFullClassName() {
+    public function testControllerAIndex() {
         $server = self::$server;
-        $r11 = $server->get_contents("/fullClassName");
-        $this->assertEquals("1", $r11);
+        $r11 = $server->get_contents("/controllerA");
+        $this->assertEquals("Index", $r11);
 
     }
 
-    public function testControllerName() {
+    public function testControllerANamedMethod() {
         $server = self::$server;
-        $r11 = $server->get_contents("/controller");
-        $this->assertEquals("2", $r11);
+        $r11 = $server->get_contents("/controllerA/test1");
+        $this->assertEquals("Test1", $r11);
 
     }
 
-    public function testControllerNameWithLastNameSpacePart() {
+    public function testControllerANamedMethodWithParam() {
         $server = self::$server;
-        $r11 = $server->get_contents("/lastNamespaceAndcontroller");
-        $this->assertEquals("3", $r11);
+        $r11 = $server->get_contents("/controllerA/test2/abc");
+        $this->assertEquals("Test2:abc", $r11);
 
-    }
-
-    public function testControllerNameWithoutMethod() {
-        $server = self::$server;
-        $r11 = $server->get_contents("/path4/test4");
-        $this->assertEquals("4", $r11);
-
-    }
-    public function testControllerNameWithNonExistingMethod() {
-        $server = self::$server;
-        $r11 = $server->get_contents("/path4/test5");
-        $this->assertEquals(404,$server->statusCode());
-    }
-
-    public function testControllerNameWithIndexMethod() {
-        $server = self::$server;
-        $r11 = $server->get_contents("/path4");
-        $this->assertEquals("index",$r11);
     }
 
 }
