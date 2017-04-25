@@ -113,11 +113,11 @@ class RoutesImpl implements Routes, ResponseBody {
             $configuration = [$configuration];
         }
         foreach ($configuration as $config) {
-            if ($configPath = $this->configurator->absolutePath("config/{$config}.php")) {
+            if ($configPath = $this->configurator->absolutePath("Config/{$config}.php")) {
                 $content = require($configPath);
                 $this->ioc->invoke($content);
             } else {
-                throw new RoutesException("Config-path {$configPath} could not be found");
+                throw new RoutesException("Config {$config}.php could not be found in paths:" . implode(",",$this->configurator->absolutePaths()));
             }
         }
     }

@@ -23,22 +23,16 @@ class WebServerTemplateTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function test() {
+    public function testValue() {
         $server = self::$server;
-        $response = $server->get_contents("/viaResponseType");
-        $this->assertEquals("a",$response);
+        $response = $server->get_contents("/theValue");
+        $this->assertEquals("theValue",$response);
 
-    }
-
-    public function testViaResponse() {
-        $server = self::$server;
-        $response = $server->get_contents("/viaResponse");
-        $this->assertEquals("b",$response);
     }
 
     public function testEmpty() {
         $server = self::$server;
-        $response = $server->get_contents("/emptyTemplate");
+        $response = $server->get_contents("/");
         $this->assertEquals("emptyresult",$response);
     }
 }

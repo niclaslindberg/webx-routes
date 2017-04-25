@@ -22,8 +22,10 @@ interface TwigView extends View {
     public function contentType($contentType);
 
     /**
-     * @param array $data
+     * * Sets data in context
+     * @param mixed $data
+     * @param string|null $path
      * @return TwigView
      */
-    public function data(array $data);
+    public function data($data, $path = null);
 }

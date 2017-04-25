@@ -34,6 +34,10 @@ class ConfiguratorImpl implements Configurator {
         $this->routes->getSessionManager()->configure($ttl,$encryptionKey,$httpOnly,$id);
     }
 
+    public function absolutePaths() {
+        return $this->absolutePaths;
+    }
+
 
     public function addResourcePath($absolutePath, $append = true) {
         if($append) {

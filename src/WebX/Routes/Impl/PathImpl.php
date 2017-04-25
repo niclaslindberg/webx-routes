@@ -33,6 +33,7 @@ class PathImpl {
     }
 
     public function currentSegment() {
+        $this->initSegments();
         if($this->currentSegmentPos!==null) {
             return $this->segments[$this->currentSegmentPos];
         }

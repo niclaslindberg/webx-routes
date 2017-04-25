@@ -4,22 +4,16 @@ use WebX\Routes\Api\Response;
 use WebX\Routes\Api\ResponseTypes\TemplateResponseType;
 use WebX\Routes\Api\RoutesBootstrap;
 use WebX\Routes\Api\Routes;
+use WebX\Routes\Extras\Twig\Api\TwigView;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
-RoutesBootstrap::run([function(Routes $routes){
+RoutesBootstrap::run(function(Routes $routes, TwigView $twigView){
 
-        $routes->onSegment("viaResponseType",function(Response $response, TemplateResponseType $responseType) {
-            $response->data(["value1"=>"a"]);
-            $response->type($responseType->id("main"));
-        })->onSegment("viaResponse",function(Response $response) {
-            $response->data(["value1"=>"b"]);
-            $response->typeTemplate()->id("main");
-        })->onSegment("emptyTemplate",function(Response $response) {
-            $response->typeTemplate()->id("empty");
-        });
-
-
-
-},"default"],["home"=>"/"]);
+    if($next = $routes->path()->nextSegment()) {
+        return $twigView->id("value")->data(["value"=>$next]);
+    } else {
+        return $twigView->id("empty");
+    }
+},"Twig",["home"=>"/"]);
 

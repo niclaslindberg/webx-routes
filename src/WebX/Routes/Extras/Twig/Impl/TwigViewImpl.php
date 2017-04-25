@@ -1,6 +1,6 @@
 <?php
 
-namespace WebX\Routes\Impl\ResponseTypes;
+namespace WebX\Routes\Extras\Twig\Impl;
 use WebX\Routes\Api\ResponseBody;
 use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
@@ -40,10 +40,12 @@ class TwigViewImpl implements TwigView {
 
     public function renderBody(ResponseBody $responseBody, $data) {
         if($this->id) {
-            if($templatesPath = $this->routes->resourcePath("templates")) {
-                $loader = new \Twig_Loader_Filesystem($templatesPath);
-                $twig = new \Twig_Environment($loader, $loader);
-                $responseBody->writeContent($twig->render("{$this->id}{$this->suffix}",ArrayUtil::mergeRecursive($data,$this->data)));
+            if($templatesPath = $this->routes->resourcePath("Templates")) {
+                $loader = new \Twig_Loader_Filesystem([$templatesPath]);
+                $twig = new \Twig_Environment($loader, []);
+                $data = ArrayUtil::mergeRecursive($data,$this->data);
+
+                $responseBody->writeContent($twig->render("{$this->id}{$this->suffix}",is_array($data) ? $data : []));
             } else {
                 throw new RoutesException("Template {$this->id} not found");
             }
@@ -52,8 +54,7 @@ class TwigViewImpl implements TwigView {
         }
     }
 
-    public function id($template)
-    {
+    public function id($template) {
         $this->id = $template;
         return $this;
     }
@@ -63,8 +64,23 @@ class TwigViewImpl implements TwigView {
         return $this;
     }
 
-    public function data(array $data) {
-        $this->data = $data;
+    public function data($data, $path = null) {
+        if (null !== $path) {
+            if (is_string($path)) {
+                $path = explode(".", $path);
+            }
+            if (!is_array($this->data)) {
+                $this->data = [];
+            }
+            $root = &$this->data;
+            while ($part = array_shift($path)) {
+                $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
+                $root = &$root[$part];
+            }
+        } else {
+            $this->data = $data;
+        }
+        return $this;
     }
 
 
