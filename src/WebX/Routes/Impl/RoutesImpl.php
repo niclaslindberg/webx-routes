@@ -39,6 +39,9 @@ class RoutesImpl implements Routes, ResponseBody {
      */
     private $view;
 
+    /**
+     * @var PathImpl
+     */
     private $path;
 
     private $body;
@@ -129,7 +132,11 @@ class RoutesImpl implements Routes, ResponseBody {
         }
         try {
             $refClass = new ReflectionClass($class);
-            $methodName = $this->path()->nextSegment() ?: "index";
+            $resetPath = -1;
+            if(NULL == ($methodName = $this->path()->nextSegment())) {
+                $methodName = "index";
+                $resetPath = 0;
+            };
             try {
                 $method = $refClass->getMethod($methodName);
                 $controller = $this->ioc->instantiate($class);
@@ -138,6 +145,7 @@ class RoutesImpl implements Routes, ResponseBody {
             } catch (ReflectionException $e) {
                 //Missing method
             }
+            $this->path->moveCurrentSegment($resetPath);
             return null;
         } catch (ReflectionException $e) {
             throw new RoutesException(null, $e);
@@ -146,14 +154,17 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function runCtrl($configuration = null, array $parameters = []) {
         if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
-            $ctrlName = $this->path()->nextSegment();
-            foreach ($ctrlNamespaces as $ctrlNamespace) {
-                $ctrlClassName = "$ctrlNamespace\\$ctrlName";
-                if (class_exists($ctrlClassName)) {
-                    $this->setView($this->runMethod($ctrlClassName, $configuration, $parameters));
+            if($ctrlName = $this->path()->nextSegment()) {
+                foreach ($ctrlNamespaces as $ctrlNamespace) {
+                    $ctrlClassName = "$ctrlNamespace\\$ctrlName";
+                    if (class_exists($ctrlClassName)) {
+                        $this->setView($this->runMethod($ctrlClassName, $configuration, $parameters));
+                        $this->path->moveCurrentSegment(-1);
+                        break;
+                    }
                 }
+                return null;
             }
-            return null;
         } else {
             throw new RoutesException("Missing mapped controller namespaces for mapCtrl()");
         }
