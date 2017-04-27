@@ -295,6 +295,7 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function render() {
         if ($this->view) {
+
             $this->view->renderHead($this, $this->data);
             if ($this->sessionManager) {
                 $this->sessionManager->writeCookies($this);

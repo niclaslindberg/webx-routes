@@ -5,7 +5,11 @@ namespace WebX\Routes\Extras\Template\Api;
 
 use WebX\Routes\Api\View;
 
-
+/**
+ * Interface TemplateView
+ * Super interface of all template view integrations. 
+ * @package WebX\Routes\Extras\Template\Api
+ */
 interface TemplateView extends View {
 
     /**
