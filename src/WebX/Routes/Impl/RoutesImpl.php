@@ -128,7 +128,7 @@ class RoutesImpl implements Routes, ResponseBody {
             $this->pushConfiguration($configuration);
         }
         $remainingSegments = $this->path()->remainingSegments();
-        $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
+        return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
     }
 
     public function runMethod($class, $configuration = null, array $parameters = []) {
@@ -137,22 +137,19 @@ class RoutesImpl implements Routes, ResponseBody {
         }
         try {
             $refClass = new ReflectionClass($class);
-            $resetPath = -1;
-            if(NULL == ($methodName = $this->path()->nextSegment())) {
-                $methodName = "index";
-                $resetPath = 0;
-            };
+            $methodName = $this->path()->nextSegment() ?: "index";
             try {
-                $method = $refClass->getMethod($methodName);
-                $controller = $this->ioc->instantiate($class);
-                $closure = $method->getClosure($controller);
-                $remainingSegments = $this->path()->remainingSegments();
-                $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
-            } catch (ReflectionException $e) {
-                //Missing method
+                if($refClass->hasMethod($methodName)) {
+                    $method = $refClass->getMethod($methodName);
+                    $controller = $this->ioc->instantiate($class);
+                    $closure = $method->getClosure($controller);
+                    $remainingSegments = $this->path()->remainingSegments();
+                    return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
+                }
+                return false;
+            } finally {
+                $this->path->moveCurrentSegment(-1);
             }
-            $this->path->moveCurrentSegment($resetPath);
-            return null;
         } catch (ReflectionException $e) {
             throw new RoutesException(null, $e);
         }
@@ -160,17 +157,19 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function runCtrl($configuration = null, array $parameters = []) {
         if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
-            if($ctrlName = $this->path()->nextSegment()) {
-                $ctrlName = ucfirst($ctrlName);
-                foreach ($ctrlNamespaces as $ctrlNamespace) {
-                    $ctrlClassName = "$ctrlNamespace\\$ctrlName";
-                    if (class_exists($ctrlClassName)) {
-                        $this->setView($this->runMethod($ctrlClassName, $configuration, $parameters));
-                        $this->path->moveCurrentSegment(-1);
-                        break;
+            try {
+                if ($ctrlName = $this->path()->nextSegment()) {
+                    $ctrlName = ucfirst($ctrlName);
+                    foreach ($ctrlNamespaces as $ctrlNamespace) {
+                        $ctrlClassName = "$ctrlNamespace\\$ctrlName";
+                        if (class_exists($ctrlClassName)) {
+                            return $this->runMethod($ctrlClassName, $configuration, $parameters);
+                        }
                     }
                 }
-                return null;
+                return false;
+            } finally {
+                $this->path->moveCurrentSegment(-1);
             }
         } else {
             throw new RoutesException("Missing mapped controller namespaces for mapCtrl()");
@@ -223,10 +222,12 @@ class RoutesImpl implements Routes, ResponseBody {
         if($view) {
             if($view instanceof View) {
                 $this->view = $view;
+                return true;
             } else {
-                throw new RoutesException("Result of map* must return an instance of View");
+                throw new RoutesException("Result of map* must return an instance of View.");
             }
         }
+        return false;
     }
 
     public function view() {

@@ -23,7 +23,7 @@ class RoutesBootstrap {
 
         try {
             $routes = new RoutesImpl($options);
-            $routes->setView($routes->run($closure,$configuration));
+            $routes->run($closure,$configuration);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {

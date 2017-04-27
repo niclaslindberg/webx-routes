@@ -29,14 +29,14 @@ interface Routes extends ResponseHeader {
      * @param string $class
      * @param array|string|null $configuration
      * @param array $parameters
-     * @return bool if the request was successfully mapped to a method on the controller.
+     * @return bool if the method defined a view.
      */
     public function runMethod($class,$configuration = null, array $parameters = []);
 
     /**
      * @param array|string|null $configuration
      * @param array $parameters
-     * @return bool  if the request was successfully mapped to a method on a controller.
+     * @return bool if the controller method defined a view.
      */
     public function runCtrl($configuration = null, array $parameters = []);
 
