@@ -13,6 +13,7 @@ use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\View;
 use WebX\Routes\Impl\Views\JsonViewImpl;
 use WebX\Routes\Impl\Views\RawViewImpl;
+use WebX\Routes\Impl\Views\RedirectViewImpl;
 
 class RoutesImpl implements Routes, ResponseBody {
 
@@ -73,6 +74,8 @@ class RoutesImpl implements Routes, ResponseBody {
         $this->ioc->register($this);
         $this->ioc->register(JsonViewImpl::class);
         $this->ioc->register(RawViewImpl::class);
+        $this->ioc->register(RedirectViewImpl::class);
+
     }
 
     public function setStatus($httpStatusCode) {
@@ -176,14 +179,21 @@ class RoutesImpl implements Routes, ResponseBody {
         }
     }
 
-    public function forward($routesName) {
-        $configFile = "routes/{$routesName}.php";
-        if ($completePath = $this->configurator->absolutePath($configFile)) {
-            $routes = $this;
-            require $completePath;
-            return $this->view ? true : false;
+    public function forward($routesName,$segmentCondition=null) {
+        if(!$this->view) {
+            if(!$segmentCondition || ($segmentCondition===$this->path()->currentSegment())) {
+                $configFile = "routes/{$routesName}.php";
+                if ($completePath = $this->configurator->absolutePath($configFile)) {
+                    $closure = require $completePath;
+                    return $this->setView($this->ioc->invoke($closure));
+                } else {
+                    throw new RoutesException(sprintf("Could not forward to %s", $configFile));
+                }
+            } else {
+                return false;
+            }
         } else {
-            throw new RoutesException(sprintf("Could not forward to %s", $configFile));
+            return false;
         }
     }
 

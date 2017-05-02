@@ -43,9 +43,10 @@ interface Routes extends ResponseHeader {
     /**
      * Forwards execution to another routes segment
      * @param $routesName
-     * @return bool if the processing was successfully forwarded.
+     * @param null $segmentCondition will only execute the forward if the condition is equal to the current segment.
+     * @return bool if the forward successfully rendered a view.
      */
-    public function forward($routesName);
+    public function forward($routesName,$segmentCondition=null);
 
     /**
      * Sets data in context
