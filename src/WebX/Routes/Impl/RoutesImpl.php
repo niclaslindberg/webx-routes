@@ -182,12 +182,17 @@ class RoutesImpl implements Routes, ResponseBody {
     public function forward($routesName,$segmentCondition=null) {
         if(!$this->view) {
             if(!$segmentCondition || ($segmentCondition===$this->path()->currentSegment())) {
-                $configFile = "routes/{$routesName}.php";
-                if ($completePath = $this->configurator->absolutePath($configFile)) {
-                    $closure = require $completePath;
-                    return $this->setView($this->ioc->invoke($closure));
-                } else {
-                    throw new RoutesException(sprintf("Could not forward to %s", $configFile));
+                try {
+                    $this->path->nextSegment();
+                    $configFile = "routes/{$routesName}.php";
+                    if ($completePath = $this->configurator->absolutePath($configFile)) {
+                        $closure = require $completePath;
+                        return $this->setView($this->ioc->invoke($closure));
+                    } else {
+                        throw new RoutesException(sprintf("Could not forward to %s", $configFile));
+                    }
+                } finally {
+                    $this->path->moveCurrentSegment(-1);
                 }
             } else {
                 return false;
