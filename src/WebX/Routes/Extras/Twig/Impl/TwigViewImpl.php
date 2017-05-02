@@ -40,7 +40,7 @@ class TwigViewImpl implements TwigView {
 
     public function renderBody(ResponseBody $responseBody, $data) {
         if($this->id) {
-            if($templatesPath = $this->routes->resourcePath("Templates")) {
+            if($templatesPath = $this->routes->resourcePath("templates")) {
                 $loader = new \Twig_Loader_Filesystem([$templatesPath]);
                 $twig = new \Twig_Environment($loader, []);
                 $data = ArrayUtil::mergeRecursive($data,$this->data);
