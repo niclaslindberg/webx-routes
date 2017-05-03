@@ -56,7 +56,7 @@ class ReaderImpl implements Reader
 
     public function asAny($key, $default = null)
     {
-        if(NULL !== ($value = $this->get($key))) {
+        if(null !== ($value = $this->get($key))) {
             return $value;
         }
         return $default;
@@ -65,7 +65,7 @@ class ReaderImpl implements Reader
 
     public function asInt($key, $default = null)
     {
-        if(NULL !== ($value = $this->get($key))) {
+        if(null !== ($value = $this->get($key))) {
             return is_int($value) ? $value : (is_scalar($value) ? intval($value) : $default);
         }
         return $default;
@@ -73,7 +73,7 @@ class ReaderImpl implements Reader
 
     public function asFloat($key, $default = null)
     {
-        if(NULL !== ($value = $this->get($key))) {
+        if(null !== ($value = $this->get($key))) {
             return is_float($value) ? $value : (is_scalar($value) ? floatval($value) : $default);
         }
         return $default;
@@ -89,7 +89,7 @@ class ReaderImpl implements Reader
 
     public function asDate($key, $default = null)
     {
-        if(NULL !== ($value = $this->get($key))) {
+        if(null !== ($value = $this->get($key))) {
             if($value instanceof DateTime) {
                 return $value;
             } else if(is_string($value)) {
@@ -107,15 +107,15 @@ class ReaderImpl implements Reader
 
     public function asArray($key=null, $default = null)
     {
-        if (NULL !== ($value = $this->get($key))) {
+        if (null !== ($value = $this->get($key))) {
             return is_array($value) ? $value : [$value];
         }
         return $default;
     }
 
-    public function asString($key, $default = "")
+    public function asString($key, $default = null)
     {
-        if(NULL !== ($value = $this->get($key))) {
+        if(null !== ($value = $this->get($key))) {
             return is_string($value) ? trim($value) : (is_scalar($value) ? trim(strval($value)) : $default);
         }
         return $default;
@@ -123,10 +123,10 @@ class ReaderImpl implements Reader
 
     public function asReader($key)
     {
-        if(NULL!==($value = $this->get($key))) {
+        if(null!==($value = $this->get($key))) {
             return is_array($value) ? new ReaderImpl($value) : null;
         }
-        return NULL;
+        return null;
     }
 
     private function get($path=null){
@@ -147,7 +147,7 @@ class ReaderImpl implements Reader
             while (($key = array_shift($path))) {
                 if(is_array($value) && array_key_exists($key,$value)){
                     $value = $value[$key];
-                    if ((count($path) === 0) || ($value === NULL)) {
+                    if ((count($path) === 0) || ($value === null)) {
                         return $value;
                     }
                 } else {
