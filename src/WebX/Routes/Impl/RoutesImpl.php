@@ -99,6 +99,11 @@ class RoutesImpl implements Routes, ResponseBody {
 
     }
 
+    public function verb() {
+        return $this->server()->asString("REQUEST_METHOD");
+    }
+
+
     public function setStatus($httpStatusCode) {
         $this->httpStatusCode = $httpStatusCode;
     }
@@ -151,8 +156,12 @@ class RoutesImpl implements Routes, ResponseBody {
         if($configuration) {
             $this->pushConfiguration($configuration);
         }
-        $remainingSegments = $this->path()->remainingSegments();
-        return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters,$remainingSegments) : $parameters) : $remainingSegments)]));
+        try {
+            $remainingSegments = $this->path()->remainingSegments();
+            return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
+        } finally {
+        }
+
     }
 
     public function runMethod($class, $configuration = null, array $parameters = []) {
@@ -161,8 +170,9 @@ class RoutesImpl implements Routes, ResponseBody {
         }
         try {
             $refClass = new ReflectionClass($class);
-            $methodName = $this->path()->nextSegment() ?: "index";
+            $methodName = $this->path()->current() ?: "index";
             try {
+                $this->path->moveCurrentSegment(1);
                 if($refClass->hasMethod($methodName)) {
                     $method = $refClass->getMethod($methodName);
                     $controller = $this->ioc->instantiate($class);
@@ -181,19 +191,19 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function runCtrl($configuration = null, array $parameters = []) {
         if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
-            try {
-                if ($ctrlName = $this->path()->nextSegment()) {
-                    $ctrlName = ucfirst($ctrlName);
+            if ($ctrlName = $this->path()->current()) {
+                $this->path->moveCurrentSegment(1);
+                $ctrlName = ucfirst($ctrlName);
+                try {
                     foreach ($ctrlNamespaces as $ctrlNamespace) {
                         $ctrlClassName = "$ctrlNamespace\\$ctrlName";
                         if (class_exists($ctrlClassName)) {
                             return $this->runMethod($ctrlClassName, $configuration, $parameters);
                         }
                     }
+                } finally {
+                    $this->path->moveCurrentSegment(-1);
                 }
-                return false;
-            } finally {
-                $this->path->moveCurrentSegment(-1);
             }
         } else {
             throw new RoutesException("Missing mapped controller namespaces for mapCtrl()");
@@ -202,9 +212,9 @@ class RoutesImpl implements Routes, ResponseBody {
 
     public function forward($routesName,$segmentCondition=null) {
         if(!$this->view) {
-            if(!$segmentCondition || ($segmentCondition===$this->path()->currentSegment())) {
+            if(!$segmentCondition || ($segmentCondition===$this->path()->current())) {
                 try {
-                    $this->path->nextSegment();
+                    $this->path->moveCurrentSegment(1);
                     $configFile = "routes/{$routesName}.php";
                     if ($completePath = $this->configurator->absolutePath($configFile)) {
                         $routes = $this;

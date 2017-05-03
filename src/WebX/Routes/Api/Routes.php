@@ -3,7 +3,7 @@
 namespace WebX\Routes\Api;
 
 use Closure;
-use WebX\Routes\Impl\Path;
+use WebX\Routes\Api\Path;
 
 interface Routes extends ResponseHeader {
 
@@ -74,6 +74,10 @@ interface Routes extends ResponseHeader {
      */
     public function server();
 
+    /**
+     * @return string
+     */
+    public function verb();
     /**
      * @return Reader
      */

@@ -2,7 +2,9 @@
 
 namespace WebX\Routes\Impl;
 
-class PathImpl {
+use WebX\Routes\Api\Path;
+
+class PathImpl implements Path {
 
     private $currentSegmentPos;
     private $segments;
@@ -15,14 +17,6 @@ class PathImpl {
         }
     }
 
-    public function nextSegment() {
-        $this->initSegments();
-        if(count($this->segments)>$this->currentSegmentPos) {
-            return $this->segments[$this->currentSegmentPos++];
-        }
-        return null;
-    }
-
     public function remainingSegments($skip=0) {
         $this->initSegments();
         return array_slice($this->segments,$this->currentSegmentPos + $skip);
@@ -32,11 +26,9 @@ class PathImpl {
         $this->currentSegmentPos += $dpos;
     }
 
-    public function currentSegment() {
+    public function current() {
         $this->initSegments();
-        if($this->currentSegmentPos!==null) {
-            return $this->segments[$this->currentSegmentPos];
-        }
+        return  $this->currentSegmentPos < count($this->segments) ? $this->segments[$this->currentSegmentPos] : null;
     }
 
     public function full() {

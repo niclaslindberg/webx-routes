@@ -8,7 +8,7 @@ require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
 RoutesBootstrap::run(function(Routes $routes, TemplateView $templateView){
 
-    if($next = $routes->path()->nextSegment()) {
+    if($next = $routes->path()->current()) {
         return $templateView->id("value")->data(["value"=>$next]);
     } else {
         return $templateView->id("empty");

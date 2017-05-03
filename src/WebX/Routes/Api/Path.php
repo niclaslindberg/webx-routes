@@ -1,18 +1,13 @@
 <?php
 
-namespace WebX\Routes\Impl;
+namespace WebX\Routes\Api;
 
 interface Path {
 
     /**
      * @return string|null
      */
-    public function nextSegment();
-
-    /**
-     * @return string|null
-     */
-    public function currentSegment();
+    public function current();
 
     /**
      * @return string
