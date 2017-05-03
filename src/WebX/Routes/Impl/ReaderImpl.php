@@ -108,7 +108,7 @@ class ReaderImpl implements Reader
     public function asArray($key=null, $default = null)
     {
         if (NULL !== ($value = $this->get($key))) {
-            return is_array($value) ? $value : $default;
+            return is_array($value) ? $value : [$value];
         }
         return $default;
     }

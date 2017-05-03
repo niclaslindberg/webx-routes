@@ -68,15 +68,7 @@ class RoutesImpl implements Routes, ResponseBody {
     public function __construct(array $options = null, array $optionFiles = null) {
         $this->ioc = new IocImpl();
         $configurator = new ConfiguratorImpl($this);
-        $optionsReader = new ReaderImpl();
-        $configuredHome = null;
-        if(array_key_exists(0,$options)) {
-            foreach($options as $option) {
-                $optionsReader->pushArray($option);
-            }
-        } else {
-            $optionsReader->pushArray($options);
-        }
+        $optionsReader = new ReaderImpl($options);
         $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsReader->asString("home", "/.."));
         if($optionsReader->asBool("includeExtras",true)) {
             $configurator->addResourcePath(dirname(__DIR__) . "/Extras");
