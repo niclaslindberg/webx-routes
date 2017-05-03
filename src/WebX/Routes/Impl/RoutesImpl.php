@@ -7,6 +7,7 @@ use ReflectionClass;
 use ReflectionException;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
+use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\ResponseBody;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
@@ -62,15 +63,43 @@ class RoutesImpl implements Routes, ResponseBody {
      */
     private $sessionManager = null;
 
+    private $optionsReader = null;
 
-    public function __construct(array $options = null) {
-        $optionsView = new ReaderImpl($options);
+    public function __construct(array $options = null, array $optionFiles = null) {
         $this->ioc = new IocImpl();
-        $this->ioc->register($this->configurator = new ConfiguratorImpl($this));
-        $this->configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsView->asString("home", "/.."));
-        if($optionsView->asBool("includeExtras",true)) {
-            $this->configurator->addResourcePath(dirname(__DIR__) . "/Extras");
+        $configurator = new ConfiguratorImpl($this);
+        $optionsReader = new ReaderImpl();
+        $configuredHome = null;
+        if(array_key_exists(0,$options)) {
+            foreach($options as $option) {
+                $optionsReader->pushArray($option);
+            }
+        } else {
+            $optionsReader->pushArray($options);
         }
+        $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsReader->asString("home", "/.."));
+        if($optionsReader->asBool("includeExtras",true)) {
+            $configurator->addResourcePath(dirname(__DIR__) . "/Extras");
+        }
+        if($optionFiles) {
+            foreach($optionFiles as $optionFile) {
+                if($optionFilePath = $configurator->absolutePath($optionFile)) {
+                    if($content = file_get_contents($optionFilePath)) {
+                        if(NULL!==($data = json_decode($content,true))) {
+                            $optionsReader->pushArray($data);
+                        } else {
+                            throw new RoutesException("Bad JSON in {$optionFilePath}");
+                        }
+                    }
+                } else {
+                    throw new RoutesException("Resource {$optionFile} not found");
+                }
+            }
+        }
+        $this->optionsReader = $optionsReader;
+        $this->configurator = $configurator;
+        $this->ioc->register($configurator);
+
         $this->ioc->register($this);
         $this->ioc->register(JsonViewImpl::class);
         $this->ioc->register(RawViewImpl::class);
@@ -186,8 +215,13 @@ class RoutesImpl implements Routes, ResponseBody {
                     $this->path->nextSegment();
                     $configFile = "routes/{$routesName}.php";
                     if ($completePath = $this->configurator->absolutePath($configFile)) {
-                        $closure = require $completePath;
-                        return $this->setView($this->ioc->invoke($closure));
+                        $routes = $this;
+                        if($return = require $completePath) {
+                            if($return instanceof Closure) {
+                                return $this->setView($this->ioc->invoke($return));
+                            }
+                        }
+                        return $this->view!==null;
                     } else {
                         throw new RoutesException(sprintf("Could not forward to %s", $configFile));
                     }
@@ -279,6 +313,11 @@ class RoutesImpl implements Routes, ResponseBody {
             throw new RoutesException("Bad input format {$inputFormat}");
         }
     }
+
+    public function options() {
+        return $this->optionsReader;
+    }
+
 
     public function cookies() {
         if ($this->cookieReader) {

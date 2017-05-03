@@ -11,15 +11,14 @@ class ReaderImpl implements Reader
      */
     private $array;
 
-
-    /**
-     * @var bool
-     */
-    private $writable;
-
-    public function __construct(array $array = null)
-    {
+    public function __construct(array $array = null) {
         $this->array = $array!==null ? $array : [];
+    }
+
+    public function pushArray(array $array) {
+        if($array) {
+            $this->array = ArrayUtil::mergeRecursive($this->array, $array);
+        }
     }
 
     public function keys() {

@@ -75,6 +75,11 @@ interface Routes extends ResponseHeader {
     public function server();
 
     /**
+     * @return Reader
+     */
+    public function options();
+
+    /**
      * The body of the request
      * @return string|null
      */

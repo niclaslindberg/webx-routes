@@ -14,15 +14,15 @@ class RoutesBootstrap {
     /**
      * @param Closure $closure the initial action
      * @param array|string|null $configuration
-     * @param array $options
+     * @param mixed|mixed[] $options
      * Required values:
      * 'home' (string) relative path from $_SERVER['DOCUMENT_ROOT'] defaults to ".."
      * </code>
      */
-    public final static function run(Closure $closure, $configuration = null, array $options = null) {
+    public final static function run(Closure $closure, $configuration = null, array $options = null, array $optionFiles = null) {
 
         try {
-            $routes = new RoutesImpl($options);
+            $routes = new RoutesImpl($options, $optionFiles);
             $routes->run($closure,$configuration);
             $routes->render();
         } catch(Exception $e) {
