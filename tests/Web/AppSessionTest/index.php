@@ -8,7 +8,7 @@ require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
 RoutesBootstrap::run(function(Routes $routes){
         $routes->runAction(function(RawView $rawView,Routes $routes) {
-                $op = $routes->path()->current();
+                $op = $routes->path()->next();
                 if($op==="increment") {
                         $session = $routes->session();
                         $val = $session->value("val") ?: 0;

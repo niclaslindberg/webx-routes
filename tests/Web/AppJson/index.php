@@ -8,7 +8,7 @@ require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
 RoutesBootstrap::run(function(Routes $routes, JsonView $jsonView){
 
-    $next = $routes->path()->current();
+    $next = $routes->path()->next();
         if($next==='normal') {
             $routes->setData("a","a.a");
             $routes->setData("b","a.b");

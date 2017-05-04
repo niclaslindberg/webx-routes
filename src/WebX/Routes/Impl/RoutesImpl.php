@@ -159,7 +159,7 @@ class RoutesImpl implements Routes, ResponseBody {
             if (null !== ($steps = $this->path->pop($onSegment))) {
                 try {
                     $this->pushConfiguration($configuration);
-                    $remainingSegments = $this->path->remainingSegments();
+                    $remainingSegments = $this->path->remaining();
                     return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
                 } finally {
                     $this->path->reset($steps);
@@ -174,12 +174,10 @@ class RoutesImpl implements Routes, ResponseBody {
             if (null !== ($steps = $this->path->pop($onSegment))) {
                 try {
                     $refClass = new ReflectionClass($class);
-                    $steps++;
-                    $this->path->moveCurrentSegment(1);
-                    if ($methodName = $this->path->current()) {
+                    if ($methodName = $this->path->next()) {
                         if ($refClass->hasMethod($methodName)) {
                             $steps++;
-                            $this->path->moveCurrentSegment(1);
+                            $this->path->move(1);
                         } else {
                             $methodName = "index";
                         }
@@ -207,7 +205,9 @@ class RoutesImpl implements Routes, ResponseBody {
             if (null !== ($steps = $this->path->pop($onSegment))) {
                 try {
                     if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
-                        if ($ctrlName = $this->path()->current()) {
+                        if ($ctrlName = $this->path()->next()) {
+                            $this->path->move(1);
+                            $steps++;
                             $ctrlName = ucfirst($ctrlName);
                             try {
                                 foreach ($ctrlNamespaces as $ctrlNamespace) {
@@ -217,7 +217,7 @@ class RoutesImpl implements Routes, ResponseBody {
                                     }
                                 }
                             } finally {
-                                $this->path->moveCurrentSegment($steps);
+                                $this->path->move($steps);
                             }
                         }
                     } else {

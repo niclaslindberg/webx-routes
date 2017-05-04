@@ -5,16 +5,25 @@ namespace WebX\Routes\Api;
 interface Path {
 
     /**
+     * The current path segment
      * @return string|null
      */
     public function current();
 
     /**
-     * @return string[]
+     * The upcoming path segment
+     * @return string|null
      */
-    public function remainingSegments();
+    public function next();
 
     /**
+     * Remaning path segments
+     * @return string[]
+     */
+    public function remaining();
+
+    /**
+     * The full path
      * @return string
      */
     public function full();

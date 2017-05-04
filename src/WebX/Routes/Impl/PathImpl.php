@@ -7,32 +7,33 @@ use WebX\Routes\Api\RoutesException;
 
 class PathImpl implements Path {
 
-    private $currentSegmentPos;
+    private $pos;
     private $segments;
     private $path;
 
     public function __construct()  {
-        $this->currentSegmentPos = 0;
-        $this->segments = explode("/",trim($this->full()," /"));
+        $this->pos = -1;
+        $full = trim($this->full()," /");
+        $this->segments = $full ? explode("/",$full) : [];
     }
 
-    public function remainingSegments() {
-        return array_slice($this->segments,$this->currentSegmentPos);
+    public function remaining() {
+        return array_slice($this->segments,$this->pos + 1);
     }
 
-    public function moveCurrentSegment($dpos) {
-        $this->currentSegmentPos += $dpos;
+    public function move($dpos) {
+        $this->pos += $dpos;
     }
 
     public function pop($segment) {
         if($segment===null) {
             return 0;
         } else if(is_string($segment)){
-            if ($segment === $this->current()) {
-                $this->moveCurrentSegment(1);
+            if ($segment === $this->next()) {
+                $this->move(1);
                 return 1;
             } else if ($segment === '*') {
-                $this->moveCurrentSegment(1);
+                $this->move(1);
                 return 1;
             }
             return null;
@@ -42,16 +43,23 @@ class PathImpl implements Path {
     }
 
     public function next() {
-        $pos = $this->currentSegmentPos + 1;
-        return  $pos < count($this->segments) ? $this->segments[$pos] : null;
+        return $this->get($this->pos + 1);
     }
 
     public function reset($steps) {
-        $this->currentSegmentPos-=$steps;
+        $this->pos-=$steps;
     }
 
     public function current() {
-        return  $this->currentSegmentPos < count($this->segments) ? $this->segments[$this->currentSegmentPos] : null;
+        return  $this->get($this->pos);
+    }
+
+    private function get($pos) {
+        if($pos<0) {
+            return null;
+        } else {
+            return $pos < count($this->segments) ? $this->segments[$pos] : null;
+        }
     }
 
     public function full() {
