@@ -10,6 +10,11 @@ interface Path {
     public function current();
 
     /**
+     * @return string[]
+     */
+    public function remainingSegments();
+
+    /**
      * @return string
      */
     public function full();

@@ -9,8 +9,8 @@ use WebX\Routes\Api\Views\RawView;
 
 class ControllerA {
 
-    public function index(RawView $rawView) {
-        return $rawView->setData("Index");
+    public function index(RawView $rawView,$param=null) {
+        return $rawView->setData("Index{$param}");
     }
 
     public function test1(RawView $rawView) {

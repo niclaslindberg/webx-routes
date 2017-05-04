@@ -18,35 +18,38 @@ interface Routes extends ResponseHeader {
     const INPUT_AS_REQUEST = "request";
 
     /**
+     * @param string $onSegment executes only if equals current segment or if equals null
      * @param Closure $closure
      * @param array|string|null $configuration
      * @param array $parameters
-     * @return mixed
+     * @return bool if the method defined a view.
      */
-    public function run(Closure $closure, $configuration = null, array $parameters = []);
+    public function runAction(Closure $closure, $onSegment=null, $configuration=null, array $parameters=[]);
 
     /**
+     * @param string $onSegment executes only if equals current segment or if equals null
      * @param string $class
      * @param array|string|null $configuration
      * @param array $parameters
      * @return bool if the method defined a view.
      */
-    public function runMethod($class,$configuration = null, array $parameters = []);
+    public function runMethod($class, $onSegment=null, $configuration=null, array $parameters = []);
 
     /**
+     * @param string $onSegment executes only if equals current segment or if equals null
      * @param array|string|null $configuration
      * @param array $parameters
      * @return bool if the controller method defined a view.
      */
-    public function runCtrl($configuration = null, array $parameters = []);
+    public function runCtrl($onSegment=null, $configuration=null, array $parameters=[]);
 
     /**
      * Forwards execution to another routes segment
+     * @param string $onSegment executes only if equals current segment or if equals null
      * @param $routesName
-     * @param null $segmentCondition will only execute the forward if the condition is equal to the current segment.
      * @return bool if the forward successfully rendered a view.
      */
-    public function forward($routesName,$segmentCondition=null);
+    public function runRoute($routesName,$onSegment=null);
 
     /**
      * Sets data in context

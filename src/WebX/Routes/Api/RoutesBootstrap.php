@@ -20,14 +20,13 @@ class RoutesBootstrap {
      * </code>
      */
     public final static function run(Closure $closure, $configuration = null, array $options = null, array $optionFiles = null) {
-
         try {
             $routes = new RoutesImpl($options, $optionFiles);
-            $routes->run($closure,$configuration);
+            $routes->runAction($closure,null,$configuration);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {
-                echo($e);
+                var_dump($e);
             } else {
                 header("Content-Type: text/html; charset=utf-8");
                 echo("<html><body>");

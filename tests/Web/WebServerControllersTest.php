@@ -29,6 +29,13 @@ class WebServerControllersTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testControllerAIndexWithParam() {
+        $server = self::$server;
+        $r11 = $server->get_contents("/controllerA/paramX");
+        $this->assertEquals("IndexparamX", $r11);
+
+    }
+
     public function testControllerANamedMethod() {
         $server = self::$server;
         $r11 = $server->get_contents("/controllerA/test1");

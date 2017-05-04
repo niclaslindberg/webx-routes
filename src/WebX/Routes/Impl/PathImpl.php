@@ -10,24 +10,42 @@ class PathImpl implements Path {
     private $segments;
     private $path;
 
-    private function initSegments() {
-        if($this->currentSegmentPos===null) {
-            $this->currentSegmentPos = 0;
-            $this->segments = explode("/",trim($this->full()," /"));
-        }
+    public function __construct()  {
+        $this->currentSegmentPos = 0;
+        $this->segments = explode("/",trim($this->full()," /"));
     }
 
-    public function remainingSegments($skip=0) {
-        $this->initSegments();
-        return array_slice($this->segments,$this->currentSegmentPos + $skip);
+    public function remainingSegments() {
+        return array_slice($this->segments,$this->currentSegmentPos);
     }
 
     public function moveCurrentSegment($dpos) {
         $this->currentSegmentPos += $dpos;
     }
 
+    public function pop($segment) {
+        if($segment===null) {
+            return 0;
+        } else if($segment===$this->current()) {
+            $this->moveCurrentSegment(1);
+            return 1;
+        } else if ($segment==='*') {
+            $this->moveCurrentSegment(1);
+            return 1;
+        }
+        return null;
+    }
+
+    public function next() {
+        $pos = $this->currentSegmentPos + 1;
+        return  $pos < count($this->segments) ? $this->segments[$pos] : null;
+    }
+
+    public function reset($steps) {
+        $this->currentSegmentPos-=$steps;
+    }
+
     public function current() {
-        $this->initSegments();
         return  $this->currentSegmentPos < count($this->segments) ? $this->segments[$this->currentSegmentPos] : null;
     }
 

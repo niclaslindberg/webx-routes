@@ -27,8 +27,7 @@ class WebServer
         $this->cmd = "php -S localhost:{$this->port} -t " . $rootDir;
 
         $this->cookieFile = sys_get_temp_dir() . "/test_" . rand(0,100000) . time() . ".cookies";
-
-
+   
         $this->start();
         usleep(200*1000);
 
