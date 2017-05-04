@@ -75,6 +75,7 @@ class SessionManagerImpl   {
     public function writeCookies(ResponseHeader $responseHeader) {
         foreach($this->configs as $id => $config) {
             $raw = null;
+            $ttl = isset($config["ttl"]) ? $config["ttl"] : 60*10;
             if(isset($this->sessions[$id])) {
                 $session = $this->sessions[$id];
                 if($data = $session->data()) {
@@ -84,17 +85,16 @@ class SessionManagerImpl   {
                     } else {
                         $raw = base64_encode($json);
                     }
+                } else {
+                    $raw = "";
+                    $ttl = 0;
                 }
             } else {
                 $raw = $this->routes->cookies()->asString($id);
             }
-            if($raw) {
-                $ttl = isset($config["ttl"]) ? $config["ttl"] : 60*10;
-                $httpOnly = isset($config["httpOnly"]) ? $config["httpOnly"] : true;
-                $id = $id ?: "default";
-
-                $this->routes->addCookie("_{$id}",$raw,$ttl ? $ttl : -3600,"/",$httpOnly);
-            }
+            $httpOnly = isset($config["httpOnly"]) ? $config["httpOnly"] : true;
+            $id = $id ?: "default";
+            $responseHeader->addCookie("_{$id}",$raw,$ttl ? $ttl : -3600,"/",$httpOnly);
         }
     }
 
