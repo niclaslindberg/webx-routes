@@ -155,91 +155,101 @@ class RoutesImpl implements Routes, ResponseBody {
     }
 
     public function runAction(Closure $closure,$onSegment=null, $configuration = null, array $parameters = []) {
-        if(null!==($steps = $this->path->pop($onSegment))) {
-            try {
-                $this->pushConfiguration($configuration);
-                $remainingSegments = $this->path->remainingSegments();
-                return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));             return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
-            } finally {
-                $this->path->reset($steps);
+        if(!$this->view) {
+            if (null !== ($steps = $this->path->pop($onSegment))) {
+                try {
+                    $this->pushConfiguration($configuration);
+                    $remainingSegments = $this->path->remainingSegments();
+                    return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
+                } finally {
+                    $this->path->reset($steps);
+                }
             }
         }
         return false;
     }
 
     public function runMethod($class, $onSegment=null, $configuration = null, array $parameters = []) {
-        if(null!==($steps = $this->path->pop($onSegment))) {
-            try {
-                $refClass = new ReflectionClass($class);
-                $steps++;
-                $this->path->moveCurrentSegment(1);
-                if($methodName = $this->path->current()) {
-                    if($refClass->hasMethod($methodName)) {
-                        $steps++;
-                        $this->path->moveCurrentSegment(1);
+        if(!$this->view) {
+            if (null !== ($steps = $this->path->pop($onSegment))) {
+                try {
+                    $refClass = new ReflectionClass($class);
+                    $steps++;
+                    $this->path->moveCurrentSegment(1);
+                    if ($methodName = $this->path->current()) {
+                        if ($refClass->hasMethod($methodName)) {
+                            $steps++;
+                            $this->path->moveCurrentSegment(1);
+                        } else {
+                            $methodName = "index";
+                        }
                     } else {
                         $methodName = "index";
                     }
-                } else {
-                    $methodName = "index";
+
+                    if ($refClass->hasMethod($methodName)) {
+                        $method = $refClass->getMethod($methodName);
+                        $controller = $this->ioc->instantiate($class);
+                        return $this->runAction($method->getClosure($controller), null, $configuration, $parameters);
+                    }
+                } catch (ReflectionException $e) {
+                    throw new RoutesException(null, $e);
+                } finally {
+                    $this->path->reset($steps);
                 }
-                if ($refClass->hasMethod($methodName)) {
-                    $method = $refClass->getMethod($methodName);
-                    $controller = $this->ioc->instantiate($class);
-                    return $this->runAction($method->getClosure($controller),null,$configuration,$parameters);
-                }
-            } catch (ReflectionException $e) {
-                throw new RoutesException(null, $e);
-            } finally {
-                $this->path->reset($steps);
             }
         }
         return false;
     }
 
     public function runCtrl($onSegment=null,$configuration = null, array $parameters = []) {
-        if(null!==($steps = $this->path->pop($onSegment))) {
-            try {
-                if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
-                    if ($ctrlName = $this->path()->current()) {
-                        $ctrlName = ucfirst($ctrlName);
-                        try {
-                            foreach ($ctrlNamespaces as $ctrlNamespace) {
-                                $ctrlClassName = "$ctrlNamespace\\$ctrlName";
-                                if (class_exists($ctrlClassName)) {
-                                    return $this->runMethod($ctrlClassName, null, $configuration, $parameters);
+        if(!$this->view) {
+            if (null !== ($steps = $this->path->pop($onSegment))) {
+                try {
+                    if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
+                        if ($ctrlName = $this->path()->current()) {
+                            $ctrlName = ucfirst($ctrlName);
+                            try {
+                                foreach ($ctrlNamespaces as $ctrlNamespace) {
+                                    $ctrlClassName = "$ctrlNamespace\\$ctrlName";
+                                    if (class_exists($ctrlClassName)) {
+                                        return $this->runMethod($ctrlClassName, null, $configuration, $parameters);
+                                    }
                                 }
+                            } finally {
+                                $this->path->moveCurrentSegment($steps);
                             }
-                        } finally {
-                            $this->path->moveCurrentSegment($steps);
                         }
+                    } else {
+                        throw new RoutesException("Missing mapped controller namespaces for mapCtrl()");
                     }
-                } else {
-                    throw new RoutesException("Missing mapped controller namespaces for mapCtrl()");
+                } finally {
+                    $this->path->reset($steps);
                 }
-            } finally {
-                $this->path->reset($steps);
             }
         }
         return false;
     }
 
     public function runRoute($routesName,$onSegment=null) {
-        if(null!==($steps = $this->path->pop($onSegment))) {
-            try {
-                $configFile = "routes/{$routesName}.php";
-                if ($completePath = $this->configurator->absolutePath($configFile)) {
-                    $routes = $this;
-                    if($return = require $completePath) {
-                        if($return instanceof Closure) {
-                            return $this->setView($this->ioc->invoke($return));
+        if(!$this->view) {
+            if (null !== ($steps = $this->path->pop($onSegment))) {
+                try {
+                    $configFile = "routes/{$routesName}.php";
+                    if ($completePath = $this->configurator->absolutePath($configFile)) {
+                        $routes = $this;
+                        if ($return = require $completePath) {
+                            if ($return instanceof Closure) {
+                                return $this->setView($this->ioc->invoke($return));
+                            }
                         }
+                        return $this->view ? true : false;
+                    } else {
+                        throw new RoutesException(sprintf("Could not forward to %s", $configFile));
                     }
-                } else {
-                    throw new RoutesException(sprintf("Could not forward to %s", $configFile));
+                } finally {
+                    $this->path->reset($steps);
                 }
-            } finally {
-                $this->path->reset($steps);
             }
         }
         return false;
