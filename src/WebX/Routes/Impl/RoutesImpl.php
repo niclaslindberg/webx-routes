@@ -160,7 +160,7 @@ class RoutesImpl implements Routes, ResponseBody {
                 try {
                     $this->pushConfiguration($configuration);
                     $remainingSegments = $this->path->remaining();
-                    return $this->setView($this->ioc->invoke($closure, ["parameters" => ($parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments)]));
+                    return $this->setView($this->ioc->invoke($closure, $parameters ? ($remainingSegments ? array_merge($parameters, $remainingSegments) : $parameters) : $remainingSegments));
                 } finally {
                     $this->path->reset($steps);
                 }

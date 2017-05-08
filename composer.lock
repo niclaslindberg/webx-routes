@@ -74,12 +74,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/niclaslindberg/webx-ioc.git",
-                "reference": "03242192b41313044b068d4a936188b9ee3c7577"
+                "reference": "f6fe546ff02ea9edc8e6792186e76eee18b68409"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/03242192b41313044b068d4a936188b9ee3c7577",
-                "reference": "03242192b41313044b068d4a936188b9ee3c7577",
+                "url": "https://api.github.com/repos/niclaslindberg/webx-ioc/zipball/f6fe546ff02ea9edc8e6792186e76eee18b68409",
+                "reference": "f6fe546ff02ea9edc8e6792186e76eee18b68409",
                 "shasum": ""
             },
             "require-dev": {
@@ -110,7 +110,7 @@
                 "di",
                 "ioc"
             ],
-            "time": "2017-04-10 12:45:59"
+            "time": "2017-05-08 11:00:30"
         }
     ],
     "packages-dev": [
@@ -1285,16 +1285,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.2.7",
+            "version": "v3.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "62b4cdb99d52cb1ff253c465eb1532a80cebb621"
+                "reference": "acec26fcf7f3031e094e910b94b002fa53d4e4d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/62b4cdb99d52cb1ff253c465eb1532a80cebb621",
-                "reference": "62b4cdb99d52cb1ff253c465eb1532a80cebb621",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/acec26fcf7f3031e094e910b94b002fa53d4e4d6",
+                "reference": "acec26fcf7f3031e094e910b94b002fa53d4e4d6",
                 "shasum": ""
             },
             "require": {
@@ -1336,7 +1336,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-03-20 09:45:15"
+            "time": "2017-05-01 14:55:58"
         },
         {
             "name": "webmozart/assert",
