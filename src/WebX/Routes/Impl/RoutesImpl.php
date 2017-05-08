@@ -50,29 +50,29 @@ class RoutesImpl implements Routes, ResponseBody {
 
     private $body;
 
-    private $serverReader = null;
+    private $serverMap = null;
 
-    private $parameterReader = null;
+    private $parameterMap = null;
 
-    private $cookieReader = null;
+    private $cookieMap = null;
 
-    private $headerReader = null;
+    private $headerMap = null;
 
-    private $jsonReader = null;
+    private $jsonMap = null;
 
     /**
      * @var SessionManagerImpl
      */
     private $sessionManager = null;
 
-    private $optionsReader = null;
+    private $optionsMap = null;
 
     public function __construct(array $options = null, array $optionFiles = null) {
         $this->ioc = new IocImpl();
         $configurator = new ConfiguratorImpl($this);
-        $optionsReader = new MapImpl($options);
-        $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsReader->asString("home", "/.."));
-        if($optionsReader->asBool("includeExtras",true)) {
+        $optionsMap = new MapImpl($options);
+        $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsMap->asString("home", "/.."));
+        if($optionsMap->asBool("includeExtras",true)) {
             $configurator->addResourcePath(dirname(__DIR__) . "/Extras");
         }
         if($optionFiles) {
@@ -80,7 +80,7 @@ class RoutesImpl implements Routes, ResponseBody {
                 if($optionFilePath = $configurator->absolutePath($optionFile)) {
                     if($content = file_get_contents($optionFilePath)) {
                         if(NULL!==($data = json_decode($content,true))) {
-                            $optionsReader->pushArray($data);
+                            $optionsMap->pushArray($data);
                         } else {
                             throw new RoutesException("Bad JSON in {$optionFilePath}");
                         }
@@ -90,7 +90,7 @@ class RoutesImpl implements Routes, ResponseBody {
                 }
             }
         }
-        $this->optionsReader = $optionsReader;
+        $this->optionsMap = $optionsMap;
         $this->configurator = $configurator;
         $this->ioc->register($configurator);
 
@@ -282,10 +282,10 @@ class RoutesImpl implements Routes, ResponseBody {
     }
 
     public function server() {
-        if ($this->serverReader) {
-            return $this->serverReader;
+        if ($this->serverMap) {
+            return $this->serverMap;
         }
-        return $this->serverReader = new MapImpl($_SERVER);
+        return $this->serverMap = new MapImpl($_SERVER);
     }
 
     public function body() {
@@ -298,37 +298,37 @@ class RoutesImpl implements Routes, ResponseBody {
     public function input($inputFormat = "request")
     {
         if ($inputFormat === Routes::INPUT_AS_REQUEST) {
-            if ($this->parameterReader) {
-                return $this->parameterReader;
+            if ($this->parameterMap) {
+                return $this->parameterMap;
             }
-            return $this->parameterReader = new WritableMapImpl($_REQUEST);
+            return $this->parameterMap = new WritableMapImpl($_REQUEST);
         } else if ($inputFormat === Routes::INPUT_AS_JSON) {
-            if ($this->jsonReader) {
-                return $this->jsonReader;
+            if ($this->jsonMap) {
+                return $this->jsonMap;
             }
-            return $this->jsonReader = new WritableMapImpl(json_decode($this->body(), true));
+            return $this->jsonMap = new WritableMapImpl(json_decode($this->body(), true));
         } else {
             throw new RoutesException("Bad input format {$inputFormat}");
         }
     }
 
     public function options() {
-        return $this->optionsReader;
+        return $this->optionsMap;
     }
 
 
     public function cookies() {
-        if ($this->cookieReader) {
-            return $this->cookieReader;
+        if ($this->cookieMap) {
+            return $this->cookieMap;
         }
-        return $this->cookieReader = new MapImpl($_COOKIE);
+        return $this->cookieMap = new MapImpl($_COOKIE);
     }
 
     public function headers() {
-        if ($this->headerReader) {
-            return $this->headerReader;
+        if ($this->headerMap) {
+            return $this->headerMap;
         }
-        return $this->headerReader = new MapImpl(apache_request_headers());
+        return $this->headerMap = new MapImpl(apache_request_headers());
     }
 
     public function path() {
