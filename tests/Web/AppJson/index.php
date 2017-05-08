@@ -10,12 +10,12 @@ RoutesBootstrap::run(function(Routes $routes, JsonView $jsonView){
 
     $next = $routes->path()->next();
         if($next==='normal') {
-            $routes->setData("a","a.a");
-            $routes->setData("b","a.b");
+            $routes->data()->set("a","a.a");
+            $routes->data()->set("b","a.b");
             $jsonView->setData("c","a.b.c");
 
         } else if ($next==='rootArray') {
-            $routes->setData(["a"=>"1"]);
+            $routes->data()->set(["a"=>"1"]);
             $jsonView->setData(["b"=>"2"]);
 
         } else if ($next==='scalar') {

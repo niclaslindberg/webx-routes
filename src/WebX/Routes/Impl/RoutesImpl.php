@@ -7,7 +7,6 @@ use ReflectionClass;
 use ReflectionException;
 use WebX\Ioc\Impl\IocImpl;
 use WebX\Ioc\Ioc;
-use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\ResponseBody;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
@@ -34,6 +33,9 @@ class RoutesImpl implements Routes, ResponseBody {
 
     private $cookies = [];
 
+    /**
+     * @var WritableMapImpl
+     */
     private $data = null;
 
     /**
@@ -68,7 +70,7 @@ class RoutesImpl implements Routes, ResponseBody {
     public function __construct(array $options = null, array $optionFiles = null) {
         $this->ioc = new IocImpl();
         $configurator = new ConfiguratorImpl($this);
-        $optionsReader = new ReaderImpl($options);
+        $optionsReader = new MapImpl($options);
         $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsReader->asString("home", "/.."));
         if($optionsReader->asBool("includeExtras",true)) {
             $configurator->addResourcePath(dirname(__DIR__) . "/Extras");
@@ -255,32 +257,9 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function setData($data, $path = null) {
-        if (null !== $path) {
-            if (is_string($path)) {
-                $path = explode(".", $path);
-            }
-            if (!is_array($this->data)) {
-                $this->data = [];
-            }
-            $root = &$this->data;
-            while ($part = array_shift($path)) {
-                $root[$part] = empty($path) ? $data : ((isset($root[$part]) && is_array($root[$part])) ? $root[$part] : []);
-                $root = &$root[$part];
-            }
-        } else {
-            $this->data = $data;
-        }
-    }
-
-    public function data($path = null) {
-        if (null !== $path) {
-            if (is_array($this->data)) {
-                $reader = new ReaderImpl($this->data);
-                return $reader->asAny($path);
-            } else {
-                return null;
-            }
+    public function data() {
+        if(null===$this->data) {
+            return $this->data = new WritableMapImpl();
         } else {
             return $this->data;
         }
@@ -306,7 +285,7 @@ class RoutesImpl implements Routes, ResponseBody {
         if ($this->serverReader) {
             return $this->serverReader;
         }
-        return $this->serverReader = new ReaderImpl($_SERVER);
+        return $this->serverReader = new MapImpl($_SERVER);
     }
 
     public function body() {
@@ -322,12 +301,12 @@ class RoutesImpl implements Routes, ResponseBody {
             if ($this->parameterReader) {
                 return $this->parameterReader;
             }
-            return $this->parameterReader = new ReaderImpl($_REQUEST);
+            return $this->parameterReader = new WritableMapImpl($_REQUEST);
         } else if ($inputFormat === Routes::INPUT_AS_JSON) {
             if ($this->jsonReader) {
                 return $this->jsonReader;
             }
-            return $this->jsonReader = new ReaderImpl(json_decode($this->body(), true));
+            return $this->jsonReader = new WritableMapImpl(json_decode($this->body(), true));
         } else {
             throw new RoutesException("Bad input format {$inputFormat}");
         }
@@ -342,14 +321,14 @@ class RoutesImpl implements Routes, ResponseBody {
         if ($this->cookieReader) {
             return $this->cookieReader;
         }
-        return $this->cookieReader = new ReaderImpl($_COOKIE);
+        return $this->cookieReader = new MapImpl($_COOKIE);
     }
 
     public function headers() {
         if ($this->headerReader) {
             return $this->headerReader;
         }
-        return $this->headerReader = new ReaderImpl(apache_request_headers());
+        return $this->headerReader = new MapImpl(apache_request_headers());
     }
 
     public function path() {
@@ -378,7 +357,7 @@ class RoutesImpl implements Routes, ResponseBody {
             foreach ($this->headers as $name => $value) {
                 header("{$name}:{$value}");
             }
-            $this->view->renderBody($this, $this->data);
+            $this->view->renderBody($this, $this->data ? $this->data->raw() : null);
         } else {
             header("HTTP/1.1 404");
         }

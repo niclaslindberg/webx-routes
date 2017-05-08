@@ -52,19 +52,10 @@ interface Routes extends ResponseHeader {
     public function runRoute($condition, $routesName);
 
     /**
-     * Sets data in context
-     * @param mixed $data
-     * @param string|null $path
-     * @return Routes
+     * The shared data in the application
+     * @return WritableMap
      */
-    public function setData($data, $path=null);
-
-    /**
-     * Gets data from context
-     * @param null $path
-     * @return mixed
-     */
-    public function data($path=null);
+    public function data();
 
     /**
      * @return View|null
@@ -73,7 +64,7 @@ interface Routes extends ResponseHeader {
 
     /**
      * The $_SERVER wrapped as reader
-     * @return Reader
+     * @return Map
      */
     public function server();
 
@@ -82,7 +73,7 @@ interface Routes extends ResponseHeader {
      */
     public function verb();
     /**
-     * @return Reader
+     * @return Map
      */
     public function options();
 
@@ -95,17 +86,17 @@ interface Routes extends ResponseHeader {
     /**
      * Returns all get query parameters
      * @param string $type Routes#INPUT_AS_REQUEST or Routes#INPUT_AS_JSON
-     * @return Reader
+     * @return Map
      */
     public function input($type = "request");
 
     /**
-     * @return Reader
+     * @return Map
      */
     public function cookies();
 
     /**
-     * @return Reader
+     * @return Map
      */
     public function headers();
 
@@ -116,7 +107,7 @@ interface Routes extends ResponseHeader {
 
     /**
      * @param $id|null
-     * @return Session
+     * @return WritableMap
      */
     public function session($id=null);
 

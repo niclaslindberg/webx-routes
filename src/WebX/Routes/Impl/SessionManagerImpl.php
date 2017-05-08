@@ -5,6 +5,7 @@ namespace WebX\Routes\Impl;
 use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
+use WebX\Routes\Api\WritableMap;
 
 class SessionManagerImpl   {
 
@@ -14,7 +15,7 @@ class SessionManagerImpl   {
     private $configs = [];
 
     /**
-     * @var SessionImpl[]
+     * @var WritableMap[string]
      */
     private $sessions = [];
 
@@ -45,7 +46,7 @@ class SessionManagerImpl   {
 
     /**
      * @param $id
-     * @return SessionImpl
+     * @return WritableMapImpl
      * @throws RoutesException
      */
     public function createSession($id) {
@@ -64,7 +65,7 @@ class SessionManagerImpl   {
                 }
             }
             $data = json_decode($raw,true) ?: [];
-            $session = new SessionImpl($data);
+            $session = new WritableMapImpl($data);
             $this->sessions[$id] = $session;
             return $session;
         } else {
@@ -78,7 +79,7 @@ class SessionManagerImpl   {
             $ttl = isset($config["ttl"]) ? $config["ttl"] : 60*10;
             if(isset($this->sessions[$id])) {
                 $session = $this->sessions[$id];
-                if($data = $session->data()) {
+                if($data = $session->raw()) {
                     $json = json_encode($data);
                     if ($encryption = isset($config["encryption"]) ? $config["encryption"] : null) {
                         $raw = $this->encrypt($json, $encryption);

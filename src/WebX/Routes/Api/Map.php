@@ -6,11 +6,11 @@ namespace WebX\Routes\Api;
 use DateTime;
 
 /**
- * Interface Reader
+ * Interface Map
  * Reads type safe data from a data structure. All $key support '.' notation for reading data from deeper levels.
  * @package WebX\Routes\Api
  */
-interface Reader
+interface Map
 {
 
     /**
@@ -76,9 +76,9 @@ interface Reader
 
     /**
      * @param string $path
-     * @return Reader|null A Reader if the path contains an array otherwise null
+     * @return Map|null A Reader if the path contains an array otherwise null
      */
-    public function asReader($path);
+    public function asMap($path);
 
 
 }

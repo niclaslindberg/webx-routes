@@ -11,9 +11,9 @@ RoutesBootstrap::run(function(Routes $routes){
                 $op = $routes->path()->next();
                 if($op==="increment") {
                         $session = $routes->session();
-                        $val = $session->value("val") ?: 0;
+                        $val = $session->asInt("val",0);
                         $val++;
-                        $session->setValue("val",$val);
+                        $session->set($val,"val");
                         return $rawView->setData($val);
                 }
         });
