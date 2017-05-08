@@ -7,7 +7,7 @@ use WebX\Routes\Api\Views\RawView;
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
 RoutesBootstrap::run(function(Routes $routes){
-        $routes->runAction(function(RawView $rawView,Routes $routes) {
+        $routes->runAction("default",function(RawView $rawView,Routes $routes) {
                 $op = $routes->path()->next();
                 if($op==="increment") {
                         $session = $routes->session();
@@ -16,6 +16,6 @@ RoutesBootstrap::run(function(Routes $routes){
                         $session->setValue("val",$val);
                         return $rawView->setData($val);
                 }
-        },"default");
+        });
 },"default",["home"=>"/"]);
 

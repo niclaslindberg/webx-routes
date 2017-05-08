@@ -3,6 +3,7 @@
 namespace WebX\Routes\Impl;
 
 use WebX\Routes\Api\Path;
+use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
 
 class PathImpl implements Path {
@@ -25,20 +26,15 @@ class PathImpl implements Path {
         $this->pos += $dpos;
     }
 
-    public function pop($segment) {
-        if($segment===null) {
-            return 0;
-        } else if(is_string($segment)){
-            if ($segment === $this->next()) {
-                $this->move(1);
-                return 1;
-            } else if ($segment === '*') {
+    public function pop($condition) {
+        if(is_string($condition)) {
+            if ($condition === $this->next()) {
                 $this->move(1);
                 return 1;
             }
             return null;
         } else {
-            throw new RoutesException("Segment condition is not a string.");
+            return $condition ? true : null;
         }
     }
 

@@ -22,7 +22,7 @@ class RoutesBootstrap {
     public final static function run(Closure $closure, $configuration = null, array $options = null, array $optionFiles = null) {
         try {
             $routes = new RoutesImpl($options, $optionFiles);
-            $routes->runAction($closure,null,$configuration);
+            $routes->runAction(true,$closure,$configuration);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {

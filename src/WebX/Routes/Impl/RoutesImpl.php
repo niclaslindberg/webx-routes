@@ -154,9 +154,9 @@ class RoutesImpl implements Routes, ResponseBody {
         }
     }
 
-    public function runAction(Closure $closure,$onSegment=null, $configuration = null, array $parameters = []) {
+    public function runAction($condition, Closure $closure, $configuration = null, array $parameters = []) {
         if(!$this->view) {
-            if (null !== ($steps = $this->path->pop($onSegment))) {
+            if (null !== ($steps = $this->path->pop($condition))) {
                 try {
                     $this->pushConfiguration($configuration);
                     $remainingSegments = $this->path->remaining();
@@ -169,9 +169,9 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function runMethod($class, $onSegment=null, $configuration = null, array $parameters = []) {
+    public function runMethod($condition, $class, $configuration = null, array $parameters = []) {
         if(!$this->view) {
-            if (null !== ($steps = $this->path->pop($onSegment))) {
+            if (null !== ($steps = $this->path->pop($condition))) {
                 try {
                     $refClass = new ReflectionClass($class);
                     if ($methodName = $this->path->next()) {
@@ -188,7 +188,7 @@ class RoutesImpl implements Routes, ResponseBody {
                     if ($refClass->hasMethod($methodName)) {
                         $method = $refClass->getMethod($methodName);
                         $controller = $this->ioc->instantiate($class);
-                        return $this->runAction($method->getClosure($controller), null, $configuration, $parameters);
+                        return $this->runAction(true,$method->getClosure($controller), $configuration, $parameters);
                     }
                 } catch (ReflectionException $e) {
                     throw new RoutesException(null, $e);
@@ -200,9 +200,9 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function runCtrl($onSegment=null,$configuration = null, array $parameters = []) {
+    public function runCtrl($condition=true,$configuration = null, array $parameters = []) {
         if(!$this->view) {
-            if (null !== ($steps = $this->path->pop($onSegment))) {
+            if (null !== ($steps = $this->path->pop($condition))) {
                 try {
                     if ($ctrlNamespaces = $this->configurator->ctrlNamespaces()) {
                         if ($ctrlName = $this->path()->next()) {
@@ -213,7 +213,7 @@ class RoutesImpl implements Routes, ResponseBody {
                                 foreach ($ctrlNamespaces as $ctrlNamespace) {
                                     $ctrlClassName = "$ctrlNamespace\\$ctrlName";
                                     if (class_exists($ctrlClassName)) {
-                                        return $this->runMethod($ctrlClassName, null, $configuration, $parameters);
+                                        return $this->runMethod(true,$ctrlClassName, $configuration, $parameters);
                                     }
                                 }
                             } finally {
@@ -231,9 +231,9 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function runRoute($routesName,$onSegment=null) {
+    public function runRoute($condition,$routesName) {
         if(!$this->view) {
-            if (null !== ($steps = $this->path->pop($onSegment))) {
+            if (null !== ($steps = $this->path->pop($condition))) {
                 try {
                     $configFile = "routes/{$routesName}.php";
                     if ($completePath = $this->configurator->absolutePath($configFile)) {
