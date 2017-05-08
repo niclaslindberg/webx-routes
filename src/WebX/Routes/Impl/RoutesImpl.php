@@ -99,7 +99,6 @@ class RoutesImpl implements Routes, ResponseBody {
         $this->ioc->register(RawViewImpl::class);
         $this->ioc->register(RedirectViewImpl::class);
         $this->path = new PathImpl();
-
     }
 
     public function verb() {
@@ -295,8 +294,7 @@ class RoutesImpl implements Routes, ResponseBody {
         return $this->body = file_get_contents("php://input");
     }
 
-    public function input($inputFormat = "request")
-    {
+    public function input($inputFormat = "request") {
         if ($inputFormat === Routes::INPUT_AS_REQUEST) {
             if ($this->parameterMap) {
                 return $this->parameterMap;
