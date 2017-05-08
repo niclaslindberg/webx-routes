@@ -13,12 +13,6 @@ class WritableMapImpl extends MapImpl implements WritableMap {
         parent::__construct($array);
     }
 
-    public function pushArray(array $array) {
-        if($array) {
-            $this->array = ArrayUtil::mergeRecursive($this->array, $array);
-        }
-    }
-
     public function set($data,$path=null) {
         if($path) {
             if (is_string($path)) {
