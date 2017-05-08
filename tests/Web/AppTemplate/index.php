@@ -15,5 +15,5 @@ RoutesBootstrap::run(function(Routes $routes, TemplateView $templateView){
     } else {
         return $templateView->id("empty");
     }
-},["WebXTwig"],["home"=>"/"]);
+},["WebXTwig"],null,["home"=>"/"]);
 

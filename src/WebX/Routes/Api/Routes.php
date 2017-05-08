@@ -24,7 +24,7 @@ interface Routes extends ResponseHeader {
      * @param array $parameters
      * @return bool if the method defined a view.
      */
-    public function runAction($condition, Closure $closure, $configuration=null, array $parameters=[]);
+    public function runAction($condition, Closure $closure, $configuration=null, array $parameters=null);
 
     /**
      * @param string $condition executes only if equals current segment or if equals null
@@ -33,7 +33,7 @@ interface Routes extends ResponseHeader {
      * @param array $parameters
      * @return bool if the method defined a view.
      */
-    public function runMethod($condition, $class, $configuration=null, array $parameters = []);
+    public function runMethod($condition, $class, $configuration=null, array $parameters = null);
 
     /**
      * @param string $condition see notes
@@ -41,7 +41,7 @@ interface Routes extends ResponseHeader {
      * @param array $parameters
      * @return bool if the controller method defined a view.
      */
-    public function runCtrl($condition=true, $configuration=null, array $parameters=[]);
+    public function runCtrl($condition=true, $configuration=null, array $parameters=null);
 
     /**
      * Forwards execution to another routes segment

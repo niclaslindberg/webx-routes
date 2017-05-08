@@ -9,6 +9,6 @@ require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 RoutesBootstrap::run(function(Routes $routes){
     $routes->runCtrl();
 
-},"default",["home"=>"/"]);
+},"default",null,["home"=>"/"]);
 
 

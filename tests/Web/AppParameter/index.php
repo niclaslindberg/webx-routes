@@ -15,5 +15,5 @@ RoutesBootstrap::run(function(Routes $routes) {
                 return $rawView->setData($parameter1);
        });
 
-},null,["home"=>"/"]);
+},null,null,["home"=>"/"]);
 

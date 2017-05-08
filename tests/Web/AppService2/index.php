@@ -9,7 +9,7 @@ use WebX\Routes\Api\Views\RawView;
 
 require_once dirname(dirname(dirname(__DIR__))) . "/vendor/autoload.php";
 
-RoutesBootstrap::run(function(RawView $rawView, IService $service){
-        return $rawView->setData($service->returnSame(1));
-},"default",null,["home"=>"/"]);
+RoutesBootstrap::run(function(RawView $rawView, array $services){
+        return $rawView->setData(count($services));
+},"default",["services"=>IService::class],["home"=>"/"]);
 

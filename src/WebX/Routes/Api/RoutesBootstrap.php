@@ -19,10 +19,10 @@ class RoutesBootstrap {
      * 'home' (string) relative path from $_SERVER['DOCUMENT_ROOT'] defaults to ".."
      * </code>
      */
-    public final static function run(Closure $closure, $configuration = null, array $options = null, array $optionFiles = null) {
+    public final static function run(Closure $closure, $configuration = null, array $parameters = null, array $options = null, array $optionFiles = null) {
         try {
             $routes = new RoutesImpl($options, $optionFiles);
-            $routes->runAction(true,$closure,$configuration);
+            $routes->runAction(true,$closure,$configuration,$parameters ?: []);
             $routes->render();
         } catch(Exception $e) {
             if(function_exists("dd")) {

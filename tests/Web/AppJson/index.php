@@ -23,5 +23,5 @@ RoutesBootstrap::run(function(Routes $routes, JsonView $jsonView){
 
         }
         return $jsonView;
-},null,["home"=>"/"]);
+},null,null,["home"=>"/"]);
 

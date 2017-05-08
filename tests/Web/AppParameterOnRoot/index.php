@@ -17,5 +17,5 @@ RoutesBootstrap::run(function($param1=null,$param2=null,$param3=null, JsonView $
        "p3" => $param3
     ]);
 
-},null,["home"=>"/"]);
+},null,null,["home"=>"/"]);
 
