@@ -29,7 +29,7 @@ class WritableMapImpl extends MapImpl implements WritableMap {
         }
     }
 
-    public function delete($path) {
+    public function delete($path=null) {
         if($path) {
             if (is_string($path)) {
                 $path = explode(".", $path);
@@ -49,7 +49,7 @@ class WritableMapImpl extends MapImpl implements WritableMap {
                 }
             }
         } else {
-            $this->data = [];
+            $this->array = [];
         }
     }
 
