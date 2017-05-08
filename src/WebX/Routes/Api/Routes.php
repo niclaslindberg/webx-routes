@@ -36,7 +36,7 @@ interface Routes extends ResponseHeader {
     public function runMethod($condition, $class, $configuration=null, array $parameters = []);
 
     /**
-     * @param string $condition executes only if equals current segment or if equals null
+     * @param string $condition see notes
      * @param array|string|null $configuration
      * @param array $parameters
      * @return bool if the controller method defined a view.

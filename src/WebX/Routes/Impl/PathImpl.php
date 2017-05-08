@@ -13,9 +13,10 @@ class PathImpl implements Path {
     private $path;
 
     public function __construct()  {
-        $this->pos = -1;
-        $full = trim($this->full()," /");
-        $this->segments = $full ? explode("/",$full) : [];
+        $this->pos = 0;
+        $full = explode("/",rtrim($this->full()," /"));
+        $full[0] = null;
+        $this->segments = $full;
     }
 
     public function remaining() {
@@ -51,11 +52,7 @@ class PathImpl implements Path {
     }
 
     private function get($pos) {
-        if($pos<0) {
-            return null;
-        } else {
-            return $pos < count($this->segments) ? $this->segments[$pos] : null;
-        }
+        return $pos < count($this->segments) ? $this->segments[$pos] : null;
     }
 
     public function full() {
