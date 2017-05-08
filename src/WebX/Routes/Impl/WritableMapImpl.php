@@ -1,9 +1,6 @@
 <?php
 
 namespace WebX\Routes\Impl;
-use DateTime;
-use WebX\Routes\Api\Map;
-use WebX\Routes\Api\Reader;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\WritableMap;
 

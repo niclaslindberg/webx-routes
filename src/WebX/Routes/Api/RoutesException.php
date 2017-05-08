@@ -1,12 +1,6 @@
 <?php
-/**
- * User: niclas
- * Date: 3/23/16
- * Time: 12:52 PM
- */
 
 namespace WebX\Routes\Api;
-
 
 use Exception;
 

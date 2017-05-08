@@ -2,7 +2,6 @@
 
 namespace WebX\Routes\Api;
 
-
 interface WritableMap extends Map {
     /**
      * @param mixed $data

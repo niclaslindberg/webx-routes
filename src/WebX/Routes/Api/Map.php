@@ -10,8 +10,7 @@ use DateTime;
  * Reads type safe data from a data structure. All $key support '.' notation for reading data from deeper levels.
  * @package WebX\Routes\Api
  */
-interface Map
-{
+interface Map {
 
     /**
      * Checks if a key for the given path exits.

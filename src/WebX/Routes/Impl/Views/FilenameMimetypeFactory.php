@@ -3,8 +3,7 @@
 namespace WebX\Routes\Impl\Views;
 
 
-class FilenameMimetypeFactory
-{
+class FilenameMimetypeFactory {
 
     /**
      * @param $fileSuffix

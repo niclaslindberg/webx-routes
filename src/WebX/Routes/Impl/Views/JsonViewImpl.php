@@ -6,8 +6,7 @@ use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Views\JsonView;
 use WebX\Routes\Impl\ArrayUtil;
 
-class JsonViewImpl implements JsonView
-{
+class JsonViewImpl implements JsonView {
     /**
      * @var int
      */

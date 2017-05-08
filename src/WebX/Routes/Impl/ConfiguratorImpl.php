@@ -2,9 +2,7 @@
 
 namespace WebX\Routes\Impl;
 
-use WebX\Ioc\Ioc;
 use WebX\Routes\Api\Configurator;
-use WebX\Routes\Api\RoutesException;
 
 class ConfiguratorImpl implements Configurator {
 

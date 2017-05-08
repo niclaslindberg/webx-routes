@@ -3,8 +3,6 @@
 namespace WebX\Routes\Impl;
 
 use WebX\Routes\Api\Path;
-use WebX\Routes\Api\Routes;
-use WebX\Routes\Api\RoutesException;
 
 class PathImpl implements Path {
 

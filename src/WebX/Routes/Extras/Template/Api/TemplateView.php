@@ -1,6 +1,5 @@
 <?php
 
-
 namespace WebX\Routes\Extras\Template\Api;
 
 use WebX\Routes\Api\View;

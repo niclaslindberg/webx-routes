@@ -4,7 +4,6 @@ namespace WebX\Routes\Api;
 
 use Closure;
 use Exception;
-use WebX\Routes\Impl\AppImpl;
 use WebX\Routes\Impl\RoutesImpl;
 
 class RoutesBootstrap {
