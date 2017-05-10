@@ -22,6 +22,11 @@ interface Map {
     /**
      * @return array
      */
+    public function raw();
+
+    /**
+     * @return array
+     */
     public function keys();
 
     /**
