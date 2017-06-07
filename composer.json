@@ -11,13 +11,12 @@
     }
   },
   "require" : {
-    "webx/ioc": "dev-rework",
-    "twig/twig": "v1.24.0"
+    "webx/ioc": "2.0.0"
   },
   "require-dev" : {
-    "larapack/dd" : "1.0.0",
     "php": ">=5.5.0",
-    "phpunit/phpunit" : "4.8.16"
+    "phpunit/phpunit" : "4.8.16",
+    "twig/twig" : "v1.24.0"
   },
   "authors": [
     {
@@ -26,5 +25,8 @@
       "homepage": "http://www.nillsoft.com"
     }
   ],
+  "suggest": {
+    "twig/twig": "For template views"
+  },
   "license": "MIT"
 }
