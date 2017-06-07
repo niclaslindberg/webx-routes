@@ -11,7 +11,6 @@ use WebX\Routes\Api\ResponseBody;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
 use WebX\Routes\Api\View;
-use WebX\Routes\Impl\Views\ContentViewImpl;
 use WebX\Routes\Impl\Views\JsonViewImpl;
 use WebX\Routes\Impl\Views\RawViewImpl;
 use WebX\Routes\Impl\Views\RedirectViewImpl;
@@ -98,7 +97,6 @@ class RoutesImpl implements Routes, ResponseBody {
         $this->ioc->register($this);
         $this->ioc->register(JsonViewImpl::class);
         $this->ioc->register(RawViewImpl::class);
-        $this->ioc->register(ContentViewImpl::class);
         $this->ioc->register(RedirectViewImpl::class);
         $this->path = new PathImpl();
     }

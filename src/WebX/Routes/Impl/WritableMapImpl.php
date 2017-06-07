@@ -37,20 +37,31 @@ class WritableMapImpl extends MapImpl implements WritableMap {
             $root = &$this->array;
             while ($part = array_shift($path)) {
                 if(count($path)===0) {
-                    $val = isset($root[$part]) ? $root[$part] : null;
-                    unset($root[$part]);
-                    return $val;
+                    if (array_key_exists($part, $root)) {
+                        $val = $root[$part];
+                        unset($root[$part]);
+                        return $val;
+                    } else {
+                        return null;
+                    }
                 } else {
                     if (is_array($root[$part])) {
-                        $root = $root[$part];
+                        $root = &$root[$part];
                     } else {
-                        break;
+                        return null;
                     }
                 }
             }
         } else {
             $this->array = [];
         }
+    }
+
+    public function asWritableMap($path=null) {
+        if(null!==($value = $this->get($path))) {
+            return is_array($value) ? new WritableMapImpl($value) : null;
+        }
+        return null;
     }
 
     public function clear() {

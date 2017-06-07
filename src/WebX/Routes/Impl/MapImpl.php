@@ -116,12 +116,12 @@ class MapImpl implements Map {
 
     public function asMap($key) {
         if(null!==($value = $this->get($key))) {
-            return is_array($value) ? new WritableMapImpl($value) : null;
+            return is_array($value) ? new MapImpl($value) : null;
         }
         return null;
     }
 
-    private function get($path=null){
+    protected function get($path=null){
         if(is_string($path)) {
             $path = explode(".", $path);
         } else if ($path===null) {

@@ -17,6 +17,12 @@ interface WritableMap extends Map {
      */
     public function delete($path=null);
 
+
+    /**
+     * @param string|null $path
+     * @return WritableMap
+     */
+    public function asWritableMap($path=null);
     /**
      * @return void
      */
