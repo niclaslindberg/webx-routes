@@ -23,4 +23,26 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals("v2",$aMap->asString("key.1"));
 
     }
+
+    public function testNumericallIndexedArray() {
+
+        $a = [
+            ["a"=>1],
+            ["b"=>2]
+        ];
+        $aMap = MapUtil::readable($a);
+
+        $this->assertEquals(1,$aMap->asInt("0.a"));
+        $this->assertEquals(2,$aMap->asInt("1.b"));
+
+        $b = [
+            "a",
+            "b"
+        ];
+        $bMap = MapUtil::readable($b);
+        $this->assertEquals("a",$bMap->asString("0"));
+        $this->assertEquals("b",$bMap->asString(1));
+
+    }
+
 }

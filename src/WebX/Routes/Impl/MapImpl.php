@@ -32,6 +32,8 @@ class MapImpl implements Map, JsonSerializable {
             $path = explode(".", $path);
         } else if ($path===null) {
             return true;
+        } else if (is_int($path)) {
+            $path = [$path];
         } else if (!is_array($path) && !is_scalar($path)) {
             throw new \Exception("\$path in Map must be either a '.'-notated string, a scalar value or an array of path segments.");
         }
@@ -127,6 +129,8 @@ class MapImpl implements Map, JsonSerializable {
             $path = explode(".", $path);
         } else if ($path===null) {
             return $this->array;
+        } else if (is_int($path)) {
+            $path = [$path];
         } else if (!is_array($path) && !is_scalar($path)) {
             throw new \Exception("\$path in ArrayReader must be either a '.'-notated string, a scalar value or an array of path segments.");
         }
