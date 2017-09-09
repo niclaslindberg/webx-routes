@@ -2,9 +2,10 @@
 
 namespace WebX\Routes\Impl;
 use DateTime;
+use JsonSerializable;
 use WebX\Routes\Api\Map;
 
-class MapImpl implements Map {
+class MapImpl implements Map, JsonSerializable {
 
     protected $array;
 
@@ -40,7 +41,7 @@ class MapImpl implements Map {
             }
         } else {
             $value = $this->array;
-            while (($key = array_shift($path))) {
+            while (null!==($key = array_shift($path))) {
                 if(array_key_exists($key,$value)) {
                     if(count($path)===0) {
                         return true;
@@ -100,8 +101,8 @@ class MapImpl implements Map {
         return $default;
     }
 
-    public function asArray($key=null, $default = null) {
-        if (null !== ($value = $this->get($key))) {
+    public function asArray($path=null, $default = null) {
+        if (null !== ($value = $this->get($path))) {
             return is_array($value) ? $value : [$value];
         }
         return $default;
@@ -136,7 +137,7 @@ class MapImpl implements Map {
             return null;
         } else {
             $value = $this->array;
-            while (($key = array_shift($path))) {
+            while (null!==($key = array_shift($path))) {
                 if(is_array($value) && array_key_exists($key,$value)){
                     $value = $value[$key];
                     if ((count($path) === 0) || ($value === null)) {
@@ -149,4 +150,10 @@ class MapImpl implements Map {
             return $value;
         }
     }
+
+    function jsonSerialize() {
+        return $this->array;
+    }
+
+
 }

@@ -6,5 +6,8 @@
         <testsuite name="Internal">
             <directory>Internal</directory>
         </testsuite>
+        <testsuite name="Util">
+            <directory>Util</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
