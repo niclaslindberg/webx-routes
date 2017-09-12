@@ -119,7 +119,7 @@ class MapImpl implements Map, JsonSerializable {
 
     public function asMap($key) {
         if(null!==($value = $this->get($key))) {
-            return is_array($value) ? new MapImpl($value) : null;
+            return is_array($value) ? new MapImpl($value) : ($value instanceof Map ? $value : null);
         }
         return null;
     }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Test\WebX\Util;
+use WebX\Routes\Api\Map;
 use WebX\Routes\Impl\ArrayUtil;
 use WebX\Routes\Utils\MapUtil;
 
@@ -43,6 +44,19 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals("a",$bMap->asString("0"));
         $this->assertEquals("b",$bMap->asString(1));
 
+
+        $cMap = MapUtil::writable();
+        $cMap->set("dummy",1);
+        $this->assertEquals("dummy",$cMap->asAny(1));
+
     }
 
+    public function testAsMap() {
+        $a = ["a"=>"v1"];
+        $b = ["b" => MapUtil::readable($a)];
+        $a["map"] = $b;
+        $aMap = MapUtil::readable($a);
+        $this->assertInstanceOf(Map::class,$aMap->asMap("map"));
+        $this->assertEquals("v1",$aMap->asString("a"));
+    }
 }

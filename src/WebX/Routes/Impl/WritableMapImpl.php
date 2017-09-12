@@ -14,6 +14,8 @@ class WritableMapImpl extends MapImpl implements WritableMap {
         if($path) {
             if (is_string($path)) {
                 $path = explode(".", $path);
+            } else if (is_int($path)) {
+                $path = [$path];
             }
             $root = &$this->array;
             while ($part = array_shift($path)) {
@@ -33,6 +35,8 @@ class WritableMapImpl extends MapImpl implements WritableMap {
         if($path) {
             if (is_string($path)) {
                 $path = explode(".", $path);
+            } else if (is_int($path)) {
+                $path = [$path];
             }
             $root = &$this->array;
             while ($part = array_shift($path)) {
