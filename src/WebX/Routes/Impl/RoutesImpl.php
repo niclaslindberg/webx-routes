@@ -71,9 +71,6 @@ class RoutesImpl implements Routes, ResponseBody {
     public function __construct(array $options = null, array $optionFiles = null) {
         $optionsMap = new MapImpl($options);
         $this->ioc = new IocImpl();
-        if($optionsMap->asBool("routes.registerIoc")) {
-            $this->ioc->register($this->ioc);
-        }
         $configurator = new ConfiguratorImpl($this);
         $configurator->addResourcePath($_SERVER['DOCUMENT_ROOT'] . $optionsMap->asString("home", "/.."));
         if($optionsMap->asBool("includeExtras",true)) {
@@ -93,6 +90,9 @@ class RoutesImpl implements Routes, ResponseBody {
                     throw new RoutesException("Resource {$optionFile} not found");
                 }
             }
+        }
+        if($optionsMap->asBool("routes.registerIoc")) {
+            $this->ioc->register($this->ioc);
         }
         $this->optionsMap = $optionsMap;
         $this->configurator = $configurator;
