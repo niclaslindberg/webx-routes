@@ -103,7 +103,7 @@ class MapImpl implements Map, JsonSerializable {
         return $default;
     }
 
-    public function asArray($path=null, $default = null) {
+    public function asArray($path=null, array $default = null) {
         if (null !== ($value = $this->get($path))) {
             return is_array($value) ? $value : [$value];
         }
@@ -117,11 +117,11 @@ class MapImpl implements Map, JsonSerializable {
         return $default;
     }
 
-    public function asMap($key) {
+    public function asMap($key, array $default = null) {
         if(null!==($value = $this->get($key))) {
             return is_array($value) ? new MapImpl($value) : ($value instanceof Map ? $value : null);
         }
-        return null;
+        return $default!==null ? new MapImpl($default) : null;
     }
 
     protected function get($path=null){

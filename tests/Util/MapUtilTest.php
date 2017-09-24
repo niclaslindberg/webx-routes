@@ -26,6 +26,16 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
 
     }
 
+    public function testDefaultMap() {
+        $a = [
+            "key" => ["v1","v2"]
+        ];
+        $aMap = MapUtil::readable($a);
+        $this->assertNull($aMap->asMap("noKey"));
+        $this->assertInstanceOf(Map::class,$aMap->asMap("noKey",[]));
+
+    }
+
     public function testNumericallIndexedArray() {
 
         $a = [

@@ -69,7 +69,7 @@ interface Map {
      * @param array|null $default
      * @return array|null
      */
-    public function asArray($path=null, $default = null);
+    public function asArray($path=null, array $default = null);
 
     /**
      * @param string $path
@@ -80,9 +80,10 @@ interface Map {
 
     /**
      * @param string $path
-     * @return Map|null A Reader if the path contains an array otherwise null
+     * @param array|null $default
+     * @return null|Map A Reader if the path contains an array otherwise null
      */
-    public function asMap($path);
+    public function asMap($path,array $default = null);
 
 
 }
