@@ -39,13 +39,19 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
     public function testSetToNullMap() {
         $a = [
             "level1" => [
-                "level2" => "value2"
+                "level2" => "value2",
+                "level2a" => "value2a"
             ]
         ];
         $aMap = MapUtil::writable($a);
         $this->assertEquals("value2",$aMap->asString("level1.level2"));
         $aMap->delete("level1.level2");
         $this->assertNull($aMap->asString("level1.level2"));
+
+        $this->assertEquals("value2a",$aMap->asString("level1.level2a"));
+        $aMap->set(null,"level1.level2a");
+        $this->assertNull($aMap->asString("level1.level2a"));
+
     }
 
     public function testNumericallIndexedArray() {
