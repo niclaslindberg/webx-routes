@@ -49,10 +49,12 @@ class WritableMapImpl extends MapImpl implements WritableMap {
                         return null;
                     }
                 } else {
-                    if (is_array($root[$part])) {
-                        $root = &$root[$part];
-                    } else {
-                        return null;
+                    if(array_key_exists($part,$root)) {
+                        if (is_array($root[$part])) {
+                            $root = &$root[$part];
+                        } else {
+                            return null;
+                        }
                     }
                 }
             }

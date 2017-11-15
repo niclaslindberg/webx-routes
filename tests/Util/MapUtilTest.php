@@ -98,4 +98,27 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf(Map::class,$aMap->asMap("map"));
         $this->assertEquals("v1",$aMap->asString("a"));
     }
+
+    public function testWritableDeleteNotExistsSingleLevel() {
+        $map = MapUtil::writable([]);
+        $map->delete("errors");
+        $this->assertNull($map->asAny("errors"));
+    }
+
+    public function testWritableDeleteExistsDoubleLevel() {
+        $map = MapUtil::writable();
+        $map->delete("errors.type");
+        //Should not break
+
+        $map = MapUtil::writable([
+            "errors" => [
+                "test1" => 1,
+                "test2" => 2
+            ]
+        ]);
+        $map->delete("errors.test1");
+        $this->assertEquals($map->asAny("errors.test2"),2);
+        $this->assertNull($map->asAny("errors.test1"));
+    }
+
 }
