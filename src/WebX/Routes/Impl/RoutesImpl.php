@@ -160,7 +160,7 @@ class RoutesImpl implements Routes, ResponseBody {
         }
     }
 
-    public function runAction($condition, Closure $closure, $configuration = null, array $parameters = []) {
+    public function runAction($condition, Closure $closure, $configuration = null, array $parameters = null) {
         if(!$this->view) {
             if (null !== ($steps = $this->path->pop($condition))) {
                 try {
@@ -175,7 +175,7 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function runMethod($condition, $class, $configuration = null, array $parameters = []) {
+    public function runMethod($condition, $class, $configuration = null, array $parameters = null) {
         if(!$this->view) {
             if (null !== ($steps = $this->path->pop($condition))) {
                 try {
@@ -206,7 +206,7 @@ class RoutesImpl implements Routes, ResponseBody {
         return false;
     }
 
-    public function runCtrl($condition=true,$configuration = null, array $parameters = []) {
+    public function runCtrl($condition=true,$configuration = null, array $parameters = null) {
         if(!$this->view) {
             if (null !== ($steps = $this->path->pop($condition))) {
                 try {
