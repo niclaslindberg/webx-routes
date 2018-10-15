@@ -2,6 +2,7 @@
 
 namespace WebX\Routes\Impl;
 
+use Defuse\Crypto\Crypto;
 use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
@@ -59,7 +60,7 @@ class SessionManagerImpl   {
             $cookies = $this->routes->cookies();
             if($raw = $cookies->asString("_{$readId}")) {
                 if($encryption = isset($config["encryption"]) ? $config["encryption"] : null) {
-                    $raw = $this->decrypt($raw,$encryption);
+                    $raw = self::decrypt($raw,$encryption);
                 } else {
                     $raw = base64_decode($raw);
                 }
@@ -82,7 +83,7 @@ class SessionManagerImpl   {
                 if($data = $session->raw()) {
                     $json = json_encode($data);
                     if ($encryption = isset($config["encryption"]) ? $config["encryption"] : null) {
-                        $raw = $this->encrypt($json, $encryption);
+                        $raw = self::encrypt($json, $encryption);
                     } else {
                         $raw = base64_encode($json);
                     }
@@ -99,11 +100,11 @@ class SessionManagerImpl   {
         }
     }
 
-    function encrypt($text, $salt) {
-        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+    static function encrypt($text, $salt) {
+        return Crypto::encryptWithPassword($text,$salt);
     }
 
-    function decrypt($text, $salt) {
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+    static function decrypt($text, $salt) {
+        return Crypto::decryptWithPassword($text,$salt);
     }
 }

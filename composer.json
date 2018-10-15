@@ -11,7 +11,8 @@
     }
   },
   "require" : {
-    "webx/ioc": "2.0.0"
+    "webx/ioc": "2.0.0",
+    "defuse/php-encryption": "^2.2"
   },
   "require-dev" : {
     "php": ">=5.5.0",
