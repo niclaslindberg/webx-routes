@@ -3,6 +3,7 @@
 namespace WebX\Routes\Impl;
 
 use Defuse\Crypto\Crypto;
+use Exception;
 use WebX\Routes\Api\ResponseHeader;
 use WebX\Routes\Api\Routes;
 use WebX\Routes\Api\RoutesException;
@@ -105,6 +106,11 @@ class SessionManagerImpl   {
     }
 
     static function decrypt($text, $salt) {
-        return Crypto::decryptWithPassword($text,$salt);
+        try {
+            return Crypto::decryptWithPassword($text, $salt);
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return null;
+        }
     }
 }
