@@ -26,6 +26,19 @@ class MapUtilTest extends \PHPUnit_Framework_TestCase {
 
     }
 
+    public function testInsertIndexed() {
+
+        $aMap = MapUtil::writable();
+        $aMap->set("a",0);
+        $aMap->set("b",1);
+
+        $this->assertEquals("a",$aMap->asString(0));
+        $this->assertEquals("a",$aMap->asString("0"));
+        $this->assertEquals("b",$aMap->asString(1));
+        $this->assertEquals("b",$aMap->asString("1"));
+
+    }
+
     public function testDefaultMap() {
         $a = [
             "key" => ["v1","v2"]

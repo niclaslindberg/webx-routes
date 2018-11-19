@@ -11,11 +11,13 @@ class WritableMapImpl extends MapImpl implements WritableMap {
     }
 
     public function set($data,$path=null) {
-        if($path) {
+        if($path!==null) {
             if (is_string($path)) {
                 $path = explode(".", $path);
             } else if (is_int($path)) {
                 $path = [$path];
+            } else {
+                throw new RoutesException("Can only define path with string or int.");
             }
             $root = &$this->array;
             while (null!==($part = array_shift($path))) {
